@@ -12,6 +12,7 @@
  *  - avatar, updated date and reading time in the post meta
  *  - an "On this page" table of contents in its own column
  *  - anchor ids and "#" links on H2/H3 headings
+ *  - reading progress per section, a "4/8 · 42%" counter and minutes left
  *  - current-section highlighting and Copy buttons on code blocks
  */
 
@@ -81,36 +82,37 @@ function gdaih_unique_id( $label, array &$used ) {
 /**
  * Find H2/H3 headings in HTML, wherever they are nested.
  *
- * @return array[] Each item: level, id, label.
+ * @return array[] Each item: level, id, label, offset (position in the HTML).
  */
 function gdaih_parse_headings( $html ) {
-	if ( ! preg_match_all( '/<h([23])(\s[^>]*)?>(.*?)<\/h\1>/is', $html, $matches, PREG_SET_ORDER ) ) {
+	if ( ! preg_match_all( '/<h([23])(\s[^>]*)?>(.*?)<\/h\1>/is', $html, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
 		return array();
 	}
 
 	// Reserve ids that headings already have (set in the block's HTML anchor field).
 	$used = array();
 	foreach ( $matches as $m ) {
-		if ( ! empty( $m[2] ) && preg_match( '/\sid=(["\'])(.*?)\1/i', $m[2], $id_match ) ) {
+		if ( ! empty( $m[2][0] ) && preg_match( '/\sid=(["\'])(.*?)\1/i', $m[2][0], $id_match ) ) {
 			$used[ $id_match[2] ] = true;
 		}
 	}
 
 	$items = array();
 	foreach ( $matches as $m ) {
-		$label = trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $m[3] ) ) );
+		$label = trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $m[3][0] ) ) );
 		if ( '' === $label ) {
 			continue;
 		}
-		if ( ! empty( $m[2] ) && preg_match( '/\sid=(["\'])(.*?)\1/i', $m[2], $id_match ) ) {
+		if ( ! empty( $m[2][0] ) && preg_match( '/\sid=(["\'])(.*?)\1/i', $m[2][0], $id_match ) ) {
 			$id = $id_match[2];
 		} else {
 			$id = gdaih_unique_id( $label, $used );
 		}
 		$items[] = array(
-			'level' => (int) $m[1],
-			'id'    => $id,
-			'label' => $label,
+			'level'  => (int) $m[1][0],
+			'id'     => $id,
+			'label'  => $label,
+			'offset' => $m[0][1],
 		);
 	}
 	return $items;
@@ -120,7 +122,8 @@ function gdaih_parse_headings( $html ) {
  * Table-of-contents entries for a post (cached per request).
  *
  * Reads the post's blocks directly, so the TOC can be printed before the
- * content itself is rendered.
+ * content itself is rendered. Top-level entries get a reading time for
+ * their whole section (the heading up to the next top-level heading).
  */
 function gdaih_toc_items( $post_id = 0 ) {
 	static $cache = array();
@@ -133,7 +136,24 @@ function gdaih_toc_items( $post_id = 0 ) {
 	$items = array();
 	$post  = get_post( $post_id );
 	if ( $post && ! post_password_required( $post ) ) {
-		$items = gdaih_parse_headings( do_blocks( $post->post_content ) );
+		$html  = do_blocks( $post->post_content );
+		$items = gdaih_parse_headings( $html );
+
+		// Section boundaries are the top-level entries (H2, or an H3 before any H2).
+		$top = array();
+		foreach ( $items as $i => $item ) {
+			if ( 2 === $item['level'] || ! $top ) {
+				$top[] = $i;
+			}
+		}
+		foreach ( $top as $n => $i ) {
+			$start = $items[ $i ]['offset'];
+			$end   = isset( $top[ $n + 1 ] ) ? $items[ $top[ $n + 1 ] ]['offset'] : strlen( $html );
+			$words = str_word_count( wp_strip_all_tags( substr( $html, $start, $end - $start ) ) );
+
+			$items[ $i ]['top']     = true;
+			$items[ $i ]['minutes'] = max( 1, (int) round( $words / 225 ) );
+		}
 	}
 	if ( count( $items ) < GDAIH_TOC_MIN_HEADINGS ) {
 		$items = array();
@@ -194,6 +214,9 @@ add_filter( 'the_content', 'gdaih_heading_anchors', 20 );
 /**
  * Print the TOC right after the post header. It stays outside the post
  * content, so its position never depends on how the content is built.
+ *
+ * Sections are numbered and show their reading time; the counter and the
+ * "min left" line are updated by the script while reading.
  */
 function gdaih_print_toc() {
 	if ( ! gdaih_is_docs_post() ) {
@@ -204,21 +227,24 @@ function gdaih_print_toc() {
 		return;
 	}
 
-	$list    = '';
-	$in_sub  = false;
-	$open_li = false;
+	$list     = '';
+	$in_sub   = false;
+	$open_li  = false;
+	$sections = 0;
+	$minutes  = 0;
 	foreach ( $items as $item ) {
-		$link = '<a href="#' . esc_attr( $item['id'] ) . '">' . esc_html( $item['label'] ) . '</a>';
+		$href = '#' . esc_attr( $item['id'] );
+		$text = esc_html( $item['label'] );
 
-		// H3s nest under the H2 before them.
-		if ( 3 === $item['level'] && $open_li ) {
+		if ( empty( $item['top'] ) ) {
 			if ( ! $in_sub ) {
 				$list  .= '<ul>';
 				$in_sub = true;
 			}
-			$list .= '<li>' . $link . '</li>';
+			$list .= '<li><a href="' . $href . '">' . $text . '</a></li>';
 			continue;
 		}
+
 		if ( $in_sub ) {
 			$list  .= '</ul>';
 			$in_sub = false;
@@ -226,17 +252,32 @@ function gdaih_print_toc() {
 		if ( $open_li ) {
 			$list .= '</li>';
 		}
-		$list   .= '<li>' . $link;
+		++$sections;
+		$minutes += $item['minutes'];
+		$list    .= sprintf(
+			'<li data-minutes="%1$d"><a href="%2$s"><span class="gd-toc__num">%3$s</span><span class="gd-toc__text">%4$s</span><span class="gd-toc__min">%1$dm</span></a>',
+			(int) $item['minutes'],
+			$href,
+			sprintf( '%02d', $sections ),
+			$text
+		);
 		$open_li = true;
 	}
 	$list .= ( $in_sub ? '</ul>' : '' ) . ( $open_li ? '</li>' : '' );
 
 	$title = esc_html__( 'On this page', 'gdaih' );
 	printf(
-		'<nav class="gd-toc" aria-label="%1$s"><details class="gd-toc__box" open><summary class="gd-toc__title">%2$s</summary><ul class="gd-toc__list">%3$s</ul></details></nav>',
+		'<nav class="gd-toc" aria-label="%1$s"><details class="gd-toc__box" open>'
+		. '<summary class="gd-toc__title"><span>%2$s</span><span class="gd-toc__count">%3$s</span></summary>'
+		. '<ol class="gd-toc__list">%4$s</ol>'
+		. '<p class="gd-toc__foot"><span class="gd-toc__left">%5$s</span><a class="gd-toc__top" href="#">%6$s</a></p>'
+		. '</details></nav>',
 		esc_attr( $title ),
 		$title,
-		$list // Escaped above.
+		esc_html( sprintf( '0/%d · 0%%', $sections ) ),
+		$list, // Escaped above.
+		esc_html( sprintf( __( '~%d min read', 'gdaih' ), $minutes ) ),
+		esc_html__( '↑ Top', 'gdaih' )
 	);
 }
 add_action( 'generate_after_entry_header', 'gdaih_print_toc', 20 );
@@ -378,6 +419,7 @@ function gdaih_docs_script() {
 	var desktop = window.matchMedia('(min-width: 1024px)');
 	var toc = document.querySelector('.gd-toc');
 	var box = toc && toc.querySelector('.gd-toc__box');
+	var content = document.querySelector('.gd-has-toc .entry-content');
 	var items = [];
 	var sections = [];
 	var active = null;
@@ -396,13 +438,23 @@ function gdaih_docs_script() {
 		});
 		return bottom;
 	}
+	function targetOf(a) {
+		return document.getElementById(decodeURIComponent(a.hash.slice(1)));
+	}
 
 	if (toc) {
 		toc.classList.add('is-enhanced');
-		items = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'))
-			.map(function (a) { return { link: a, target: document.getElementById(decodeURIComponent(a.hash.slice(1))) }; })
+		items = Array.prototype.slice.call(toc.querySelectorAll('.gd-toc__list a[href^="#"]'))
+			.map(function (a) { return { link: a, target: targetOf(a) }; })
 			.filter(function (item) { return item.target; });
-		sections = Array.prototype.slice.call(toc.querySelectorAll('.gd-toc__list > li'));
+		sections = Array.prototype.slice.call(toc.querySelectorAll('.gd-toc__list > li'))
+			.map(function (li) {
+				var a = li.querySelector('a');
+				return { li: li, target: a && targetOf(a), minutes: parseFloat(li.getAttribute('data-minutes')) || 1 };
+			})
+			.filter(function (section) { return section.target; });
+		var count = toc.querySelector('.gd-toc__count');
+		var left = toc.querySelector('.gd-toc__left');
 
 		// Open rail on desktop, collapsed bar on smaller screens.
 		box.open = desktop.matches;
@@ -411,7 +463,11 @@ function gdaih_docs_script() {
 		});
 		desktop.addEventListener('change', function (e) { box.open = e.matches; });
 		toc.addEventListener('click', function (e) {
-			if (!desktop.matches && e.target.closest('a')) box.open = false;
+			if (!desktop.matches && e.target.closest('.gd-toc__list a')) box.open = false;
+		});
+		toc.querySelector('.gd-toc__top').addEventListener('click', function (e) {
+			e.preventDefault();
+			window.scrollTo({ top: 0 });
 		});
 	}
 
@@ -426,12 +482,37 @@ function gdaih_docs_script() {
 		}
 		if (!items.length) return;
 
+		var line = offset + 16; // Reading line, just below the top bars.
+		var root = document.documentElement;
+		var atEnd = window.innerHeight + window.scrollY >= root.scrollHeight - 2;
+		var end = content ? content.getBoundingClientRect().bottom : root.getBoundingClientRect().bottom;
+
+		// Fill each section's line by how far the reading line has passed through it.
+		var done = 0;
+		var total = 0;
+		var remaining = 0;
+		sections.forEach(function (section, i) {
+			var top = section.target.getBoundingClientRect().top;
+			var bottom = sections[i + 1] ? sections[i + 1].target.getBoundingClientRect().top : end;
+			var fill = atEnd ? 1 : Math.min(1, Math.max(0, (line - top) / Math.max(1, bottom - top)));
+			section.li.style.setProperty('--fill', (fill * 100).toFixed(1) + '%');
+			section.li.classList.toggle('is-done', fill >= 1);
+			if (fill >= 1) done++;
+			total += section.minutes;
+			remaining += section.minutes * (1 - fill);
+		});
+		if (sections.length) {
+			var read = total ? Math.round((1 - remaining / total) * 100) : 0;
+			count.textContent = done + '/' + sections.length + ' · ' + read + '%';
+			var minutesLeft = Math.ceil(remaining - 0.05);
+			left.textContent = minutesLeft > 0 ? '~' + minutesLeft + ' min left' : 'Finished';
+		}
+
 		var current = items[0];
 		items.forEach(function (item) {
-			if (item.target.getBoundingClientRect().top <= offset + 16) current = item;
+			if (item.target.getBoundingClientRect().top <= line) current = item;
 		});
-		var root = document.documentElement;
-		if (window.innerHeight + window.scrollY >= root.scrollHeight - 2) current = items[items.length - 1];
+		if (atEnd) current = items[items.length - 1];
 		if (current === active) return;
 		active = current;
 
@@ -439,14 +520,14 @@ function gdaih_docs_script() {
 			if (item === current) item.link.setAttribute('aria-current', 'true');
 			else item.link.removeAttribute('aria-current');
 		});
-		sections.forEach(function (li) { li.classList.toggle('is-open', li.contains(current.link)); });
+		sections.forEach(function (section) { section.li.classList.toggle('is-open', section.li.contains(current.link)); });
 
 		// Keep the current entry visible inside a long rail.
 		if (desktop.matches && toc.scrollHeight > toc.clientHeight) {
-			var top = current.link.offsetTop;
-			var bottom = top + current.link.offsetHeight;
-			if (top < toc.scrollTop + 40) toc.scrollTop = top - 40;
-			else if (bottom > toc.scrollTop + toc.clientHeight - 40) toc.scrollTop = bottom - toc.clientHeight + 40;
+			var linkTop = current.link.offsetTop;
+			var linkBottom = linkTop + current.link.offsetHeight;
+			if (linkTop < toc.scrollTop + 48) toc.scrollTop = linkTop - 48;
+			else if (linkBottom > toc.scrollTop + toc.clientHeight - 48) toc.scrollTop = linkBottom - toc.clientHeight + 48;
 		}
 	}
 	function schedule() {

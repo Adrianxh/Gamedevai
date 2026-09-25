@@ -92,7 +92,7 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 </nav>
 
 <div class="site grid-container container hfeed" id="page"><div class="site-content" id="content"><div class="content-area" id="primary"><main class="site-main" id="main">
-<article id="post-42" class="post-42 post type-post status-publish format-standard hentry category-godot gd-has-toc"><div class="inside-article"><header class="entry-header"><p class="gd-crumb">~/<a href="#category-tutorials">tutorials</a>/<a href="#category-godot">godot</a></p><h1 class="entry-title" itemprop="headline">Set Up Local LLM Dialogue for NPCs in Godot 4</h1><p class="gd-dek">Stream replies from a local model into your dialogue UI, with no server, no per-request cost and no internet connection.</p><div class="entry-meta"><span class="byline"><img alt="" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%231f2a24%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2240%22%20font-family%3D%22monospace%22%20font-size%3D%2222%22%20font-weight%3D%22600%22%20fill%3D%22%23c8f7a8%22%20text-anchor%3D%22middle%22%3EAM%3C%2Ftext%3E%3C%2Fsvg%3E" class="avatar avatar-32 photo gd-avatar" height="32" width="32">by <span class="author vcard"><a class="url fn n" href="#" rel="author"><span class="author-name">Alex Moreno</span></a></span></span> <span class="posted-on"><time class="entry-date updated" datetime="2026-09-20T09:00:00+00:00">Updated 20 Sep 2026</time></span> <span class="reading-time">5 min read</span></div></header><nav class="gd-toc" aria-label="On this page"><details class="gd-toc__box" open><summary class="gd-toc__title">On this page</summary><ul class="gd-toc__list"><li><a href="#what-unity-mcp-actually-does">What Unity MCP actually does</a></li><li><a href="#what-you-need-before-you-start">What you need before you start</a></li><li><a href="#step-1-install-claude-code-and-sign-in">Step 1: Install Claude Code and sign in</a></li><li><a href="#step-2-add-the-unity-mcp-package-to-your-project">Step 2: Add the Unity MCP package to your project</a><ul><li><a href="#install-from-the-package-manager">Install from the Package Manager</a></li><li><a href="#install-from-a-git-url">Install from a Git URL</a></li></ul></li><li><a href="#step-3-connect-claude-code-to-the-unity-mcp-server">Step 3: Connect Claude Code to the Unity MCP server</a><ul><li><a href="#edit-the-mcp-config-file">Edit the MCP config file</a></li><li><a href="#check-the-connection">Check the connection</a></li></ul></li><li><a href="#step-4-run-your-first-prompt-inside-unity">Step 4: Run your first prompt inside Unity</a></li><li><a href="#tips-for-better-results-with-unity-mcp">Tips for better results with Unity MCP</a></li><li><a href="#troubleshooting-common-connection-problems">Troubleshooting common connection problems</a><ul><li><a href="#claude-code-cannot-find-the-server">Claude Code cannot find the server</a></li><li><a href="#the-unity-editor-freezes-during-a-request">The Unity editor freezes during a request</a></li><li><a href="#tools-are-missing-from-the-list">Tools are missing from the list</a></li></ul></li><li><a href="#frequently-asked-questions">Frequently asked questions</a><ul><li><a href="#is-unity-mcp-free-to-use">Is Unity MCP free to use?</a></li><li><a href="#does-it-work-with-unity-2022-lts">Does it work with Unity 2022 LTS?</a></li><li><a href="#can-claude-code-edit-prefabs-and-scenes">Can Claude Code edit prefabs and scenes?</a></li><li><a href="#is-my-project-code-sent-to-anthropic">Is my project code sent to Anthropic?</a></li><li><a href="#can-i-use-it-with-cursor-or-vs-code-instead">Can I use it with Cursor or VS Code instead?</a></li></ul></li><li><a href="#final-thoughts">Final thoughts</a></li></ul></details></nav><div class="entry-content" itemprop="text"><p>This guide connects Claude Code to the Unity editor through the Model Context Protocol, so you can ask for changes in plain English and watch them happen in your project.</p>
+<article id="post-42" class="post-42 post type-post status-publish format-standard hentry category-godot gd-has-toc"><div class="inside-article"><header class="entry-header"><p class="gd-crumb">~/<a href="#category-tutorials">tutorials</a>/<a href="#category-godot">godot</a></p><h1 class="entry-title" itemprop="headline">Set Up Local LLM Dialogue for NPCs in Godot 4</h1><p class="gd-dek">Stream replies from a local model into your dialogue UI, with no server, no per-request cost and no internet connection.</p><div class="entry-meta"><span class="byline"><img alt="" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%231f2a24%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2240%22%20font-family%3D%22monospace%22%20font-size%3D%2222%22%20font-weight%3D%22600%22%20fill%3D%22%23c8f7a8%22%20text-anchor%3D%22middle%22%3EAM%3C%2Ftext%3E%3C%2Fsvg%3E" class="avatar avatar-32 photo gd-avatar" height="32" width="32">by <span class="author vcard"><a class="url fn n" href="#" rel="author"><span class="author-name">Alex Moreno</span></a></span></span> <span class="posted-on"><time class="entry-date updated" datetime="2026-09-20T09:00:00+00:00">Updated 20 Sep 2026</time></span> <span class="reading-time">5 min read</span></div></header><nav class="gd-toc" aria-label="On this page"><details class="gd-toc__box" open><summary class="gd-toc__title"><span>On this page</span><span class="gd-toc__count">0/10 · 0%</span></summary><ol class="gd-toc__list"><li data-minutes="1"><a href="#what-unity-mcp-actually-does"><span class="gd-toc__num">01</span><span class="gd-toc__text">What Unity MCP actually does</span><span class="gd-toc__min">1m</span></a></li><li data-minutes="1"><a href="#what-you-need-before-you-start"><span class="gd-toc__num">02</span><span class="gd-toc__text">What you need before you start</span><span class="gd-toc__min">1m</span></a></li><li data-minutes="1"><a href="#step-1-install-claude-code-and-sign-in"><span class="gd-toc__num">03</span><span class="gd-toc__text">Step 1: Install Claude Code and sign in</span><span class="gd-toc__min">1m</span></a></li><li data-minutes="1"><a href="#step-2-add-the-unity-mcp-package-to-your-project"><span class="gd-toc__num">04</span><span class="gd-toc__text">Step 2: Add the Unity MCP package to your project</span><span class="gd-toc__min">1m</span></a><ul><li><a href="#install-from-the-package-manager">Install from the Package Manager</a></li><li><a href="#install-from-a-git-url">Install from a Git URL</a></li></ul></li><li data-minutes="1"><a href="#step-3-connect-claude-code-to-the-unity-mcp-server"><span class="gd-toc__num">05</span><span class="gd-toc__text">Step 3: Connect Claude Code to the Unity MCP server</span><span class="gd-toc__min">1m</span></a><ul><li><a href="#edit-the-mcp-config-file">Edit the MCP config file</a></li><li><a href="#check-the-connection">Check the connection</a></li></ul></li><li data-minutes="1"><a href="#step-4-run-your-first-prompt-inside-unity"><span class="gd-toc__num">06</span><span class="gd-toc__text">Step 4: Run your first prompt inside Unity</span><span class="gd-toc__min">1m</span></a></li><li data-minutes="1"><a href="#tips-for-better-results-with-unity-mcp"><span class="gd-toc__num">07</span><span class="gd-toc__text">Tips for better results with Unity MCP</span><span class="gd-toc__min">1m</span></a></li><li data-minutes="1"><a href="#troubleshooting-common-connection-problems"><span class="gd-toc__num">08</span><span class="gd-toc__text">Troubleshooting common connection problems</span><span class="gd-toc__min">1m</span></a><ul><li><a href="#claude-code-cannot-find-the-server">Claude Code cannot find the server</a></li><li><a href="#the-unity-editor-freezes-during-a-request">The Unity editor freezes during a request</a></li><li><a href="#tools-are-missing-from-the-list">Tools are missing from the list</a></li></ul></li><li data-minutes="1"><a href="#frequently-asked-questions"><span class="gd-toc__num">09</span><span class="gd-toc__text">Frequently asked questions</span><span class="gd-toc__min">1m</span></a><ul><li><a href="#is-unity-mcp-free-to-use">Is Unity MCP free to use?</a></li><li><a href="#does-it-work-with-unity-2022-lts">Does it work with Unity 2022 LTS?</a></li><li><a href="#can-claude-code-edit-prefabs-and-scenes">Can Claude Code edit prefabs and scenes?</a></li><li><a href="#is-my-project-code-sent-to-anthropic">Is my project code sent to Anthropic?</a></li><li><a href="#can-i-use-it-with-cursor-or-vs-code-instead">Can I use it with Cursor or VS Code instead?</a></li></ul></li><li data-minutes="1"><a href="#final-thoughts"><span class="gd-toc__num">10</span><span class="gd-toc__text">Final thoughts</span><span class="gd-toc__min">1m</span></a></li></ol><p class="gd-toc__foot"><span class="gd-toc__left">~10 min read</span><a class="gd-toc__top" href="#">↑ Top</a></p></details></nav><div class="entry-content" itemprop="text"><p>This guide connects Claude Code to the Unity editor through the Model Context Protocol, so you can ask for changes in plain English and watch them happen in your project.</p>
 <ul class="wp-block-list requires"><li>Unity 6</li><li>Claude Code</li><li>Node.js 20+</li></ul>
 <h2 id="what-unity-mcp-actually-does" class="wp-block-heading">What Unity MCP actually does<a class="gd-anchor" href="#what-unity-mcp-actually-does" aria-label="Link to “What Unity MCP actually does”">#</a></h2>
 <p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
@@ -166,6 +166,7 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 	var desktop = window.matchMedia('(min-width: 1024px)');
 	var toc = document.querySelector('.gd-toc');
 	var box = toc && toc.querySelector('.gd-toc__box');
+	var content = document.querySelector('.gd-has-toc .entry-content');
 	var items = [];
 	var sections = [];
 	var active = null;
@@ -184,13 +185,23 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 		});
 		return bottom;
 	}
+	function targetOf(a) {
+		return document.getElementById(decodeURIComponent(a.hash.slice(1)));
+	}
 
 	if (toc) {
 		toc.classList.add('is-enhanced');
-		items = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'))
-			.map(function (a) { return { link: a, target: document.getElementById(decodeURIComponent(a.hash.slice(1))) }; })
+		items = Array.prototype.slice.call(toc.querySelectorAll('.gd-toc__list a[href^="#"]'))
+			.map(function (a) { return { link: a, target: targetOf(a) }; })
 			.filter(function (item) { return item.target; });
-		sections = Array.prototype.slice.call(toc.querySelectorAll('.gd-toc__list > li'));
+		sections = Array.prototype.slice.call(toc.querySelectorAll('.gd-toc__list > li'))
+			.map(function (li) {
+				var a = li.querySelector('a');
+				return { li: li, target: a && targetOf(a), minutes: parseFloat(li.getAttribute('data-minutes')) || 1 };
+			})
+			.filter(function (section) { return section.target; });
+		var count = toc.querySelector('.gd-toc__count');
+		var left = toc.querySelector('.gd-toc__left');
 
 		// Open rail on desktop, collapsed bar on smaller screens.
 		box.open = desktop.matches;
@@ -199,7 +210,11 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 		});
 		desktop.addEventListener('change', function (e) { box.open = e.matches; });
 		toc.addEventListener('click', function (e) {
-			if (!desktop.matches && e.target.closest('a')) box.open = false;
+			if (!desktop.matches && e.target.closest('.gd-toc__list a')) box.open = false;
+		});
+		toc.querySelector('.gd-toc__top').addEventListener('click', function (e) {
+			e.preventDefault();
+			window.scrollTo({ top: 0 });
 		});
 	}
 
@@ -214,12 +229,37 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 		}
 		if (!items.length) return;
 
+		var line = offset + 16; // Reading line, just below the top bars.
+		var root = document.documentElement;
+		var atEnd = window.innerHeight + window.scrollY >= root.scrollHeight - 2;
+		var end = content ? content.getBoundingClientRect().bottom : root.getBoundingClientRect().bottom;
+
+		// Fill each section's line by how far the reading line has passed through it.
+		var done = 0;
+		var total = 0;
+		var remaining = 0;
+		sections.forEach(function (section, i) {
+			var top = section.target.getBoundingClientRect().top;
+			var bottom = sections[i + 1] ? sections[i + 1].target.getBoundingClientRect().top : end;
+			var fill = atEnd ? 1 : Math.min(1, Math.max(0, (line - top) / Math.max(1, bottom - top)));
+			section.li.style.setProperty('--fill', (fill * 100).toFixed(1) + '%');
+			section.li.classList.toggle('is-done', fill >= 1);
+			if (fill >= 1) done++;
+			total += section.minutes;
+			remaining += section.minutes * (1 - fill);
+		});
+		if (sections.length) {
+			var read = total ? Math.round((1 - remaining / total) * 100) : 0;
+			count.textContent = done + '/' + sections.length + ' · ' + read + '%';
+			var minutesLeft = Math.ceil(remaining - 0.05);
+			left.textContent = minutesLeft > 0 ? '~' + minutesLeft + ' min left' : 'Finished';
+		}
+
 		var current = items[0];
 		items.forEach(function (item) {
-			if (item.target.getBoundingClientRect().top <= offset + 16) current = item;
+			if (item.target.getBoundingClientRect().top <= line) current = item;
 		});
-		var root = document.documentElement;
-		if (window.innerHeight + window.scrollY >= root.scrollHeight - 2) current = items[items.length - 1];
+		if (atEnd) current = items[items.length - 1];
 		if (current === active) return;
 		active = current;
 
@@ -227,14 +267,14 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 			if (item === current) item.link.setAttribute('aria-current', 'true');
 			else item.link.removeAttribute('aria-current');
 		});
-		sections.forEach(function (li) { li.classList.toggle('is-open', li.contains(current.link)); });
+		sections.forEach(function (section) { section.li.classList.toggle('is-open', section.li.contains(current.link)); });
 
 		// Keep the current entry visible inside a long rail.
 		if (desktop.matches && toc.scrollHeight > toc.clientHeight) {
-			var top = current.link.offsetTop;
-			var bottom = top + current.link.offsetHeight;
-			if (top < toc.scrollTop + 40) toc.scrollTop = top - 40;
-			else if (bottom > toc.scrollTop + toc.clientHeight - 40) toc.scrollTop = bottom - toc.clientHeight + 40;
+			var linkTop = current.link.offsetTop;
+			var linkBottom = linkTop + current.link.offsetHeight;
+			if (linkTop < toc.scrollTop + 48) toc.scrollTop = linkTop - 48;
+			else if (linkBottom > toc.scrollTop + toc.clientHeight - 48) toc.scrollTop = linkBottom - toc.clientHeight + 48;
 		}
 	}
 	function schedule() {
