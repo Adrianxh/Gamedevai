@@ -1,0 +1,554 @@
+<title>GameDev AI Hub Navbars</title>
+<style>
+/* Showcase page: one deliberate light look, since every mockup carries its own colors. */
+:root {
+  color-scheme: light;
+  --bg: #eef0ec; --paper: #fff; --ink: #121518; --muted: #5b646a; --line: #dfe2dc; --line-2: #c9cdc5;
+  --g: #0f7a52; --g-ink: #0a5a3c; --g-soft: #e4f3ea; --g-hi: #3ddc97;
+  --amber: #f2a93b; --violet: #6c5ce7; --dark: #0e1114; --dark-2: #161b20; --dark-line: #262d34;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background: var(--bg); font: 15px/1.55 var(--sans); }
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 80px; }
+.intro h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 44px); line-height: 1.08; letter-spacing: -.025em; text-wrap: balance; }
+.intro p { max-width: 68ch; margin: 0; color: var(--muted); font-size: 16px; }
+.kick { margin: 0 0 10px; color: var(--g); font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+
+/* Logo marks */
+.marks { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 28px; }
+.mark { display: grid; gap: 14px; padding: 20px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; }
+.mark .show { display: flex; align-items: center; gap: 12px; }
+.mark .show svg { width: 52px; height: 52px; flex-shrink: 0; }
+.wm { font-weight: 800; font-size: 20px; letter-spacing: -.03em; white-space: nowrap; }
+.wm b { color: var(--g); font-weight: 800; }
+.mark h3 { margin: 0; font-size: 15px; }
+.mark p { margin: 0; color: var(--muted); font-size: 13.5px; }
+.chips { display: flex; gap: 6px; }
+.chips i { width: 22px; height: 22px; border-radius: 6px; border: 1px solid rgb(0 0 0 / 8%); }
+
+/* Concept blocks */
+.cx { margin-top: 48px; }
+.cx-h { display: grid; grid-template-columns: 52px minmax(0, 1fr) minmax(0, 300px); gap: 18px; align-items: start; margin-bottom: 14px; }
+.num { margin: 0; color: #9aa19a; font: 500 30px/1 var(--mono); }
+.cx-h h2 { margin: 0 0 6px; font-size: 20px; letter-spacing: -.015em; }
+.cx-h p { margin: 0; color: var(--muted); max-width: 64ch; }
+.why { display: grid; gap: 6px; margin: 0; padding: 12px 14px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; font-size: 13px; }
+.why dt { color: var(--muted); font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.why dd { margin: 0 0 4px; }
+.frame { container-type: inline-size; overflow: hidden; background: #f6f5f1; border: 1px solid var(--line-2); border-radius: 12px; box-shadow: 0 24px 50px -36px rgb(0 0 0 / 40%); }
+.page { padding: 26px clamp(16px, 5cqi, 60px) 30px; }
+.page .crumb { margin: 0 0 6px; color: var(--muted); font: 12px var(--mono); }
+.page h4 { margin: 0 0 12px; font-size: clamp(22px, 3cqi, 32px); line-height: 1.12; letter-spacing: -.02em; max-width: 26ch; }
+.sk { display: grid; gap: 9px; max-width: 640px; }
+.sk i { height: 8px; background: #e2dfd7; border-radius: 4px; }
+.sk i:nth-child(2) { width: 92%; } .sk i:last-child { width: 60%; }
+
+/* Shared nav bits */
+.nv { display: flex; align-items: center; gap: 18px; padding: 0 clamp(14px, 3cqi, 28px); min-height: 64px; font-size: 14px; }
+.nv .logo { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
+.nv .logo svg { width: 30px; height: 30px; }
+.nv .wm { font-size: 17px; }
+.links { display: flex; align-items: center; gap: 4px; }
+.links a { padding: 8px 11px; border-radius: 8px; white-space: nowrap; }
+.push { margin-left: auto; }
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 9px; font-weight: 600; white-space: nowrap; }
+.ico { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9px; }
+.ico svg, .btn svg { width: 17px; height: 17px; }
+.kbd { padding: 2px 6px; border: 1px solid currentColor; border-radius: 5px; font: 600 11px var(--mono); opacity: .6; }
+.burger { display: none; }
+@container (max-width: 760px) {
+  .links, .hide-sm { display: none !important; }
+  .burger { display: grid; }
+}
+
+/* 01 Clean Editorial */
+.n1 { background: #fff; border-bottom: 1px solid var(--line); }
+.n1 .links { margin-inline: auto; }
+.n1 .links a { color: #3d454b; }
+.n1 .links a.on { color: var(--ink); font-weight: 600; }
+.n1 .links a:hover { background: #f1f3f0; }
+.n1 .search { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px; color: var(--muted); background: #f3f4f1; border-radius: 10px; min-width: 190px; }
+.n1 .search .kbd { margin-left: auto; }
+
+/* 02 Floating Pill */
+.n2wrap { padding: 14px clamp(12px, 3cqi, 28px) 0; }
+.n2 { max-width: 980px; margin: 0 auto; background: rgb(255 255 255 / 82%); border: 1px solid var(--line); border-radius: 999px; box-shadow: 0 10px 30px -18px rgb(0 0 0 / 35%); min-height: 58px; padding: 0 8px 0 16px; }
+.n2 .links a.on { background: var(--ink); color: #fff; border-radius: 999px; }
+.n2 .links a { border-radius: 999px; }
+.n2 .btn { background: var(--g); color: #fff; border-radius: 999px; }
+
+/* 03 Graphite */
+.n3 { background: var(--dark); color: #c9d1d6; border-bottom: 1px solid var(--dark-line); }
+.n3 .wm { color: #fff; } .n3 .wm b { color: var(--g-hi); }
+.n3 .links a:hover, .n3 .links a.on { color: #fff; background: var(--dark-2); }
+.n3 .btn { background: #fff; color: var(--dark); }
+.n3 .btn.ghost { color: #c9d1d6; background: transparent; border: 1px solid var(--dark-line); }
+
+/* 04 Command Bar */
+.n4 { background: #fff; border-bottom: 1px solid var(--line); gap: 22px; }
+.n4 .cmd { flex: 1; max-width: 520px; display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 14px; margin-inline: auto; color: var(--muted); background: #f4f5f2; border: 1px solid var(--line); border-radius: 12px; }
+.n4 .cmd .kbd { margin-left: auto; }
+.n4 .ico { border: 1px solid var(--line); }
+
+/* 05 Two-tier Media */
+.n5top { display: flex; align-items: center; gap: 16px; min-height: 34px; padding: 0 clamp(14px, 3cqi, 28px); color: #b9c4bd; background: var(--dark); font-size: 12.5px; }
+.n5top b { color: var(--g-hi); font-weight: 600; }
+.n5top .push a { margin-left: 14px; }
+.n5 { background: #fff; border-bottom: 1px solid var(--line); min-height: 70px; }
+.n5 .wm { font-size: 20px; }
+.n5 .links a { font-weight: 600; color: #2b3237; }
+.n5 .links a.on { box-shadow: inset 0 -3px 0 var(--g); border-radius: 0; }
+.n5 .btn { color: var(--g-ink); background: var(--g-soft); }
+
+/* 06 Mega menu */
+.n6 { background: #fff; border-bottom: 1px solid var(--line); position: relative; }
+.n6 .links a.on { color: var(--g-ink); background: var(--g-soft); }
+.n6 .btn { background: var(--ink); color: #fff; }
+.mega { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.1fr); gap: 18px; margin: 0 clamp(14px, 3cqi, 28px); padding: 20px; background: #fff; border: 1px solid var(--line); border-top: 0; border-radius: 0 0 14px 14px; box-shadow: 0 20px 40px -30px rgb(0 0 0 / 40%); }
+.mega h5 { margin: 0 0 8px; color: var(--muted); font: 600 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.mega a { display: block; padding: 5px 0; font-weight: 500; }
+.mega a span { display: block; color: var(--muted); font-size: 12.5px; font-weight: 400; }
+.mega .feat { padding: 14px; background: var(--g-soft); border-radius: 10px; }
+.mega .feat b { display: block; margin-bottom: 4px; }
+@container (max-width: 760px) { .mega { display: none; } }
+
+/* 07 Split center logo */
+.n7 { background: #fff; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto 1fr; }
+.n7 .l { justify-self: start; } .n7 .r { justify-self: end; display: flex; gap: 6px; align-items: center; }
+.n7 .logo { flex-direction: column; gap: 2px; }
+.n7 .logo small { color: var(--muted); font: 500 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+@container (max-width: 760px) { .n7 { grid-template-columns: auto 1fr auto; } .n7 .l { display: none; } }
+
+/* 08 Tabs underline */
+.n8 { background: #fff; min-height: 58px; }
+.n8tabs { display: flex; gap: 22px; padding: 0 clamp(14px, 3cqi, 28px); background: #fff; border-bottom: 1px solid var(--line); overflow-x: auto; font-size: 14px; }
+.n8tabs a { padding: 12px 0; color: var(--muted); white-space: nowrap; border-bottom: 2px solid transparent; }
+.n8tabs a.on { color: var(--ink); font-weight: 600; border-color: var(--g); }
+.n8tabs a small { margin-left: 5px; padding: 1px 6px; color: var(--g-ink); background: var(--g-soft); border-radius: 999px; font: 600 11px var(--mono); }
+.n8 .btn { border: 1px solid var(--line-2); }
+
+/* 09 Pixel edge */
+.n9 { background: #fff; position: relative; }
+.n9::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 6px; background: repeating-linear-gradient(90deg, var(--g) 0 6px, transparent 6px 12px), repeating-linear-gradient(90deg, transparent 0 6px, var(--g) 6px 12px); background-size: 100% 3px; background-position: 0 0, 0 3px; background-repeat: no-repeat; }
+.n9 .links a { font-weight: 600; }
+.n9 .links a.on { color: var(--g-ink); }
+.n9 .btn { background: var(--g); color: #fff; border-radius: 4px; box-shadow: 3px 3px 0 var(--ink); }
+
+/* 10 HUD */
+.n10 { background: var(--dark); color: #d7dee2; gap: 20px; }
+.n10 .wm { color: #fff; } .n10 .wm b { color: var(--g-hi); }
+.n10 .links a.on { color: #fff; }
+.hud { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: var(--dark-2); border: 1px solid var(--dark-line); border-radius: 10px; font: 12px var(--mono); }
+.hud .lv { color: var(--amber); font-weight: 700; }
+.xp { width: 110px; height: 8px; background: #252c33; border-radius: 4px; overflow: hidden; }
+.xp i { display: block; width: 64%; height: 100%; background: linear-gradient(90deg, var(--g), var(--g-hi)); }
+.n10 .ico { color: #fff; border: 1px solid var(--dark-line); }
+
+/* 11 Progress */
+.n11 { background: #fff; border-bottom: 1px solid var(--line); position: relative; }
+.n11 .title { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.n11 .title small { color: var(--muted); font: 11.5px var(--mono); }
+.n11 .title b { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.n11 .sep { width: 1px; height: 28px; background: var(--line); }
+.n11 .bar { position: absolute; left: 0; bottom: -1px; height: 3px; width: 42%; background: var(--g); }
+.n11 .btn { color: var(--g-ink); background: var(--g-soft); }
+
+/* 12 Big minimal */
+.n12 { background: #f6f5f1; min-height: 76px; }
+.n12 .wm { font-size: 22px; }
+.n12 .menu { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+.n12 .menu i { display: grid; gap: 5px; } .n12 .menu i b { display: block; width: 22px; height: 2px; background: var(--ink); }
+
+/* 13 Segmented */
+.n13 { background: #fff; border-bottom: 1px solid var(--line); }
+.seg { display: flex; gap: 2px; margin-inline: auto; padding: 4px; background: #eff1ee; border-radius: 12px; }
+.seg a { padding: 7px 14px; border-radius: 9px; color: #444c52; white-space: nowrap; }
+.seg a.on { background: #fff; color: var(--ink); font-weight: 600; box-shadow: 0 1px 3px rgb(0 0 0 / 12%); }
+
+/* 14 Signal chip */
+.n14 { background: var(--dark); color: #c9d1d6; }
+.n14 .wm { color: #fff; } .n14 .wm b { color: var(--g-hi); }
+.n14 .signal { display: inline-flex; align-items: center; gap: 8px; padding: 5px 10px 5px 6px; border: 1px solid var(--dark-line); border-radius: 999px; font-size: 12.5px; }
+.n14 .signal b { padding: 2px 7px; color: var(--dark); background: var(--g-hi); border-radius: 999px; font: 700 11px var(--mono); }
+.n14 .links a:hover { color: #fff; }
+.n14 .btn { background: var(--g-hi); color: var(--dark); }
+
+/* 15 Search-first */
+.n15 { background: #fff; min-height: 70px; gap: 16px; }
+.n15 .big { flex: 1; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 16px; color: var(--muted); background: #f3f4f1; border-radius: 12px; }
+.n15row { display: flex; gap: 8px; align-items: center; padding: 0 clamp(14px, 3cqi, 28px) 12px; background: #fff; border-bottom: 1px solid var(--line); overflow-x: auto; font-size: 13px; }
+.n15row span { color: var(--muted); font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; margin-right: 4px; }
+.n15row a { padding: 4px 10px; border: 1px solid var(--line-2); border-radius: 999px; white-space: nowrap; }
+
+/* 16 Brand green */
+.n16 { background: var(--g); color: #e7f6ee; }
+.n16 .wm, .n16 .wm b { color: #fff; }
+.n16 .links a.on, .n16 .links a:hover { background: rgb(255 255 255 / 14%); color: #fff; }
+.n16 .btn { background: #fff; color: var(--g-ink); }
+
+/* 17 Floating card */
+.n17wrap { padding: 16px clamp(12px, 3cqi, 28px) 0; background: linear-gradient(#e7ece6, #f6f5f1); }
+.n17 { background: #fff; border-radius: 14px; box-shadow: 0 1px 0 rgb(0 0 0 / 4%), 0 12px 28px -18px rgb(0 0 0 / 35%); }
+.n17 .links a.on { color: var(--g-ink); font-weight: 600; }
+.n17 .btn { background: var(--ink); color: #fff; }
+
+/* 18 Breadcrumb */
+.n18 { background: #fff; border-bottom: 1px solid var(--line); gap: 10px; }
+.n18 .slash { color: var(--line-2); font-size: 20px; }
+.n18 .pick { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px; font-weight: 500; white-space: nowrap; }
+.n18 .pick:hover { background: #f1f3f0; }
+.n18 .pick .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--g); }
+.n18 .ico { border: 1px solid var(--line); }
+
+/* 19 Ticker */
+.n19tick { display: flex; align-items: center; gap: 12px; min-height: 36px; padding: 0 clamp(14px, 3cqi, 28px); color: #fff; background: var(--violet); font-size: 13px; overflow: hidden; white-space: nowrap; }
+.n19tick b { padding: 2px 8px; background: rgb(255 255 255 / 18%); border-radius: 999px; font: 600 11px var(--mono); }
+.n19 { background: #fff; border-bottom: 1px solid var(--line); }
+.n19 .btn { background: var(--violet); color: #fff; }
+
+/* 20 Scrolled compact */
+.n20 { background: rgb(255 255 255 / 92%); border-bottom: 1px solid var(--line); min-height: 52px; position: relative; }
+.n20 .logo svg { width: 26px; height: 26px; }
+.n20 .t { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600; min-width: 0; }
+.n20 .sec { color: var(--muted); font: 12px var(--mono); white-space: nowrap; }
+.n20 .bar { position: absolute; left: 0; bottom: -1px; height: 2px; width: 58%; background: var(--g); }
+.n20 .btn { height: 32px; color: var(--g-ink); background: var(--g-soft); }
+
+.label-sm { display: inline-block; margin: 14px 0 0; color: var(--muted); font: 12px var(--mono); }
+@media (max-width: 860px) { .cx-h { grid-template-columns: minmax(0, 1fr); gap: 8px; } .num { font-size: 22px; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- A · Hub: a d-pad drawn as a node network -->
+    <symbol id="mk-hub" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="9" fill="#0f7a52"/>
+      <path d="M16 9v14M9 16h14" stroke="#bff3d8" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="16" cy="16" r="3.2" fill="#fff"/>
+      <circle cx="16" cy="8" r="2.2" fill="#fff"/><circle cx="24" cy="16" r="2.2" fill="#fff"/>
+      <circle cx="16" cy="24" r="2.2" fill="#fff"/><circle cx="8" cy="16" r="2.2" fill="#fff"/>
+    </symbol>
+    <!-- B · Pixel Spark: an AI spark built from game pixels -->
+    <symbol id="mk-spark" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="9" fill="#121518"/>
+      <g fill="#3ddc97">
+        <rect x="14" y="5" width="4" height="4"/><rect x="14" y="9" width="4" height="4"/>
+        <rect x="5" y="14" width="4" height="4"/><rect x="9" y="14" width="4" height="4"/>
+        <rect x="19" y="14" width="4" height="4"/><rect x="23" y="14" width="4" height="4"/>
+        <rect x="14" y="19" width="4" height="4"/><rect x="14" y="23" width="4" height="4"/>
+      </g>
+      <rect x="13" y="13" width="6" height="6" fill="#fff"/>
+    </symbol>
+    <!-- C · Controller Loop: a gamepad silhouette with a neural node for a button -->
+    <symbol id="mk-pad" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="9" fill="#f2a93b"/>
+      <path d="M10.5 11h11c3 0 4.9 2.4 5.4 5.6l.8 4.6c.3 1.9-1.9 3.1-3.3 1.7l-2.6-2.6h-11.6l-2.6 2.6c-1.4 1.4-3.6.2-3.3-1.7l.8-4.6C5.6 13.4 7.5 11 10.5 11z" fill="#121518"/>
+      <path d="M10 14.2v4M8 16.2h4" stroke="#f2a93b" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="21" cy="15" r="1.5" fill="#3ddc97"/><circle cx="23.6" cy="17.6" r="1.5" fill="#fff"/>
+      <path d="M21 15l2.6 2.6" stroke="#fff" stroke-width="1"/>
+    </symbol>
+    <!-- D · Bracket G: a G drawn as an open bracket with a cursor dot -->
+    <symbol id="mk-g" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="9" fill="#fff" stroke="#121518" stroke-width="2"/>
+      <path d="M21.5 11.2A7 7 0 1 0 22.4 19h-5.4" fill="none" stroke="#121518" stroke-width="3" stroke-linecap="round"/>
+      <rect x="20.5" y="17.5" width="3" height="3" rx=".5" fill="#0f7a52"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></g></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<main class="wrap">
+  <header class="intro">
+    <p class="kick">GameDev AI Hub · navbar redesign</p>
+    <h1>Four logo marks and twenty navbars, beyond the terminal look</h1>
+    <p>Each navbar sits on top of a slice of your article so you can judge it in context. Every one has a mobile state: narrow your window and the links collapse into a menu button. Tell me the numbers you like and I'll build the winner into your theme.</p>
+  </header>
+
+  <section class="marks" aria-label="Logo marks">
+    <article class="mark">
+      <div class="show"><svg><use href="#mk-hub"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></div>
+      <h3>A · Hub</h3>
+      <p>A d-pad drawn as a node network: games and AI in one shape, and the "hub" in your name. Reads clearly at 16px.</p>
+      <div class="chips"><i style="background:#0f7a52"></i><i style="background:#bff3d8"></i><i style="background:#121518"></i></div>
+    </article>
+    <article class="mark">
+      <div class="show"><svg><use href="#mk-spark"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></div>
+      <h3>B · Pixel Spark</h3>
+      <p>The AI "spark" symbol built from game pixels. Modern with a retro wink, and it keeps a trace of your current look.</p>
+      <div class="chips"><i style="background:#121518"></i><i style="background:#3ddc97"></i><i style="background:#fff"></i></div>
+    </article>
+    <article class="mark">
+      <div class="show"><svg><use href="#mk-pad"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></div>
+      <h3>C · Controller Loop</h3>
+      <p>A gamepad silhouette whose face buttons form a tiny neural link. The warmest and most playful of the four.</p>
+      <div class="chips"><i style="background:#f2a93b"></i><i style="background:#121518"></i><i style="background:#3ddc97"></i></div>
+    </article>
+    <article class="mark">
+      <div class="show"><svg><use href="#mk-g"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></div>
+      <h3>D · Bracket G</h3>
+      <p>A "G" drawn like a code bracket, with a green cursor block. The most editorial and serious option; strong for a media brand.</p>
+      <div class="chips"><i style="background:#fff"></i><i style="background:#121518"></i><i style="background:#0f7a52"></i></div>
+    </article>
+  </section>
+
+  <!-- 01 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">01</p><div><h2>Clean Editorial</h2><p>White bar, hairline border, links in the middle and a search field with a keyboard shortcut. The calm default that major tech publications use.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Trust and clarity; search always in sight</dd><dt>Logo</dt><dd>A · Hub</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n1"><a class="logo"><svg><use href="#mk-hub"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links"><a>AI Art</a><a class="on">AI Tools</a><a>Tools for Indie Devs</a><a>Code Assistants</a></div>
+        <a class="search hide-sm"><svg width="16" height="16"><use href="#i-search"/></svg>Search tools<span class="kbd">⌘K</span></a>
+        <a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">02</p><div><h2>Floating Pill</h2><p>A rounded capsule that floats above the page with a soft shadow. The active section becomes a dark pill; the call to action is a green pill on the right.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Feels like a modern app; the newsletter button is always one tap away</dd><dt>Logo</dt><dd>A · Hub</dd></dl></div>
+    <div class="frame">
+      <div class="n2wrap"><nav class="nv n2"><a class="logo"><svg><use href="#mk-hub"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links push"><a>AI Art</a><a class="on">AI Tools</a><a>Indie Devs</a><a>Code</a></div>
+        <a class="btn hide-sm">Get the weekly drop</a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav></div>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">03</p><div><h2>Graphite Pro</h2><p>A near-black bar with quiet grey links that light up on hover, plus a white primary button. The polished dark look of developer tools like Linear or Vercel.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Instant credibility with developers; keeps your dark heritage without looking retro</dd><dt>Logo</dt><dd>B · Pixel Spark</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n3"><a class="logo"><svg><use href="#mk-spark"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links"><a>AI Art</a><a class="on">AI Tools</a><a>Tools for Indie Devs</a><a>Code Assistants</a></div>
+        <a class="btn ghost push hide-sm"><svg><use href="#i-search"/></svg>Search</a><a class="btn hide-sm">Subscribe</a>
+        <a class="ico burger push" style="color:#fff"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">04</p><div><h2>Command Bar</h2><p>The search field is the centrepiece: "Find a tool for sprites, voice, NPCs…". Menu links move into one button. For a site that is really a tool directory.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>People search, find, then keep browsing; more pages per visit</dd><dt>Logo</dt><dd>D · Bracket G</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n4"><a class="logo"><svg><use href="#mk-g"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <a class="cmd hide-sm"><svg width="16" height="16"><use href="#i-search"/></svg>Find a tool for sprites, voice, NPCs…<span class="kbd">⌘K</span></a>
+        <a class="btn hide-sm" style="border:1px solid var(--line)">Browse<svg><use href="#i-down"/></svg></a>
+        <a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">05</p><div><h2>Two-Tier Media</h2><p>A slim dark strip on top for "New this week" and social links; below it the main bar, with bold section names and a green underline on the active one. A publisher's layout.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>The top strip advertises fresh content on every page</dd><dt>Logo</dt><dd>D · Bracket G</dd></dl></div>
+    <div class="frame">
+      <div class="n5top"><span><b>New this week:</b> 6 tools tested for pixel art</span><span class="push hide-sm"><a>Newsletter</a><a>YouTube</a><a>About</a></span></div>
+      <nav class="nv n5"><a class="logo"><svg><use href="#mk-g"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links push"><a>AI Art</a><a class="on">AI Tools</a><a>Indie Devs</a><a>Code Assistants</a></div>
+        <a class="ico hide-sm"><svg><use href="#i-search"/></svg></a><a class="btn hide-sm">Subscribe</a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">06</p><div><h2>Directory Mega Menu</h2><p>"AI Tools" opens a wide panel: categories with one-line descriptions, plus a featured guide. Shown open here. Turns the navbar into a map of the whole site.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Visitors see how much you cover; strong for SEO and internal clicks</dd><dt>Logo</dt><dd>A · Hub</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n6"><a class="logo"><svg><use href="#mk-hub"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links"><a>AI Art</a><a class="on">AI Tools <svg width="12" height="12" style="vertical-align:-1px"><use href="#i-down"/></svg></a><a>Indie Devs</a><a>Code Assistants</a></div>
+        <a class="ico push hide-sm"><svg><use href="#i-search"/></svg></a><a class="btn hide-sm">Tool finder</a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="mega">
+        <div><h5>Create</h5><a>Sprites &amp; 2D art<span>Pixel art, tilesets, UI</span></a><a>3D models<span>Props, characters, retopology</span></a><a>Textures<span>PBR, tileable materials</span></a></div>
+        <div><h5>Build</h5><a>Code assistants<span>Unity, Godot, Unreal</span></a><a>NPC behaviour<span>Dialogue, agents</span></a><a>Level design<span>Blockout, layout</span></a></div>
+        <div><h5>Sound</h5><a>Music<span>Adaptive soundtracks</span></a><a>Sound effects<span>SFX generation</span></a><a>Voice<span>Dialogue and barks</span></a></div>
+        <div class="feat"><b>Featured: Claude Code + Unity MCP</b><span style="color:var(--muted);font-size:13px">Connect Claude to the Unity editor in 20 minutes.</span></div>
+      </div>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">07</p><div><h2>Centred Masthead</h2><p>Logo in the middle with a tagline under it, sections on the left, search and subscribe on the right. A magazine masthead.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Feels like a publication worth returning to; brand gets top billing</dd><dt>Logo</dt><dd>C · Controller Loop</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n7"><div class="links l"><a>AI Art</a><a>AI Tools</a><a>Indie Devs</a></div>
+        <a class="logo"><svg><use href="#mk-pad"/></svg><span class="wm">GameDev <b>AI</b> Hub</span><small>Build smarter games with AI</small></a>
+        <div class="r"><a class="ico hide-sm"><svg><use href="#i-search"/></svg></a><a class="btn hide-sm" style="background:var(--ink);color:#fff">Subscribe</a><a class="ico burger"><svg><use href="#i-menu"/></svg></a></div></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">08</p><div><h2>Category Tabs</h2><p>A compact top bar, and underneath it a scrollable row of tabs for every category, each with a count of new posts. Works like YouTube's topic chips.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>"3 new" badges pull people into the next category</dd><dt>Logo</dt><dd>A · Hub</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n8"><a class="logo"><svg><use href="#mk-hub"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <a class="ico push"><svg><use href="#i-search"/></svg></a><a class="btn hide-sm">Newsletter</a></nav>
+      <div class="n8tabs"><a>All</a><a class="on">AI Tools<small>3 new</small></a><a>AI Art</a><a>3D</a><a>Audio</a><a>Code Assistants<small>1 new</small></a><a>NPCs</a><a>Tutorials</a></div>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">09</p><div><h2>Pixel Edge</h2><p>A white bar finished with a two-row pixel border, and a chunky button with a hard pixel shadow. Game-dev personality in a single detail, while everything else stays clean.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Memorable at a glance; instantly says "games"</dd><dt>Logo</dt><dd>B · Pixel Spark</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n9"><a class="logo"><svg><use href="#mk-spark"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links push"><a>AI Art</a><a class="on">AI Tools</a><a>Indie Devs</a><a>Code</a></div>
+        <a class="btn hide-sm">Start here</a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page" style="padding-top:34px"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">10</p><div><h2>Game HUD</h2><p>Reading as progression: a small HUD shows the reader's level and an XP bar that fills as they read guides on your site. Stored in the browser; no account needed.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>The strongest pull to come back: "two guides to level 5"</dd><dt>Logo</dt><dd>C · Controller Loop</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n10"><a class="logo"><svg><use href="#mk-pad"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links"><a>AI Art</a><a class="on">AI Tools</a><a>Indie Devs</a><a>Code</a></div>
+        <div class="hud push hide-sm"><span class="lv">LV 4</span><span class="xp"><i></i></span><span>640/1000 XP</span></div>
+        <a class="ico hide-sm"><svg><use href="#i-search"/></svg></a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">11</p><div><h2>Reading Mode</h2><p>Once you scroll into an article, the navbar swaps to the article's title and current section, with a thin green progress line along the bottom and a "Next guide" button.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>"Next guide" at the moment someone finishes; fewer exits</dd><dt>Logo</dt><dd>A · Hub (icon only)</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n11"><a class="logo"><svg><use href="#mk-hub"/></svg></a><span class="sep"></span>
+        <div class="title"><small>Section 3 of 12 · Mainstream Art Generators</small><b>Best AI Tools for Indie Game Developers</b></div>
+        <a class="btn push hide-sm">Next guide →</a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a><i class="bar"></i></nav>
+      <div class="page"><h4>Mainstream Art Generators</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">12</p><div><h2>Studio Minimal</h2><p>Just a large logo and a "Menu" button that opens a full-screen menu. No colour, no bar; the navbar blends into the page. Confident and design-led.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Zero clutter; all attention on the article</dd><dt>Logo</dt><dd>D · Bracket G</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n12"><a class="logo"><svg style="width:36px;height:36px"><use href="#mk-g"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <a class="menu push">Menu <i><b></b><b></b></i></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">13</p><div><h2>Segmented Switch</h2><p>The sections sit in one segmented control, like an iOS switch, with the active one raised in white. Tidy and very tactile.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Satisfying to click; makes jumping between sections feel effortless</dd><dt>Logo</dt><dd>A · Hub</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n13"><a class="logo"><svg><use href="#mk-hub"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="seg links"><a>AI Art</a><a class="on">AI Tools</a><a>Indie Devs</a><a>Code</a></div>
+        <a class="ico hide-sm"><svg><use href="#i-search"/></svg></a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">14</p><div><h2>Signal Chip</h2><p>The dark bar with a live chip next to the logo: "12 tools updated this week". Mint green used sparingly, only for the chip and the button.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Shows the site is alive and current, a reason to check back weekly</dd><dt>Logo</dt><dd>B · Pixel Spark</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n14"><a class="logo"><svg><use href="#mk-spark"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <a class="signal hide-sm"><b>12</b>tools updated this week</a>
+        <div class="links push"><a>AI Art</a><a>AI Tools</a><a>Code</a></div>
+        <a class="btn hide-sm">Subscribe</a><a class="ico burger push" style="color:#fff"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 15 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">15</p><div><h2>Search + Trending</h2><p>A wide search field in the bar, and a row of trending topic chips under it: "Unity MCP", "Pixel art", "Voice cloning". Readers see what's hot before they scroll.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Curiosity; trending chips are among the most clicked elements on content sites</dd><dt>Logo</dt><dd>D · Bracket G</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n15"><a class="logo"><svg><use href="#mk-g"/></svg><span class="wm hide-sm">GameDev <b>AI</b> Hub</span></a>
+        <a class="big"><svg width="18" height="18"><use href="#i-search"/></svg>Search 180+ tested AI tools</a>
+        <a class="btn hide-sm" style="background:var(--ink);color:#fff">Subscribe</a></nav>
+      <div class="n15row"><span>Trending</span><a>Unity MCP</a><a>Pixel art</a><a>Voice cloning</a><a>Godot + LLM</a><a>Text-to-3D</a><a>Free tools</a></div>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 16 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">16</p><div><h2>Brand Colour Bar</h2><p>The whole bar in your brand green, with white type and a white button. Bold and unmistakable, the way Spotify and Duolingo own their colour.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Recognition; people remember "the green games-AI site"</dd><dt>Logo</dt><dd>A · Hub (white version)</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n16"><a class="logo"><svg><use href="#mk-hub"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links push"><a>AI Art</a><a class="on">AI Tools</a><a>Indie Devs</a><a>Code</a></div>
+        <a class="ico hide-sm" style="color:#fff"><svg><use href="#i-search"/></svg></a><a class="btn hide-sm">Subscribe</a><a class="ico burger push" style="color:#fff"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 17 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">17</p><div><h2>Floating Card</h2><p>A white card with rounded corners that hovers inside the page margins over a soft tinted background. Friendly and premium, and it frames the article nicely.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Feels crafted and approachable; good for newcomers to game dev</dd><dt>Logo</dt><dd>C · Controller Loop</dd></dl></div>
+    <div class="frame">
+      <div class="n17wrap"><nav class="nv n17"><a class="logo"><svg><use href="#mk-pad"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links push"><a>AI Art</a><a class="on">AI Tools</a><a>Indie Devs</a><a>Code</a></div>
+        <a class="btn hide-sm">Join 2,400 devs</a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav></div>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 18 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">18</p><div><h2>Path Navigator</h2><p>The navbar shows where you are: logo / section / topic, each a dropdown to switch. Like GitHub or Vercel's top bar; a direct heir of your terminal path.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Readers explore sideways, "what else is in 2D art?"</dd><dt>Logo</dt><dd>D · Bracket G</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n18"><a class="logo"><svg><use href="#mk-g"/></svg></a><span class="slash">/</span>
+        <a class="pick">AI Tools<svg width="14" height="14"><use href="#i-down"/></svg></a><span class="slash hide-sm">/</span>
+        <a class="pick hide-sm"><span class="dot"></span>Art &amp; 3D workflow<svg width="14" height="14"><use href="#i-down"/></svg></a>
+        <a class="ico push"><svg><use href="#i-search"/></svg></a><a class="ico hide-sm"><svg><use href="#i-bell"/></svg></a></nav>
+      <div class="page"><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 19 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">19</p><div><h2>Announcement Ticker</h2><p>A violet strip above a clean bar announces the newest guide or a giveaway; the button repeats the offer. A second brand colour just for news.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>Every visit shows something new; drives clicks to your freshest post</dd><dt>Logo</dt><dd>B · Pixel Spark</dd></dl></div>
+    <div class="frame">
+      <div class="n19tick"><b>NEW</b>Claude Code + Unity MCP: the complete setup guide →</div>
+      <nav class="nv n19"><a class="logo"><svg><use href="#mk-spark"/></svg><span class="wm">GameDev <b>AI</b> Hub</span></a>
+        <div class="links push"><a>AI Art</a><a class="on">AI Tools</a><a>Indie Devs</a><a>Code</a></div>
+        <a class="btn hide-sm">Free starter kit</a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a></nav>
+      <div class="page"><p class="crumb">~/ai-tools-workflow</p><h4>Best AI Tools for Indie Game Developers (2026)</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <!-- 20 -->
+  <section class="cx">
+    <div class="cx-h"><p class="num">20</p><div><h2>Smart Shrink</h2><p>Full navbar at the top of the page; when you scroll it shrinks to a 52px strip with the icon, the article title, a progress line and "Save for later". Pairs with any concept above.</p></div>
+      <dl class="why"><dt>Hooks readers with</dt><dd>More screen for reading; "Save" brings readers back to finish</dd><dt>Logo</dt><dd>A · Hub (icon only)</dd></dl></div>
+    <div class="frame">
+      <nav class="nv n20"><a class="logo"><svg><use href="#mk-hub"/></svg></a>
+        <span class="t">Best AI Tools for Indie Game Developers</span><span class="sec hide-sm">58% · 8 min left</span>
+        <a class="btn push hide-sm">Save for later</a><a class="ico burger push"><svg><use href="#i-menu"/></svg></a><i class="bar"></i></nav>
+      <div class="page"><h4>Voice and Dialogue</h4><div class="sk"><i></i><i></i><i></i></div></div>
+    </div>
+    <p class="label-sm">Shown in its scrolled state.</p>
+  </section>
+</main>
