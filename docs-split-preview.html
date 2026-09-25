@@ -68,7 +68,6 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="post-template-default single single-post postid-42 single-format-standard wp-embed-responsive no-sidebar nav-below-header separate-containers header-aligned-left dropdown-hover featured-image-active">
-
 <nav class="main-navigation has-branding has-menu-bar-items" id="site-navigation" aria-label="Primary">
   <div class="inside-navigation grid-container">
     <div class="navigation-branding"><p class="main-title"><a href="#" rel="home">gamedevaihub</a></p></div>
@@ -92,38 +91,22 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
   </div>
 </nav>
 
-<div class="site grid-container container hfeed" id="page">
-  <div class="site-content" id="content">
-    <div class="content-area" id="primary">
-      <main class="site-main" id="main">
-        <article id="post-42" class="post-42 post type-post status-publish format-standard has-post-thumbnail hentry category-tutorials">
-          <div class="inside-article">
-            <header class="entry-header">
-              <nav aria-label="breadcrumbs" class="rank-math-breadcrumb"><p><a href="#">Home</a><span class="separator"> / </span><a href="#">Tutorials</a><span class="separator"> / </span><span class="last">Godot</span></p></nav>
-              <h1 class="entry-title" itemprop="headline">Set Up Local LLM Dialogue for NPCs in Godot 4</h1>
-              <div class="entry-meta">
-                <span class="posted-on"><time class="entry-date published" datetime="2026-09-20">Updated 20 Sep 2026</time></span>
-                <span class="byline">by <span class="author vcard"><a class="url fn n" href="#"><span class="author-name">Alex Moreno</span></a></span></span>
-                <span class="reading-time">18 min read</span>
-              </div>
-            </header>
-            <div class="entry-content" itemprop="text">
-              <p>Run a small language model on the player's machine, stream replies into a dialogue box, and keep latency low enough to feel like conversation. No server, no per-request cost, and it works offline.</p>
-              <ul class="requires">
-                <li>Godot 4.4+</li>
-                <li>8 GB VRAM</li>
-                <li>~2 GB disk</li>
-              </ul>
-              <nav class="toc" aria-label="On this page"><p class="toc-title">On this page</p><ul><li><a href="#overview">Overview</a></li><li><a href="#install-the-model">Install the model</a><ul><li><a href="#pick-a-model-size">Pick a model size</a></li><li><a href="#folder-layout">Folder layout</a></li></ul></li><li><a href="#stream-replies">Stream replies</a></li><li><a href="#cache-and-latency">Cache and latency</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ul></nav>
-              
-              
-              <h2 class="wp-block-heading" id="overview">Overview</h2>
-              <p>The setup has three parts: a quantized model file shipped next to your game, a <code>LocalLLM</code> node that loads it once at startup, and a dialogue script that streams tokens into your UI as they arrive.</p>
-              <p>If you've used <a href="#">Godot's signals</a> before, the streaming part will feel familiar. Each token arrives as a signal and you append it to a label.</p>
-              <h2 class="wp-block-heading" id="install-the-model">Install the model</h2>
-              <p>Download a quantized model and place it in <code>res://models/</code>. Anything around 3–4B parameters runs comfortably on mid-range GPUs.</p>
-              <p class="code-file">npc_dialogue.gd</p>
-              <pre class="wp-block-code"><code>extends Node
+<div class="site grid-container container hfeed" id="page"><div class="site-content" id="content"><div class="content-area" id="primary"><main class="site-main" id="main">
+<article id="post-42" class="post-42 post type-post status-publish format-standard hentry category-godot gd-has-toc"><div class="inside-article"><header class="entry-header"><p class="gd-crumb">~/<a href="#category-tutorials">tutorials</a>/<a href="#category-godot">godot</a></p><h1 class="entry-title" itemprop="headline">Set Up Local LLM Dialogue for NPCs in Godot 4</h1><p class="gd-dek">Stream replies from a local model into your dialogue UI, with no server, no per-request cost and no internet connection.</p><div class="entry-meta"><span class="byline"><img alt="" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%231f2a24%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2240%22%20font-family%3D%22monospace%22%20font-size%3D%2222%22%20font-weight%3D%22600%22%20fill%3D%22%23c8f7a8%22%20text-anchor%3D%22middle%22%3EAM%3C%2Ftext%3E%3C%2Fsvg%3E" class="avatar avatar-32 photo gd-avatar" height="32" width="32">by <span class="author vcard"><a class="url fn n" href="#" rel="author"><span class="author-name">Alex Moreno</span></a></span></span> <span class="posted-on"><time class="entry-date updated" datetime="2026-09-20T09:00:00+00:00">Updated 20 Sep 2026</time></span> <span class="reading-time">2 min read</span></div></header><nav class="gd-toc" aria-label="On this page"><details class="gd-toc__box" open><summary class="gd-toc__title">On this page</summary><ul class="gd-toc__list"><li><a href="#overview">Overview</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#install-the-model">Install the model</a><ul><li><a href="#model-size">Pick a model size</a></li><li><a href="#folder-layout">Folder layout</a></li></ul></li><li><a href="#stream-replies">Stream replies</a></li><li><a href="#cache-and-latency">Cache and latency</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ul></details></nav><div class="entry-content" itemprop="text"><!-- wp:paragraph -->
+<p>Run a small language model on the player's machine, stream replies into a dialogue box, and keep latency low enough to feel like conversation. No server, no per-request cost, and it works offline.</p>
+<!-- /wp:paragraph -->
+<ul class="wp-block-list requires"><li>Godot 4.4+</li><li>8 GB VRAM</li><li>~2 GB disk</li></ul>
+<div class="wp-block-group"><div class="wp-block-group__inner-container">
+<h2 id="overview" class="wp-block-heading">Overview<a class="gd-anchor" href="#overview" aria-label="Link to “Overview”">#</a></h2>
+<p>The setup has three parts: a quantized model file shipped next to your game, a <code>LocalLLM</code> node that loads it once at startup, and a dialogue script that streams tokens into your UI as they arrive.</p>
+<p>If you've used <a href="#">Godot's signals</a> before, the streaming part will feel familiar. Each token arrives as a signal and you append it to a label.</p>
+</div></div>
+<div class="gb-container gb-container-a1b2c3"><h2 id="requirements" class="gb-headline gb-headline-9f8e7d gb-headline-text">Requirements<a class="gd-anchor" href="#requirements" aria-label="Link to “Requirements”">#</a></h2>
+<p>You need Godot 4.4 or newer, a GPU with at least 8 GB of VRAM for the 7B model, and about 2 GB of disk space per model.</p></div>
+<h2 id="install-the-model" class="wp-block-heading">Install the model<a class="gd-anchor" href="#install-the-model" aria-label="Link to “Install the model”">#</a></h2>
+<p>Download a quantized model and place it in <code>res://models/</code>. Anything around 3–4B parameters runs comfortably on mid-range GPUs.</p>
+<p class="code-file">npc_dialogue.gd</p>
+<pre class="wp-block-code"><code>extends Node
 
 @onready var llm := $LocalLLM
 
@@ -131,45 +114,34 @@ func ask_npc(prompt: String) -> String:
 	# Keep replies short so they fit a dialogue box
 	var reply := await llm.generate(prompt, {"max_tokens": 80})
 	return reply.strip_edges()</code></pre>
-              <p class="note">Ship the model as a separate download. Bundling it inflates your export and slows store review.</p>
-              <h3 class="wp-block-heading" id="pick-a-model-size">Pick a model size</h3>
-              <p>Bigger isn't better here. Players notice latency long before they notice a slightly smarter NPC.</p>
-              <figure class="wp-block-table"><table>
-                <thead><tr><th>Model size</th><th>VRAM</th><th>First token</th><th>Good for</th></tr></thead>
-                <tbody>
-                  <tr><td>1B</td><td>2 GB</td><td>~80 ms</td><td>Barks, short replies</td></tr>
-                  <tr><td>3B</td><td>4 GB</td><td>~150 ms</td><td>Most NPC dialogue</td></tr>
-                  <tr><td>7B</td><td>8 GB</td><td>~320 ms</td><td>Companions, quest givers</td></tr>
-                </tbody>
-              </table><figcaption class="wp-element-caption">Sample figures for layout preview.</figcaption></figure>
-              <h3 class="wp-block-heading" id="folder-layout">Folder layout</h3>
-              <ul>
-                <li>Keep models in <code>res://models/</code> and exclude them from the export filter.</li>
-                <li>Put prompt templates in <code>res://dialogue/prompts/</code> so writers can edit them.</li>
-                <li>Press <kbd>Ctrl</kbd> + <kbd>S</kbd> after editing a template; the node reloads it on save.</li>
-              </ul>
-              <h2 class="wp-block-heading" id="stream-replies">Stream replies</h2>
-              <p>Waiting for the full reply feels slow. Streaming each token as it arrives makes even a 7B model feel responsive.</p>
-              <blockquote class="wp-block-quote"><p>Players forgave a two-second reply once the text started appearing instantly. Perceived latency is what matters.</p><cite>Playtest notes, build 0.4</cite></blockquote>
-              <p class="note warning">Never block the main thread while generating. Use <code>await</code> or a worker thread, or the game will stutter.</p>
-              <h2 class="wp-block-heading" id="cache-and-latency">Cache and latency</h2>
-              <p>Cache the system prompt once per NPC. Rebuilding it for every line doubles the time to first token.</p>
-              <p class="note success">Warm the model up with a one-token request during the loading screen. The first real reply will be much faster.</p>
-              <h2 class="wp-block-heading" id="troubleshooting">Troubleshooting</h2>
-              <p>If replies cut off mid-sentence, raise <code>max_tokens</code> or ask the model for shorter answers in the system prompt.</p>
-              <div class="wp-block-buttons"><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#">Download the sample project</a></div><div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="#">View on GitHub</a></div></div>
-            </div>
-            <footer class="entry-meta" aria-label="Entry meta">
+<p class="note">Ship the model as a separate download. Bundling it inflates your export and slows store review.</p>
+<div class="wp-block-group"><div class="wp-block-group__inner-container">
+<h3 class="wp-block-heading" id="model-size">Pick a model size<a class="gd-anchor" href="#model-size" aria-label="Link to “Pick a model size”">#</a></h3>
+<p>Bigger isn't better here. Players notice latency long before they notice a slightly smarter NPC.</p>
+<figure class="wp-block-table"><table><thead><tr><th>Model size</th><th>VRAM</th><th>First token</th><th>Good for</th></tr></thead><tbody><tr><td>1B</td><td>2 GB</td><td>~80 ms</td><td>Barks, short replies</td></tr><tr><td>3B</td><td>4 GB</td><td>~150 ms</td><td>Most NPC dialogue</td></tr><tr><td>7B</td><td>8 GB</td><td>~320 ms</td><td>Companions, quest givers</td></tr></tbody></table><figcaption class="wp-element-caption">Sample figures for layout preview.</figcaption></figure>
+</div></div>
+<h3 id="folder-layout" class="wp-block-heading">Folder layout<a class="gd-anchor" href="#folder-layout" aria-label="Link to “Folder layout”">#</a></h3>
+<ul class="wp-block-list"><li>Keep models in <code>res://models/</code> and exclude them from the export filter.</li><li>Put prompt templates in <code>res://dialogue/prompts/</code> so writers can edit them.</li><li>Press <kbd>Ctrl</kbd> + <kbd>S</kbd> after editing a template; the node reloads it on save.</li></ul>
+<h2 id="stream-replies" class="wp-block-heading">Stream replies<a class="gd-anchor" href="#stream-replies" aria-label="Link to “Stream replies”">#</a></h2>
+<p>Waiting for the full reply feels slow. Streaming each token as it arrives makes even a 7B model feel responsive.</p>
+<pre class="wp-block-code"><code>llm.token_received.connect(func(token): label.text += token)</code></pre>
+<blockquote class="wp-block-quote"><p>Players forgave a two-second reply once the text started appearing instantly. Perceived latency is what matters.</p><cite>Playtest notes, build 0.4</cite></blockquote>
+<p class="note warning">Never block the main thread while generating. Use <code>await</code> or a worker thread, or the game will stutter.</p>
+<h2 id="cache-and-latency" class="wp-block-heading">Cache and latency<a class="gd-anchor" href="#cache-and-latency" aria-label="Link to “Cache and latency”">#</a></h2>
+<p>Cache the system prompt once per NPC. Rebuilding it for every line doubles the time to first token.</p>
+<p class="note success">Warm the model up with a one-token request during the loading screen. The first real reply will be much faster.</p>
+<h2 id="troubleshooting" class="wp-block-heading">Troubleshooting<a class="gd-anchor" href="#troubleshooting" aria-label="Link to “Troubleshooting”">#</a></h2>
+<p>If replies cut off mid-sentence, raise <code>max_tokens</code> or ask the model for shorter answers in the system prompt.</p>
+<div class="wp-block-buttons"><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#">Download the sample project</a></div><div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="#">View on GitHub</a></div></div>
+</div><footer class="entry-meta" aria-label="Entry meta">
               <span class="cat-links"><span class="gp-icon icon-categories"></span><span class="screen-reader-text">Categories </span><a href="#" rel="category tag">Godot</a>, <a href="#" rel="category tag">Tutorials</a></span>
               <span class="tags-links"><span class="gp-icon icon-tags"></span><span class="screen-reader-text">Tags </span><a href="#" rel="tag">llm</a>, <a href="#" rel="tag">npc</a>, <a href="#" rel="tag">dialogue</a></span>
               <nav id="nav-below" class="post-navigation" aria-label="Posts">
                 <div class="nav-previous"><span class="gp-icon icon-arrow-left"></span><span class="prev"><a href="#" rel="prev">Blend AI Mocap With Hand-Keyed Animation</a></span></div>
                 <div class="nav-next"><span class="gp-icon icon-arrow-right"></span><span class="next"><a href="#" rel="next">We Ran 400 Prompts Through 5 Texture Generators</a></span></div>
               </nav>
-            </footer>
-          </div>
-        </article>
-        <div class="comments-area" id="comments">
+            </footer></div></article>
+<div class="comments-area" id="comments">
           <div id="respond" class="comment-respond">
             <h3 id="reply-title" class="comment-reply-title">Leave a Comment</h3>
             <form class="comment-form" onsubmit="return false">
@@ -178,41 +150,67 @@ func ask_npc(prompt: String) -> String:
             </form>
           </div>
         </div>
-      </main>
-    </div>
-  </div>
-</div>
-
-<div class="site-footer">
-  <footer class="site-info" aria-label="Site">
-    <div class="inside-site-info grid-container"><div class="copyright-bar">© 2026 GameDev AI Hub</div></div>
-  </footer>
-</div>
-
+      </main></div></div></div>
+<div class="site-footer"><footer class="site-info" aria-label="Site"><div class="inside-site-info grid-container"><div class="copyright-bar">© 2026 GameDev AI Hub</div></div></footer></div>
 <script>
 (function () {
-	var links = Array.prototype.slice.call(document.querySelectorAll('.entry-content > .toc a[href^="#"]'));
-	var items = links.map(function (a) {
-		return { link: a, target: document.getElementById(decodeURIComponent(a.hash.slice(1))) };
-	}).filter(function (item) { return item.target; });
-	if (!items.length) return;
+	var desktop = window.matchMedia('(min-width: 1024px)');
 
-	var ticking = false;
-	function update() {
-		var current = items[0];
-		items.forEach(function (item) {
-			if (item.target.getBoundingClientRect().top <= 140) current = item;
+	// TOC: an open rail on desktop, a collapsed "On this page" bar below that.
+	var box = document.querySelector('.gd-toc__box');
+	if (box) {
+		box.open = desktop.matches;
+		box.addEventListener('toggle', function () {
+			if (desktop.matches && !box.open) box.open = true;
 		});
-		items.forEach(function (item) {
-			if (item === current) item.link.setAttribute('aria-current', 'true');
-			else item.link.removeAttribute('aria-current');
-		});
-		ticking = false;
+		desktop.addEventListener('change', function (e) { box.open = e.matches; });
 	}
-	window.addEventListener('scroll', function () {
-		if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
-	}, { passive: true });
-	update();
+
+	// Highlight the section being read.
+	var items = Array.prototype.slice.call(document.querySelectorAll('.gd-toc a[href^="#"]'))
+		.map(function (a) { return { link: a, target: document.getElementById(decodeURIComponent(a.hash.slice(1))) }; })
+		.filter(function (item) { return item.target; });
+	if (items.length) {
+		var ticking = false;
+		var update = function () {
+			var offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gd-sticky-top')) || 88;
+			var current = items[0];
+			items.forEach(function (item) {
+				if (item.target.getBoundingClientRect().top <= offset + 40) current = item;
+			});
+			items.forEach(function (item) {
+				if (item === current) item.link.setAttribute('aria-current', 'true');
+				else item.link.removeAttribute('aria-current');
+			});
+			ticking = false;
+		};
+		window.addEventListener('scroll', function () {
+			if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+		}, { passive: true });
+		update();
+	}
+
+	// Copy buttons on code blocks.
+	if (!navigator.clipboard) return;
+	document.querySelectorAll('.entry-content pre').forEach(function (pre) {
+		var head = pre.previousElementSibling;
+		if (!head || !head.classList.contains('code-file')) {
+			head = document.createElement('div');
+			head.className = 'code-file';
+			pre.parentNode.insertBefore(head, pre);
+		}
+		var button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'gd-copy';
+		button.textContent = 'Copy';
+		button.addEventListener('click', function () {
+			navigator.clipboard.writeText(pre.innerText).then(function () {
+				button.textContent = 'Copied';
+				setTimeout(function () { button.textContent = 'Copy'; }, 1500);
+			});
+		});
+		head.appendChild(button);
+	});
 })();
 </script>
 <script>

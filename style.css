@@ -72,7 +72,7 @@ Version:      10.0.0
   --gd-article-wide: 1160px;   /* single post with the table-of-contents rail */
   --gd-pad-x: clamp(16px, 3vw, 24px);
   --gd-toc: 220px;
-  --gd-toc-gap: 56px;
+  --gd-toc-gap: clamp(32px, 4vw, 56px);
   --gd-sticky-top: 88px;       /* clears a sticky navbar; use 24px if yours scrolls away */
 }
 .admin-bar {
@@ -337,6 +337,7 @@ body:not(.wp-admin).one-container .container {
 /* ==========================================================================
    04  SINGLE POST: FRAME AND HEADER
    Posts sit directly on the page, like documentation, not inside a card.
+   The path, subtitle, avatar and reading time come from functions.php.
    ========================================================================== */
 .single-post .inside-article {
   max-width: var(--gd-article);
@@ -348,6 +349,9 @@ body:not(.wp-admin).one-container .container {
   border: 0;
   box-shadow: none;
 }
+.single-post .inside-article > .entry-content {
+  margin-top: 0;
+}
 .single-post .featured-image {
   margin-bottom: 28px;
 }
@@ -358,20 +362,23 @@ body:not(.wp-admin).one-container .container {
   border-radius: var(--gd-radius);
 }
 
-/* Breadcrumbs from Rank Math, Yoast or AIOSEO */
-:is(.rank-math-breadcrumb, .yoast-breadcrumbs, #breadcrumbs, .aioseo-breadcrumbs) {
-  margin: 0 0 12px;
+/* ~/tutorials/godot */
+.gd-crumb {
+  margin: 0 0 10px;
   color: var(--gd-muted);
   font-family: var(--gd-mono);
   font-size: 12.5px;
   line-height: 1.5;
 }
-:is(.rank-math-breadcrumb, .yoast-breadcrumbs, #breadcrumbs, .aioseo-breadcrumbs) p {
-  margin: 0;
-}
-:is(.rank-math-breadcrumb, .yoast-breadcrumbs, #breadcrumbs, .aioseo-breadcrumbs) a {
-  color: var(--gd-accent-ink);
+.gd-crumb a {
+  color: var(--gd-muted);
   text-decoration: none;
+}
+.gd-crumb a:last-child {
+  color: var(--gd-accent-ink);
+}
+.gd-crumb a:hover {
+  color: var(--gd-text);
 }
 
 .single-post .entry-header {
@@ -379,33 +386,56 @@ body:not(.wp-admin).one-container .container {
 }
 .single-post .entry-title {
   max-width: 24ch;
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   color: var(--gd-text);
   line-height: 1.1;
   letter-spacing: -.022em;
   overflow-wrap: break-word;
   text-wrap: balance;
 }
+.gd-dek {
+  max-width: 60ch;
+  margin: 0 0 20px;
+  color: var(--gd-muted);
+  font-size: 1.15em;
+  line-height: 1.5;
+}
+
+/* Avatar  Name · Updated 20 Sep 2026 · 18 min read */
 .single-post .entry-header .entry-meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 14px;
+  gap: 6px 12px;
   margin: 0;
-  padding: 12px 0;
   color: var(--gd-muted);
-  border-block: 1px solid var(--gd-line);
-  font-family: var(--gd-mono);
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.5;
 }
 .single-post .entry-header .entry-meta > * + *::before {
   content: "·";
-  margin-right: 14px;
+  margin-right: 12px;
   color: var(--gd-line-strong);
+  font-size: 13.5px;
+}
+.single-post .entry-header .byline {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0; /* hides GeneratePress's "by" */
+}
+.single-post .entry-header .byline > * {
+  font-size: 13.5px;
+}
+.single-post .entry-header .byline img {
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  border-radius: 50%;
 }
 .single-post .entry-header .entry-meta a {
   color: var(--gd-text);
+  font-weight: 600;
   text-decoration: none;
 }
 .single-post .entry-header .entry-meta a:hover {
@@ -414,66 +444,58 @@ body:not(.wp-admin).one-container .container {
 
 
 /* ==========================================================================
-   05  SINGLE POST: DOCS RAIL (TABLE OF CONTENTS)
-   The child theme's functions.php builds this automatically from each
-   post's H2/H3 headings. It also styles the TOC from Rank Math, Yoast,
-   Easy Table of Contents, LuckyWP, Table of Contents Plus, or a List
-   block with the class "toc" (functions.php steps aside if one exists).
-   Mobile and tablet: a boxed "On this page" list where it sits in the post.
-   Desktop, single posts set to "No sidebar": a sticky rail on the left.
+   05  SINGLE POST: TABLE OF CONTENTS
+   functions.php prints <nav class="gd-toc"> right after the post header and
+   adds "gd-has-toc" to the article. Below 1024px it is a collapsible
+   "On this page" bar; from 1024px it is a sticky column on the left.
    ========================================================================== */
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  padding: 14px 16px;
-  color: var(--gd-muted);
+.gd-toc {
+  margin: 0 0 28px;
+}
+.gd-toc__box {
   background: var(--gd-panel);
   border: 1px solid var(--gd-line);
   border-radius: var(--gd-radius);
-  box-shadow: none;
-  font-size: 14px;
-  line-height: 1.45;
-  list-style: none;
 }
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(h2, h3, h4, .toc-title, .ez-toc-title, .toc_title, .lwptoc_title),
-.entry-content > :is(ul, ol).toc::before {
-  display: block;
-  margin: 0 0 10px;
-  padding: 0;
+.gd-toc__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
   color: var(--gd-muted);
   font-family: var(--gd-mono);
   font-size: 11px;
   font-weight: 600;
   line-height: 1.3;
   letter-spacing: .08em;
-  text-align: left;
   text-transform: uppercase;
+  list-style: none;
+  cursor: pointer;
 }
-.entry-content > :is(ul, ol).toc::before {
-  content: "On this page";
+.gd-toc__title::-webkit-details-marker {
+  display: none;
 }
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(.ez-toc-title-container, .lwptoc_header, .lwptoc_i, nav) {
-  display: block;
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  border: 0;
+.gd-toc__title::after {
+  content: "▾";
+  font-size: 13px;
+  transition: transform var(--gd-motion);
 }
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(ul, ol) {
+.gd-toc__box[open] > .gd-toc__title::after {
+  transform: rotate(180deg);
+}
+.gd-toc ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) li {
+.gd-toc__list {
+  padding: 0 16px 14px !important;
+}
+.gd-toc li {
   margin: 0;
   padding: 0;
-  background: none;
 }
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(li, a)::before {
-  content: none;
-}
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) a {
+.gd-toc a {
   display: block;
   padding: 5px 0 5px 14px;
   color: var(--gd-muted);
@@ -483,67 +505,60 @@ body:not(.wp-admin).one-container .container {
   text-decoration: none;
   transition: color var(--gd-motion), border-color var(--gd-motion);
 }
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) li li > a {
+.gd-toc li li > a {
   padding-left: 26px;
   font-size: 13px;
 }
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) li li li > a {
-  padding-left: 38px;
-}
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) a:is(:hover, :focus-visible) {
+.gd-toc a:is(:hover, :focus-visible) {
   color: var(--gd-text);
   border-left-color: var(--gd-line-strong);
 }
-/* Active section, when a plugin or script marks it */
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(a.active, .active > a, a[aria-current]) {
+.gd-toc a[aria-current] {
   color: var(--gd-text);
   font-weight: 600;
   border-left-color: var(--gd-accent);
 }
 
-@media (min-width: 1080px) {
-  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) {
+@media (min-width: 1024px) {
+  .single-post .gd-has-toc > .inside-article {
     display: grid;
     grid-template-columns: var(--gd-toc) minmax(0, 1fr);
     column-gap: var(--gd-toc-gap);
     align-items: start;
     max-width: var(--gd-article-wide);
   }
-  /* The content wrapper steps aside so every block lines up in column two. */
-  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .entry-content {
-    display: contents;
-  }
-  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > *,
-  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .entry-content > * {
+  .single-post .gd-has-toc > .inside-article > * {
     grid-column: 2;
   }
-  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) {
+  .single-post .gd-has-toc > .inside-article > .gd-toc {
     grid-column: 1;
-    grid-row: 1 / span 500;
+    grid-row: 1 / span 20;
     position: sticky;
     top: var(--gd-sticky-top);
     max-height: calc(100vh - var(--gd-sticky-top) - 24px);
     margin: 0;
-    padding: 0 4px 0 0;
     overflow-y: auto;
     overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  .single-post .gd-has-toc .gd-toc__box {
     background: transparent;
     border: 0;
     border-radius: 0;
-    scrollbar-width: thin;
   }
-  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc):first-child + * {
-    margin-top: 0;
+  .single-post .gd-has-toc .gd-toc__title {
+    padding: 0 0 10px;
+    cursor: default;
+    pointer-events: none;
   }
-  /* The rail is always open: hide Easy TOC's collapse toggle. */
-  .single-post.no-sidebar #ez-toc-container .ez-toc-title-toggle {
-    display: none;
+  .single-post .gd-has-toc .gd-toc__title::after {
+    content: none;
   }
-  .single-post.no-sidebar #ez-toc-container nav {
-    display: block !important;
+  .single-post .gd-has-toc .gd-toc__list {
+    padding: 0 4px 0 0 !important;
   }
-  /* Comments line up with the text column, not the full article width. */
-  .single-post.no-sidebar .site-main:has(> article > .inside-article > .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .comments-area {
+  /* Comments line up with the text column. */
+  .single-post .site-main > .gd-has-toc ~ .comments-area {
     max-width: none;
     margin-left: calc(max(0px, (100% - var(--gd-article-wide)) / 2) + var(--gd-pad-x) + var(--gd-toc) + var(--gd-toc-gap));
     margin-right: calc(max(0px, (100% - var(--gd-article-wide)) / 2) + var(--gd-pad-x));
@@ -577,7 +592,7 @@ body:not(.wp-admin).one-container .container {
 .entry-content > :is(p, ul, ol, dl, h2, h3, h4, h5, h6, blockquote) {
   max-width: var(--gd-reading);
 }
-.entry-content > :is(h2, h3, h4, h5, h6) {
+.entry-content :is(h2, h3, h4, h5, h6) {
   color: var(--gd-text);
   line-height: 1.25;
   letter-spacing: -.012em;
@@ -585,6 +600,16 @@ body:not(.wp-admin).one-container .container {
 }
 .entry-content [id] {
   scroll-margin-top: calc(var(--gd-sticky-top) + 8px);
+}
+/* "#" link that functions.php adds after each H2/H3 */
+.entry-content .gd-anchor {
+  margin-left: .35em;
+  color: var(--gd-line-strong);
+  font-weight: 400;
+  text-decoration: none;
+}
+.entry-content .gd-anchor:is(:hover, :focus-visible) {
+  color: var(--gd-accent);
 }
 .entry-content :is(strong, b) {
   color: var(--gd-text);
@@ -619,7 +644,7 @@ body:not(.wp-admin).one-container .container {
    ========================================================================== */
 
 /* Requirements bar. List block + class "requires". */
-.entry-content > :is(ul, ol).requires {
+.entry-content :is(ul, ol).requires {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -629,7 +654,7 @@ body:not(.wp-admin).one-container .container {
   list-style: none;
   border-block: 1px solid var(--gd-line);
 }
-.entry-content > .requires::before {
+.entry-content .requires::before {
   content: "Requires";
   margin-right: 6px;
   color: var(--gd-muted);
@@ -639,7 +664,7 @@ body:not(.wp-admin).one-container .container {
   letter-spacing: .08em;
   text-transform: uppercase;
 }
-.entry-content > .requires li {
+.entry-content .requires li {
   margin: 0;
   padding: 4px 9px;
   color: var(--gd-text);
@@ -677,14 +702,16 @@ body:not(.wp-admin).one-container .container {
   white-space: inherit;
   overflow-wrap: normal;
 }
-/* Filename tab above a code block. Paragraph + class "code-file",
-   placed directly before the Code block. */
-.entry-content > .code-file {
+/* Code block header with the filename and a Copy button. Add a Paragraph
+   with the class "code-file" directly before the Code block to show a
+   filename; functions.php adds the header and Copy button to every block. */
+.entry-content .code-file {
   display: flex;
   align-items: center;
+  gap: 12px;
   max-width: none;
   min-height: 38px;
-  padding: 0 16px;
+  padding: 0 8px 0 16px;
   color: var(--gd-term-muted);
   background: var(--gd-term-bg);
   border: 1px solid var(--gd-term-line);
@@ -693,10 +720,27 @@ body:not(.wp-admin).one-container .container {
   font-size: 12.5px;
   line-height: 1.4;
 }
-.entry-content > .code-file + pre {
+.entry-content .code-file + pre {
   margin-top: 0;
   border-top: 0;
   border-radius: 0 0 var(--gd-radius) var(--gd-radius);
+}
+.entry-content .gd-copy {
+  margin-left: auto;
+  padding: 0 9px;
+  height: 24px;
+  color: var(--gd-term-ink);
+  background: transparent;
+  border: 1px solid #2a3a30;
+  border-radius: 4px;
+  font-family: var(--gd-mono);
+  font-size: 12px;
+  line-height: 22px;
+  cursor: pointer;
+}
+.entry-content .gd-copy:hover {
+  color: var(--gd-term-ink);
+  background: var(--gd-term-hover);
 }
 .entry-content :not(pre) > code {
   padding: .15em .4em;
@@ -720,7 +764,7 @@ body:not(.wp-admin).one-container .container {
 
 /* Callouts. Paragraph or Group + class "note" (adds a label) or
    "key-insight" (no label). Add "warning" or "success" for variants. */
-.entry-content > :is(.note, .key-insight, blockquote.warning, blockquote.success) {
+.entry-content :is(.note, .key-insight, blockquote.warning, blockquote.success) {
   max-width: var(--gd-reading);
   padding: 14px 18px;
   color: var(--gd-text);
@@ -730,13 +774,13 @@ body:not(.wp-admin).one-container .container {
   font-size: .95em;
   font-style: normal;
 }
-.entry-content > :is(.note, .key-insight, blockquote.warning, blockquote.success) :is(p, ul, ol) {
+.entry-content :is(.note, .key-insight, blockquote.warning, blockquote.success) :is(p, ul, ol) {
   margin: 0;
 }
-.entry-content > :is(.note, .key-insight, blockquote.warning, blockquote.success) :is(p, ul, ol) + * {
+.entry-content :is(.note, .key-insight, blockquote.warning, blockquote.success) :is(p, ul, ol) + * {
   margin-top: .6em;
 }
-.entry-content > .note::before {
+.entry-content .note::before {
   content: "Note";
   display: block;
   margin-bottom: 4px;
@@ -748,25 +792,25 @@ body:not(.wp-admin).one-container .container {
   letter-spacing: .08em;
   text-transform: uppercase;
 }
-.entry-content > :is(.note, .key-insight, blockquote).warning {
+.entry-content :is(.note, .key-insight, blockquote).warning {
   background: var(--gd-warn-bg);
   border-color: var(--gd-warn-line);
 }
-.entry-content > .note.warning::before {
+.entry-content .note.warning::before {
   content: "Warning";
   color: var(--gd-warn-ink);
 }
-.entry-content > :is(.note, .key-insight, blockquote).success {
+.entry-content :is(.note, .key-insight, blockquote).success {
   background: var(--gd-accent-soft);
   border-color: #bfdccb;
 }
-.entry-content > .note.success::before {
+.entry-content .note.success::before {
   content: "Tip";
   color: var(--gd-accent-ink);
 }
 
 /* Quotes */
-.entry-content > blockquote:not(.warning, .success) {
+.entry-content blockquote:not(.warning, .success) {
   margin-inline: 0;
   padding: 2px 0 2px 20px;
   color: var(--gd-text);
@@ -777,13 +821,13 @@ body:not(.wp-admin).one-container .container {
   font-style: normal;
   line-height: 1.5;
 }
-.entry-content > blockquote p {
+.entry-content blockquote p {
   margin: 0;
 }
-.entry-content > blockquote p + p {
+.entry-content blockquote p + p {
   margin-top: .6em;
 }
-.entry-content > blockquote cite {
+.entry-content blockquote cite {
   display: block;
   margin-top: 10px;
   color: var(--gd-muted);
@@ -1372,15 +1416,14 @@ body:not(.wp-admin).one-container .container {
   .comments-area,
   .post-navigation,
   .site-footer,
-  .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) {
+  .gd-toc,
+  .gd-anchor,
+  .gd-copy {
     display: none !important;
   }
   .single-post .inside-article {
     display: block !important;
     max-width: none;
-  }
-  .single-post .inside-article > .entry-content {
-    display: block !important;
   }
   .entry-content pre {
     color: #111;
