@@ -34,6 +34,59 @@ function gdaih_is_docs_post() {
 
 
 /* -------------------------------------------------------------------------
+ * Brand: "Hub" mark + wordmark in the navbar
+ * ---------------------------------------------------------------------- */
+
+/**
+ * The logo markup: a d-pad drawn as a node network, and the wordmark.
+ */
+function gdaih_brand_markup( $tag = 'p' ) {
+	$mark = '<svg class="gd-brand__mark" viewBox="0 0 32 32" width="36" height="36" aria-hidden="true" focusable="false">'
+		. '<rect width="32" height="32" rx="9" fill="#fff"/>'
+		. '<path d="M16 9v14M9 16h14" stroke="#9fd9bb" stroke-width="2" stroke-linecap="round"/>'
+		. '<circle cx="16" cy="16" r="3.2" fill="#0f7a52"/>'
+		. '<circle cx="16" cy="8" r="2.2" fill="#0f7a52"/><circle cx="24" cy="16" r="2.2" fill="#0f7a52"/>'
+		. '<circle cx="16" cy="24" r="2.2" fill="#0f7a52"/><circle cx="8" cy="16" r="2.2" fill="#0f7a52"/>'
+		. '</svg>';
+
+	return sprintf(
+		'<%1$s class="main-title gd-brand"><a href="%2$s" rel="home">%3$s<span class="gd-brand__word">GameDev <b>AI</b> Hub</span></a></%1$s>',
+		tag_escape( $tag ),
+		esc_url( home_url( '/' ) ),
+		$mark
+	);
+}
+
+/**
+ * Replace GeneratePress's logo and site title with the brand, once.
+ */
+function gdaih_brand_output( $output = '' ) {
+	static $printed = false;
+	if ( $printed ) {
+		return '';
+	}
+	$printed = true;
+	$GLOBALS['gdaih_brand_printed'] = true;
+	return gdaih_brand_markup();
+}
+add_filter( 'generate_logo_output', 'gdaih_brand_output', 20 );
+add_filter( 'generate_site_title_output', 'gdaih_brand_output', 20 );
+add_filter( 'generate_navigation_logo_output', 'gdaih_brand_output', 20 );
+
+/**
+ * Fallback: if the logo and site title are both switched off in the
+ * Customizer, print the brand at the start of the navigation.
+ */
+function gdaih_brand_fallback() {
+	if ( ! empty( $GLOBALS['gdaih_brand_printed'] ) ) {
+		return;
+	}
+	echo '<div class="navigation-branding">' . gdaih_brand_output() . '</div>'; // Escaped in gdaih_brand_markup().
+}
+add_action( 'generate_inside_navigation', 'gdaih_brand_fallback', 100 );
+
+
+/* -------------------------------------------------------------------------
  * Layout
  * ---------------------------------------------------------------------- */
 

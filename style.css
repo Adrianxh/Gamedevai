@@ -167,6 +167,30 @@ body,
   text-decoration: none;
 }
 
+/* Brand from functions.php: "Hub" mark + "GameDev AI Hub" */
+.gd-brand a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.gd-brand__mark {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 18%);
+}
+.gd-brand__word {
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+.gd-brand__word b {
+  color: #bff3d8;
+  font-weight: 800;
+}
+
 /* Menu links */
 :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
   display: flex;
@@ -1322,6 +1346,10 @@ body,
   :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
     height: 36px;
     max-height: 36px;
+  }
+  .gd-brand__mark {
+    width: 32px;
+    height: 32px;
   }
   :is(.main-navigation, #mobile-header).toggled .main-nav > ul {
     margin: 8px 0 12px;
