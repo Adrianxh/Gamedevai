@@ -1,203 +1,153 @@
 /*
- Theme Name:   GeneratePress Child
- Theme URI:    https://generatepress.com
- Description:  Default GeneratePress child theme
- Author:       Tom Usborne
- Author URI:   https://tomusborne.com
- Template:     generatepress
- Version:      0.1
+Theme Name:   GameDev AI Hub Child
+Template:     generatepress
+Description:  Docs Split editorial layout with a terminal navbar. Typography comes from the GeneratePress Customizer; this file loads no fonts.
+Version:      10.0.0
 */
 
-/*
-Theme Name: GameDev AI Hub Child
-Template: generatepress
-Description: Light Creative editorial theme with Dark Terminal navigation. Typography is managed in the GeneratePress Customizer.
-Version: 9.1.2
-*/
+/* ==========================================================================
+   CONTENTS
+   01  Tokens
+   02  Page frame
+   03  Terminal navbar
+   04  Single post: frame and header
+   05  Single post: docs rail (table of contents)
+   06  Reading rhythm
+   07  Docs components
+   08  Single post: footer, post navigation, comments
+   09  Blog, archives and search
+   10  Sidebar, forms and pagination
+   11  Site footer
+   12  Responsive
+   13  Motion and print
 
-/* GameDevAIHub: text hyperlink colors, hover colors and underline treatments
-   are delegated to the WordPress / GeneratePress settings.
-   Header navigation, buttons, category chips and pagination remain custom UI. */
+   Links in post content keep the colors set in Customizer > Colors.
+   Monospace UI text uses the system monospace stack (nothing is downloaded).
+   ========================================================================== */
 
-/* ======================================================================
-   01. DESIGN TOKENS
-   Typography is inherited from WordPress / GeneratePress. No font imports.
-   ====================================================================== */
+
+/* ==========================================================================
+   01  TOKENS
+   ========================================================================== */
 :root {
-  --lc-bg: #fffaf3;
-  --lc-paper: #ffffff;
-  --lc-cream: #fff2e5;
-  --lc-peach: #ffebe1;
-  --lc-pale-blue: #edf8fa;
-  --lc-ink: #172b36;
-  --lc-muted: #52636c;
-  --lc-line: #dedbd2;
-  --lc-strong-line: #a4a9a8;
-  --lc-coral: #bd3724;
-  --lc-coral-hover: #992a1a;
-  --lc-orange: #ff6848;
-  --lc-blue: #076d88;
-  --lc-blue-hover: #064b62;
-  --lc-yellow: #ffe08a;
-  --lc-green: #1d7052;
-  --lc-code: #152b35;
-  --lc-code-text: #eaf5f6;
-  --lc-reading: 72ch;
-  --lc-radius: 16px;
-  --lc-radius-small: 9px;
-  --lc-shadow: 0 8px 0 -4px #e9ded2, 0 18px 35px -29px rgb(33 50 51 / 26%);
-  --lc-motion: 170ms;
+  /* Surfaces and text */
+  --gd-bg: #f6f5f1;
+  --gd-panel: #ffffff;
+  --gd-text: #15191c;
+  --gd-muted: #5a6369;
+  --gd-line: #e4e1da;
+  --gd-line-strong: #cfcbc2;
 
-  /* Compatibility with pre-existing custom HTML using the original tokens. */
-  --gd-bg: var(--lc-bg);
-  --gd-panel: var(--lc-paper);
-  --gd-raised: var(--lc-cream);
-  --gd-text: var(--lc-ink);
-  --gd-muted: var(--lc-muted);
-  --gd-line: var(--lc-line);
-  --gd-violet: var(--lc-coral);
-  --gd-cyan: var(--lc-blue);
-  --gd-lime: var(--lc-yellow);
+  /* Accent (terminal green, darkened for light backgrounds) */
+  --gd-accent: #0d7a4e;
+  --gd-accent-ink: #0a5c3b;
+  --gd-accent-soft: #e8f4ed;
+
+  /* Callouts */
+  --gd-info-bg: #eef3f9;
+  --gd-info-line: #cfdcec;
+  --gd-info-ink: #28406b;
+  --gd-warn-bg: #fdf3e2;
+  --gd-warn-line: #f0d9b0;
+  --gd-warn-ink: #7a4508;
+
+  /* Terminal */
+  --gd-term-bg: #0b0f13;
+  --gd-term-raised: #0f1519;
+  --gd-term-ink: #c8f7a8;
+  --gd-term-muted: #7fa58a;
+  --gd-term-dim: #6f8a73;
+  --gd-term-line: #1d2a22;
+  --gd-term-hover: #13201a;
+
+  /* Type, shape, motion */
+  --gd-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --gd-radius: 8px;
+  --gd-radius-sm: 5px;
+  --gd-motion: 150ms;
+
+  /* Layout */
+  --gd-reading: 70ch;          /* longest line of body text */
+  --gd-article: 800px;         /* single post without a table of contents */
+  --gd-article-wide: 1160px;   /* single post with the table-of-contents rail */
+  --gd-pad-x: clamp(16px, 3vw, 24px);
+  --gd-toc: 220px;
+  --gd-toc-gap: 56px;
+  --gd-sticky-top: 88px;       /* clears a sticky navbar; use 24px if yours scrolls away */
+}
+.admin-bar {
+  --gd-sticky-top: 120px;
 }
 
-/* ======================================================================
-   02. PAGE FRAME — LIGHT, BREATHABLE STUDIO CANVAS
-   ====================================================================== */
+
+/* ==========================================================================
+   02  PAGE FRAME
+   ========================================================================== */
 body:not(.wp-admin):not(.block-editor-page) {
-  color: var(--lc-ink);
-  background-color: var(--lc-bg) !important;
-  background-image: radial-gradient(circle, rgb(189 55 36 / 6%) 1px, transparent 1.5px);
-  background-size: 29px 29px;
+  color: var(--gd-text);
+  background-color: var(--gd-bg);
 }
-body:not(.wp-admin):not(.block-editor-page) .site,
-body:not(.wp-admin):not(.block-editor-page) .site-content,
-body:not(.wp-admin):not(.block-editor-page) .content-area,
-body:not(.wp-admin):not(.block-editor-page) .site-main {
-  color: var(--lc-ink);
-  background-color: var(--lc-bg) !important;
+body:not(.wp-admin) :is(.site, .site-content, .content-area, .site-main),
+body:not(.wp-admin).one-container .container {
+  background-color: var(--gd-bg);
 }
-:where(.site, .site-content, .content-area, .site-main, .inside-article,
-       .entry-content, .entry-summary, .generate-column-container,
-       .gb-loop-item, .wp-block-post-template > li) {
+:where(.site-content, .content-area, .site-main, .inside-article, .entry-content,
+       .entry-summary, .gb-loop-item, .gb-query-loop-item, .wp-block-post-template > li) {
   min-width: 0;
-}
-.site-content {
-  padding-block: clamp(20px, 3.6vw, 48px);
 }
 .entry-content,
 .entry-summary,
-.inside-article,
-.sidebar .widget {
+.comment-content {
   overflow-wrap: break-word;
 }
-.entry-content :is(img, iframe, video, svg),
-.post-image img,
-.featured-image img {
+.entry-content :is(img, video) {
   max-width: 100%;
-}
-.entry-content :is(img, video),
-.post-image img,
-.featured-image img {
   height: auto;
 }
-:where(.site) :is(button, input, select, textarea):focus-visible,
-.main-navigation :is(a, button):focus-visible,
-#mobile-header :is(a, button):focus-visible {
-  outline: 3px solid var(--lc-blue);
-  outline-offset: 3px;
+.entry-content :is(iframe, embed, object) {
+  max-width: 100%;
+}
+:focus-visible {
+  outline: 2px solid var(--gd-accent);
+  outline-offset: 2px;
 }
 ::selection {
-  color: var(--lc-ink);
-  background: var(--lc-yellow);
-}
-/* Single surface per article — no overlapping card borders. */
-.separate-containers .inside-article,
-.separate-containers .comments-area,
-.separate-containers .paging-navigation,
-.sidebar .widget,
-.container-widget,
-.page-header,
-.post-navigation {
-  color: var(--lc-ink);
-  background: var(--lc-paper);
-  border: 1px solid var(--lc-line);
-  border-radius: var(--lc-radius);
-  box-shadow: var(--lc-shadow);
-}
-.separate-containers .inside-article {
-  padding: clamp(23px, 4vw, 49px);
-  background-color: var(--lc-paper) !important;
-}
-.single-post .inside-article {
-  max-width: 1040px;
-  margin-inline: auto;
-  border-top: 5px solid var(--lc-orange);
+  color: var(--gd-term-bg);
+  background: var(--gd-term-ink);
 }
 
-/* ======================================================================
-   03. DARK TERMINAL NAV — HEADER ONLY / CONCEPT #5
-   Light Creative article content and every other component remain unchanged.
-   WordPress / GeneratePress controls all typography. No new menus or CTAs.
-   ====================================================================== */
-:root {
-  --terminal-bg: #000000;
-  --terminal-deep: #000000;
-  --terminal-surface: #20282a;
-  --terminal-line: #3b4b4c;
-  --terminal-ink: #f3f5ef;
-  --terminal-muted: #bdcac5;
-  --terminal-accent: #74efb5;
-  --terminal-accent-soft: #b0f7d4;
-}
 
-/* The separate GeneratePress site header may be enabled or disabled.
-   Its styling is scoped so the light article/body canvas never changes. */
-.site-header {
-  color: var(--terminal-ink);
-  background: var(--terminal-bg);
-  border-bottom: 1px solid var(--terminal-line);
-}
-.site-header :is(.site-title, .site-title a) {
-  color: var(--terminal-ink);
-}
-.site-header .site-description {
-  color: var(--terminal-muted);
-}
-.site-header .site-title a:hover {
-  color: var(--terminal-accent-soft);
-}
-
+/* ==========================================================================
+   03  TERMINAL NAVBAR
+   Styles the GeneratePress primary navigation, the separate site header
+   (if enabled) and the GP Premium mobile header. Colors use !important
+   only where GeneratePress's Customizer rules would otherwise win.
+   ========================================================================== */
+.site-header,
 .main-navigation,
 .main-navigation.navigation-stick,
 #mobile-header {
-  color: var(--terminal-ink);
-  background: var(--terminal-bg) !important;
+  color: var(--gd-term-ink);
+  background: var(--gd-term-bg) !important;
   background-image: none !important;
-  border-top: 0;
-  border-bottom: 1px solid #374345;
-  box-shadow: 0 8px 22px rgb(11 23 25 / 13%);
+  border-bottom: 1px solid var(--gd-term-line);
+  box-shadow: none;
+}
+.site-header .site-description {
+  color: var(--gd-term-muted);
 }
 
 .main-navigation .inside-navigation,
 #mobile-header .inside-navigation {
-  position: relative;
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 1360px;
-  min-height: 74px;
-  margin-inline: auto;
-  padding: 12px clamp(15px, 3vw, 38px);
-  gap: clamp(8px, 1.2vw, 19px);
+  min-height: 64px;
+  padding-inline: clamp(16px, 3vw, 32px);
+  gap: 12px;
   align-items: center;
-  background: transparent;
 }
-
-
 .main-navigation .navigation-branding {
   display: flex;
   align-items: center;
-  flex: 0 1 auto;
-  gap: 11px;
+  gap: 10px;
   min-width: 0;
   margin: 0 auto 0 0;
 }
@@ -205,114 +155,109 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   flex-shrink: 0;
   margin: 0;
 }
-.main-navigation .navigation-branding .site-logo :is(a, img) {
+:is(.main-navigation, #mobile-header, .site-header) :is(.site-logo, .mobile-header-logo) img {
   display: block;
-}
-.main-navigation .navigation-branding img,
-.main-navigation .sticky-navigation-logo img,
-#mobile-header .mobile-header-logo img {
   width: auto;
-  height: 42px;
-  max-height: 42px;
-  padding: 0;
+  height: 36px;
+  max-height: 36px;
   border-radius: 6px;
-  object-fit: contain;
-}
-.main-navigation .main-title {
-  margin: 0;
-  padding: 0;
-  color: var(--terminal-ink);
-  text-wrap: balance;
-}
-.main-navigation .main-title a,
-.main-navigation .main-title a:is(:hover, :focus-visible) {
-  color: var(--terminal-ink) !important;
-  text-decoration: none;
-}
-/* Prompt glyph and cursor belong only to the existing branding link. */
-.main-navigation .main-title a::before {
-  content: ">";
-  display: inline-block;
-  margin-inline-end: .42em;
-  color: var(--terminal-accent);
-}
-.main-navigation .main-title a::after {
-  content: "_";
-  color: var(--terminal-accent);
 }
 
+/* Brand: ~/gamedevaihub_ */
+:is(.main-navigation, .site-header) .main-title {
+  margin: 0;
+  font-family: var(--gd-mono);
+  font-size: clamp(16px, 1.4vw, 18px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+:is(.main-navigation, .site-header) .main-title a,
+:is(.main-navigation, .site-header) .main-title a:is(:hover, :focus-visible) {
+  color: var(--gd-term-ink) !important;
+  text-decoration: none;
+}
+:is(.main-navigation, .site-header) .main-title a::before {
+  content: "~/";
+  color: var(--gd-term-dim);
+}
+:is(.main-navigation, .site-header) .main-title a::after {
+  content: "_";
+  animation: gd-blink 1.1s steps(1) infinite;
+}
+@keyframes gd-blink {
+  50% { opacity: 0; }
+}
+
+/* Top-level links: ./Label */
 .main-navigation .main-nav > ul > li > a,
 #mobile-header .main-nav > ul > li > a {
-  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 clamp(9px, .95vw, 15px);
-  color: var(--terminal-muted) !important;
+  min-height: 38px;
+  padding: 0 11px;
+  color: var(--gd-term-muted) !important;
   background: transparent !important;
-  border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: var(--gd-radius-sm);
+  font-family: var(--gd-mono);
+  font-size: 14px;
+  line-height: 38px;
   text-decoration: none;
-  transition: color var(--lc-motion), background-color var(--lc-motion), border-color var(--lc-motion);
+  transition: color var(--gd-motion), background-color var(--gd-motion);
+}
+.main-navigation .main-nav > ul > li > a::before,
+#mobile-header .main-nav > ul > li > a::before {
+  content: "./";
+  opacity: .7;
 }
 .main-navigation .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a,
-#mobile-header .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a {
-  color: var(--terminal-ink) !important;
-  background: #293633 !important;
-  border-color: #456259;
+#mobile-header .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a,
+.main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a,
+#mobile-header .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a {
+  color: var(--gd-term-ink) !important;
+  background: var(--gd-term-hover) !important;
 }
 .main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a,
 #mobile-header .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a {
-  color: var(--terminal-accent-soft) !important;
-  background: #132a25 !important;
-  border-color: #3e9e7c;
-  box-shadow: inset 0 -2px 0 var(--terminal-accent);
+  box-shadow: inset 0 0 0 1px #24382c;
 }
-/* Brackets recreate the active [ Home ] treatment without changing labels. */
-.main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::before,
-#mobile-header .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::before {
-  content: "[";
-  margin-inline-end: 5px;
-  color: var(--terminal-accent);
-}
-.main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::after,
-#mobile-header .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::after {
-  content: "]";
-  margin-inline-start: 5px;
-  color: var(--terminal-accent);
+:is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
+  outline-color: var(--gd-term-ink);
 }
 
+/* Dropdowns */
 .main-navigation .main-nav ul ul,
 #mobile-header .main-nav ul ul {
-  width: 260px;
-  padding: 7px;
-  color: var(--terminal-ink);
-  background: #202729 !important;
-  border: 1px solid var(--terminal-line);
-  border-radius: 7px;
-  box-shadow: 0 16px 38px rgb(3 9 10 / 30%);
+  width: 240px;
+  padding: 6px;
+  background: var(--gd-term-raised);
+  border: 1px solid var(--gd-term-line);
+  border-radius: var(--gd-radius);
+  box-shadow: 0 16px 32px rgb(0 0 0 / 35%);
 }
 .main-navigation .main-nav ul ul li a,
 #mobile-header .main-nav ul ul li a {
-  padding: 11px 13px;
-  color: var(--terminal-ink) !important;
+  padding: 9px 12px;
+  color: var(--gd-term-muted) !important;
   background: transparent !important;
-  border: 1px solid transparent;
   border-radius: 4px;
+  font-family: var(--gd-mono);
+  font-size: 13.5px;
+  line-height: 1.4;
   white-space: normal;
 }
-.main-navigation .main-nav ul ul li:is(:hover, :focus-within, .current-menu-item) > a,
-#mobile-header .main-nav ul ul li:is(:hover, :focus-within, .current-menu-item) > a {
-  color: var(--terminal-accent-soft) !important;
-  background: #2b3d37 !important;
-  border-color: #527365;
+.main-navigation .main-nav ul ul li:is(:hover, .sfHover, :focus-within, .current-menu-item) > a,
+#mobile-header .main-nav ul ul li:is(:hover, .sfHover, :focus-within, .current-menu-item) > a {
+  color: var(--gd-term-ink) !important;
+  background: var(--gd-term-hover) !important;
 }
+
+/* Search icon and the GeneratePress navigation search field */
 .main-navigation .menu-bar-items,
-.main-navigation .menu-toggle,
-#mobile-header .menu-bar-items,
-#mobile-header .menu-toggle {
-  color: var(--terminal-ink) !important;
+#mobile-header .menu-bar-items {
+  gap: 8px;
+  margin-left: 8px;
+  color: var(--gd-term-ink) !important;
   background: transparent !important;
 }
 .main-navigation .menu-bar-item > a,
@@ -320,759 +265,1086 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
+  width: 38px;
+  height: 38px;
   padding: 0;
-  color: var(--terminal-accent-soft) !important;
-  background: #202b2a !important;
-  border: 1px solid var(--terminal-line);
-  border-radius: 6px;
+  color: var(--gd-term-ink) !important;
+  background: transparent !important;
+  border: 1px solid var(--gd-term-line);
+  border-radius: var(--gd-radius-sm);
+  line-height: 1;
+  transition: background-color var(--gd-motion), border-color var(--gd-motion);
 }
 .main-navigation .menu-bar-item > a:hover,
 #mobile-header .menu-bar-item > a:hover {
-  color: #fff !important;
-  background: #2f433c !important;
+  background: var(--gd-term-hover) !important;
+  border-color: #2a3a30;
 }
+.main-navigation .navigation-search input[type="search"],
+.main-navigation .navigation-search input[type="search"]:focus,
+#mobile-header .navigation-search input[type="search"],
+#mobile-header .navigation-search input[type="search"]:focus {
+  color: var(--gd-term-ink);
+  background: var(--gd-term-bg);
+  border: 0;
+  outline: 0;
+  box-shadow: inset 0 -2px 0 var(--gd-term-ink);
+  font-family: var(--gd-mono);
+}
+:is(.main-navigation, #mobile-header) .navigation-search input::placeholder {
+  color: var(--gd-term-muted);
+  opacity: 1;
+}
+
+/* Mobile toggle: [ Menu ] */
 .main-navigation .menu-toggle,
 #mobile-header .menu-toggle {
-  min-height: 44px;
-  padding: 0 14px;
-  color: var(--terminal-ink) !important;
-  background: #202b2a !important;
-  border: 1px solid var(--terminal-line);
-  border-radius: 6px;
+  min-height: 38px;
+  padding: 0 12px;
+  color: var(--gd-term-ink) !important;
+  background: transparent !important;
+  border: 1px solid var(--gd-term-line);
+  border-radius: var(--gd-radius-sm);
+  font-family: var(--gd-mono);
+  font-size: 13px;
+  line-height: 36px;
+  white-space: nowrap;
+}
+:is(.main-navigation, #mobile-header) .menu-toggle:has(.mobile-menu) .gp-icon {
+  display: none;
+}
+:is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu {
+  padding-left: 0;
+}
+:is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu::before {
+  content: "[ ";
+}
+:is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu::after {
+  content: " ]";
 }
 .main-navigation .menu-toggle:is(:hover, :focus-visible),
 #mobile-header .menu-toggle:is(:hover, :focus-visible),
 .main-navigation.toggled .menu-toggle,
 #mobile-header.toggled .menu-toggle {
-  color: var(--terminal-accent-soft) !important;
-  background: #294239 !important;
-  border-color: #599d7f;
+  background: var(--gd-term-hover) !important;
+  border-color: #2a3a30;
 }
 
-/* ======================================================================
-   04. TITLES, ARTICLE OPENING & POST META
-   ====================================================================== */
-.entry-title,
-.widget-title {
-  color: var(--lc-ink);
+
+/* ==========================================================================
+   04  SINGLE POST: FRAME AND HEADER
+   Posts sit directly on the page, like documentation, not inside a card.
+   ========================================================================== */
+.single-post .inside-article {
+  max-width: var(--gd-article);
+  margin-inline: auto;
 }
-.entry-title {
+.single-post.separate-containers .inside-article {
+  padding: clamp(28px, 4vw, 56px) var(--gd-pad-x) clamp(32px, 5vw, 64px);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.single-post .featured-image {
+  margin-bottom: 28px;
+}
+.single-post .featured-image img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--gd-line);
+  border-radius: var(--gd-radius);
+}
+
+/* Breadcrumbs from Rank Math, Yoast or AIOSEO */
+:is(.rank-math-breadcrumb, .yoast-breadcrumbs, #breadcrumbs, .aioseo-breadcrumbs) {
+  margin: 0 0 12px;
+  color: var(--gd-muted);
+  font-family: var(--gd-mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+:is(.rank-math-breadcrumb, .yoast-breadcrumbs, #breadcrumbs, .aioseo-breadcrumbs) p {
+  margin: 0;
+}
+:is(.rank-math-breadcrumb, .yoast-breadcrumbs, #breadcrumbs, .aioseo-breadcrumbs) a {
+  color: var(--gd-accent-ink);
+  text-decoration: none;
+}
+
+.single-post .entry-header {
+  margin-bottom: 28px;
+}
+.single-post .entry-title {
+  max-width: 24ch;
+  margin: 0 0 16px;
+  color: var(--gd-text);
+  line-height: 1.1;
+  letter-spacing: -.022em;
   overflow-wrap: break-word;
   text-wrap: balance;
 }
-.single-post .entry-title {
-  max-width: 25ch;
-  margin-bottom: 16px;
+.single-post .entry-header .entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  margin: 0;
+  padding: 12px 0;
+  color: var(--gd-muted);
+  border-block: 1px solid var(--gd-line);
+  font-family: var(--gd-mono);
+  font-size: 13px;
+  line-height: 1.5;
 }
-.entry-meta {
-  margin-top: 15px;
-  color: var(--lc-muted);
+.single-post .entry-header .entry-meta > * + *::before {
+  content: "·";
+  margin-right: 14px;
+  color: var(--gd-line-strong);
 }
-.single-post .entry-header {
-  margin-bottom: clamp(20px, 3vw, 34px);
-  padding-bottom: 22px;
-  border-bottom: 2px dashed #e5c6b8;
+.single-post .entry-header .entry-meta a {
+  color: var(--gd-text);
+  text-decoration: none;
+}
+.single-post .entry-header .entry-meta a:hover {
+  color: var(--gd-accent-ink);
 }
 
-/* ======================================================================
-   05. READING EXPERIENCE — QUIET PAPER WITH PLAYFUL SECTION MARKERS
-   ====================================================================== */
-.entry-content {
-  color: var(--lc-ink);
+
+/* ==========================================================================
+   05  SINGLE POST: DOCS RAIL (TABLE OF CONTENTS)
+   Works with the TOC from Rank Math, Yoast, Easy Table of Contents,
+   LuckyWP, Table of Contents Plus, or a List block with the class "toc".
+   Mobile and tablet: a boxed "On this page" list where it sits in the post.
+   Desktop, single posts set to "No sidebar": a sticky rail on the left.
+   ========================================================================== */
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  padding: 14px 16px;
+  color: var(--gd-muted);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line);
+  border-radius: var(--gd-radius);
+  box-shadow: none;
+  font-size: 14px;
+  line-height: 1.45;
+  list-style: none;
+}
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(h2, h3, h4, .ez-toc-title, .toc_title, .lwptoc_title),
+.entry-content > :is(ul, ol).toc::before {
+  display: block;
+  margin: 0 0 10px;
+  padding: 0;
+  color: var(--gd-muted);
+  font-family: var(--gd-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: .08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+.entry-content > :is(ul, ol).toc::before {
+  content: "On this page";
+}
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(.ez-toc-title-container, .lwptoc_header, .lwptoc_i, nav) {
+  display: block;
+  margin: 0;
+  padding: 0;
   background: transparent;
+  border: 0;
 }
-.entry-content > p {
-  max-width: var(--lc-reading);
-  margin: 0 0 1.47em;
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(ul, ol) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.entry-content > :is(h1, h2, h3, h4, h5, h6) {
-  color: var(--lc-ink);
-  scroll-margin-top: 115px;
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) li {
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(li, a)::before {
+  content: none;
+}
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) a {
+  display: block;
+  padding: 5px 0 5px 14px;
+  color: var(--gd-muted);
+  border-left: 2px solid var(--gd-line);
+  font-size: 14px;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color var(--gd-motion), border-color var(--gd-motion);
+}
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) li li > a {
+  padding-left: 26px;
+  font-size: 13px;
+}
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) li li li > a {
+  padding-left: 38px;
+}
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) a:is(:hover, :focus-visible) {
+  color: var(--gd-text);
+  border-left-color: var(--gd-line-strong);
+}
+/* Active section, when a plugin or script marks it */
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(a.active, .active > a, a[aria-current]) {
+  color: var(--gd-text);
+  font-weight: 600;
+  border-left-color: var(--gd-accent);
+}
+
+@media (min-width: 1080px) {
+  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) {
+    display: grid;
+    grid-template-columns: var(--gd-toc) minmax(0, 1fr);
+    column-gap: var(--gd-toc-gap);
+    align-items: start;
+    max-width: var(--gd-article-wide);
+  }
+  /* The content wrapper steps aside so every block lines up in column two. */
+  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .entry-content {
+    display: contents;
+  }
+  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > *,
+  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .entry-content > * {
+    grid-column: 2;
+  }
+  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) {
+    grid-column: 1;
+    grid-row: 1 / span 500;
+    position: sticky;
+    top: var(--gd-sticky-top);
+    max-height: calc(100vh - var(--gd-sticky-top) - 24px);
+    margin: 0;
+    padding: 0 4px 0 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    scrollbar-width: thin;
+  }
+  .single-post.no-sidebar .inside-article:has(> .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc):first-child + * {
+    margin-top: 0;
+  }
+  /* The rail is always open: hide Easy TOC's collapse toggle. */
+  .single-post.no-sidebar #ez-toc-container .ez-toc-title-toggle {
+    display: none;
+  }
+  .single-post.no-sidebar #ez-toc-container nav {
+    display: block !important;
+  }
+  /* Comments line up with the text column, not the full article width. */
+  .single-post.no-sidebar .site-main:has(> article > .inside-article > .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc)) > .comments-area {
+    max-width: none;
+    margin-left: calc(max(0px, (100% - var(--gd-article-wide)) / 2) + var(--gd-pad-x) + var(--gd-toc) + var(--gd-toc-gap));
+    margin-right: calc(max(0px, (100% - var(--gd-article-wide)) / 2) + var(--gd-pad-x));
+  }
+}
+
+
+/* ==========================================================================
+   06  READING RHYTHM
+   Spacing comes only from margin-top, so it looks the same whether or not
+   the docs rail is active (grid items don't collapse margins).
+   ========================================================================== */
+.entry-content {
+  color: var(--gd-text);
+}
+.entry-content > * {
+  margin-block: 0;
+}
+.entry-content > * + * {
+  margin-top: 1.25em;
+}
+.entry-content > * + h2 {
+  margin-top: 1.9em;
+}
+.entry-content > * + :is(h3, h4, h5, h6) {
+  margin-top: 1.8em;
+}
+.entry-content > :is(h2, h3, h4, h5, h6) + * {
+  margin-top: .65em;
+}
+.entry-content > :is(p, ul, ol, dl, h2, h3, h4, h5, h6, blockquote) {
+  max-width: var(--gd-reading);
+}
+.entry-content > :is(h2, h3, h4, h5, h6) {
+  color: var(--gd-text);
+  line-height: 1.25;
+  letter-spacing: -.012em;
   text-wrap: balance;
 }
-.entry-content > h1 {
-  margin: 1.5em 0 .65em;
-}
-.entry-content > h2 {
-  position: relative;
-  margin: 2.12em 0 .87em;
-  padding: 0 0 15px;
-  border: 0;
-  border-bottom: 2px solid var(--lc-line);
-}
-.entry-content > h2::after {
-  content: "";
-  display: block;
-  width: 65px;
-  height: 5px;
-  position: absolute;
-  bottom: -3px;
-  left: 0;
-  background: var(--lc-orange);
-  border-radius: 9px;
-  transform: rotate(-1.5deg);
-}
-.entry-content > h3 {
-  margin: 1.8em 0 .72em;
-  color: var(--lc-coral);
-}
-.entry-content > :is(h4, h5, h6) {
-  margin: 1.55em 0 .62em;
-}
-.entry-content > :is(h1, h2, h3, h4, h5, h6):first-child {
-  margin-top: 0;
+.entry-content [id] {
+  scroll-margin-top: calc(var(--gd-sticky-top) + 8px);
 }
 .entry-content :is(strong, b) {
-  color: #11232d;
+  color: var(--gd-text);
 }
-.entry-content > :is(ul, ol) {
-  max-width: var(--lc-reading);
-  margin: 1.28em 0 1.68em;
-  padding-inline-start: 1.45em;
-}
-.entry-content :is(ul, ol) li {
-  margin-bottom: .65em;
-  padding-inline-start: .12em;
-}
-.entry-content :is(ul, ol) li::marker {
-  color: var(--lc-coral);
-}
-.entry-content hr {
-  height: 2px;
-  margin: 2.8em 0;
-  border: 0;
-  background: repeating-linear-gradient(90deg, #f0aa91 0 12px, transparent 12px 19px);
-}
-/* Bold text inside any link inherits the color set by WordPress. */
 .entry-content a :is(strong, b) {
   color: inherit;
 }
-
-.entry-content button:focus-visible {
-  outline: 3px solid var(--lc-blue);
-  outline-offset: 3px;
+.entry-content > :is(ul, ol) {
+  margin-left: 0;
+  padding-left: 1.35em;
 }
-.entry-content :is(small, figcaption) {
-  color: var(--lc-muted);
+.entry-content :is(ul, ol) li + li {
+  margin-top: .4em;
+}
+.entry-content li::marker {
+  color: var(--gd-accent);
+}
+.entry-content > hr {
+  height: 1px;
+  margin-block: 2.5em 1.25em;
+  background: var(--gd-line);
+  border: 0;
+}
+.entry-content :is(small, figcaption, .wp-element-caption) {
+  color: var(--gd-muted);
 }
 
-/* ======================================================================
-   06. BUTTONS — CREATIVE, TACTILE, STILL EASY TO READ
-   ====================================================================== */
-.entry-content .btn-primary,
-.entry-content .wp-block-button__link,
-.entry-content .wp-element-button {
-  display: inline-flex;
+
+/* ==========================================================================
+   07  DOCS COMPONENTS
+   Add the class in the block's Advanced > Additional CSS class(es) field.
+   ========================================================================== */
+
+/* Requirements bar. List block + class "requires". */
+.entry-content > :is(ul, ol).requires {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  max-width: 100%;
-  min-height: 48px;
-  padding: 12px 22px;
-  color: #fff;
-  background: var(--lc-coral);
-  border: 1px solid var(--lc-coral);
-  border-radius: var(--lc-radius-small);
-  box-shadow: 0 4px 0 #762215;
-  text-decoration: none;
-  text-align: center;
-  cursor: pointer;
-  transition: background-color var(--lc-motion), border-color var(--lc-motion), box-shadow var(--lc-motion);
+  gap: 8px;
+  max-width: none;
+  padding: 12px 0;
+  list-style: none;
+  border-block: 1px solid var(--gd-line);
 }
-.entry-content .btn-primary {
-  margin: 16px 12px 18px 0;
+.entry-content > .requires::before {
+  content: "Requires";
+  margin-right: 6px;
+  color: var(--gd-muted);
+  font-family: var(--gd-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
-.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button):hover {
-  color: #fff;
-  background: var(--lc-coral-hover);
-  border-color: var(--lc-coral-hover);
-  box-shadow: 0 2px 0 #762215;
-  text-decoration: none;
-}
-.entry-content .btn-primary::after {
-  content: none;
+.entry-content > .requires li {
+  margin: 0;
+  padding: 4px 9px;
+  color: var(--gd-text);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line-strong);
+  border-radius: 4px;
+  font-family: var(--gd-mono);
+  font-size: 12.5px;
+  line-height: 1.4;
 }
 
-/* ======================================================================
-   07. CODE & EMBEDS — A CLEAR DARK EDITOR ON A BRIGHT PAGE
-   ====================================================================== */
+/* Code */
 .entry-content pre {
-  box-sizing: border-box;
-  width: 100%;
   max-width: 100%;
-  margin: 29px 0;
-  padding: clamp(17px, 2.5vw, 26px);
+  padding: 16px 18px;
   overflow-x: auto;
-  color: var(--lc-code-text);
-  background: var(--lc-code);
-  border: 1px solid #345161;
-  border-top: 5px solid #ff9b77;
-  border-radius: var(--lc-radius-small);
+  color: #d9e6dc;
+  background: var(--gd-term-bg);
+  border: 1px solid var(--gd-term-line);
+  border-radius: var(--gd-radius);
+  font-family: var(--gd-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
   white-space: pre;
-  tab-size: 2;
+  tab-size: 4;
   scrollbar-width: thin;
-  scrollbar-color: #829daa #152b35;
-}
-.entry-content :not(pre) > code {
-  padding: 3px 6px;
-  color: #7b271c;
-  background: #fff0e6;
-  border: 1px solid #eacbbb;
-  border-radius: 5px;
-  overflow-wrap: anywhere;
+  scrollbar-color: #33463a transparent;
 }
 .entry-content pre code {
   padding: 0;
   color: inherit;
   background: transparent;
   border: 0;
-  border-radius: 0;
+  font: inherit;
   white-space: inherit;
   overflow-wrap: normal;
 }
-.entry-content :is(.wp-block-embed, .wp-block-video),
-.entry-content :is(.wp-block-embed, .wp-block-video) iframe {
-  max-width: 100%;
+/* Filename tab above a code block. Paragraph + class "code-file",
+   placed directly before the Code block. */
+.entry-content > .code-file {
+  display: flex;
+  align-items: center;
+  max-width: none;
+  min-height: 38px;
+  padding: 0 16px;
+  color: var(--gd-term-muted);
+  background: var(--gd-term-bg);
+  border: 1px solid var(--gd-term-line);
+  border-radius: var(--gd-radius) var(--gd-radius) 0 0;
+  font-family: var(--gd-mono);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.entry-content > .code-file + pre {
+  margin-top: 0;
+  border-top: 0;
+  border-radius: 0 0 var(--gd-radius) var(--gd-radius);
+}
+.entry-content :not(pre) > code {
+  padding: .15em .4em;
+  color: var(--gd-text);
+  background: #ebe8e1;
+  border-radius: 4px;
+  font-family: var(--gd-mono);
+  font-size: .875em;
+  overflow-wrap: anywhere;
+}
+.entry-content kbd {
+  padding: .1em .45em;
+  color: var(--gd-text);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  font-family: var(--gd-mono);
+  font-size: .85em;
 }
 
-/* ======================================================================
-   08. TABLES & CALLOUTS — PRACTICAL FOR AI-TOOL COMPARISONS
-   ====================================================================== */
-.entry-content .wp-block-table {
+/* Callouts. Paragraph or Group + class "note" (adds a label) or
+   "key-insight" (no label). Add "warning" or "success" for variants. */
+.entry-content > :is(.note, .key-insight, blockquote.warning, blockquote.success) {
+  max-width: var(--gd-reading);
+  padding: 14px 18px;
+  color: var(--gd-text);
+  background: var(--gd-info-bg);
+  border: 1px solid var(--gd-info-line);
+  border-radius: var(--gd-radius);
+  font-size: .95em;
+  font-style: normal;
+}
+.entry-content > :is(.note, .key-insight, blockquote.warning, blockquote.success) :is(p, ul, ol) {
+  margin: 0;
+}
+.entry-content > :is(.note, .key-insight, blockquote.warning, blockquote.success) :is(p, ul, ol) + * {
+  margin-top: .6em;
+}
+.entry-content > .note::before {
+  content: "Note";
+  display: block;
+  margin-bottom: 4px;
+  color: var(--gd-info-ink);
+  font-family: var(--gd-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.entry-content > :is(.note, .key-insight, blockquote).warning {
+  background: var(--gd-warn-bg);
+  border-color: var(--gd-warn-line);
+}
+.entry-content > .note.warning::before {
+  content: "Warning";
+  color: var(--gd-warn-ink);
+}
+.entry-content > :is(.note, .key-insight, blockquote).success {
+  background: var(--gd-accent-soft);
+  border-color: #bfdccb;
+}
+.entry-content > .note.success::before {
+  content: "Tip";
+  color: var(--gd-accent-ink);
+}
+
+/* Quotes */
+.entry-content > blockquote:not(.warning, .success) {
+  margin-inline: 0;
+  padding: 2px 0 2px 20px;
+  color: var(--gd-text);
+  background: none;
+  border: 0;
+  border-left: 3px solid var(--gd-accent);
+  font-size: 1.1em;
+  font-style: normal;
+  line-height: 1.5;
+}
+.entry-content > blockquote p {
+  margin: 0;
+}
+.entry-content > blockquote p + p {
+  margin-top: .6em;
+}
+.entry-content > blockquote cite {
+  display: block;
+  margin-top: 10px;
+  color: var(--gd-muted);
+  font-family: var(--gd-mono);
+  font-size: 12.5px;
+  font-style: normal;
+}
+
+/* Tables */
+.entry-content .wp-block-table,
+.entry-content > table {
+  display: block;
   max-width: 100%;
-  margin: 29px 0;
   overflow-x: auto;
-  background: #fff;
-  border: 1px solid var(--lc-line);
-  border-radius: var(--lc-radius-small);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line);
+  border-radius: var(--gd-radius);
 }
 .entry-content table {
-  display: block;
-  box-sizing: border-box;
   width: 100%;
-  max-width: 100%;
-  margin: 29px 0;
-  overflow-x: auto;
-  color: var(--lc-ink);
-  background: #fff;
-  border: 1px solid var(--lc-line);
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: var(--lc-radius-small);
+  margin: 0;
+  border: 0;
+  border-collapse: collapse;
+  font-size: .95em;
 }
 .entry-content .wp-block-table table {
-  display: table;
-  width: 100%;
-  min-width: 540px;
-  max-width: none;
-  margin: 0;
-  overflow: visible;
+  min-width: 520px;
+}
+.entry-content .wp-block-table :is(thead, tfoot) {
   border: 0;
-  border-radius: 0;
 }
 .entry-content table :is(th, td) {
-  min-width: 125px;
-  padding: 15px 17px;
+  padding: 12px 14px;
   border: 0;
-  border-bottom: 1px solid var(--lc-line);
+  border-bottom: 1px solid var(--gd-line);
   text-align: left;
   vertical-align: top;
-  overflow-wrap: break-word;
 }
 .entry-content table th {
-  color: var(--lc-ink);
-  background: #ffe5ba;
-  border-bottom: 2px solid var(--lc-orange);
-}
-.entry-content table td {
-  color: var(--lc-ink);
-  background: #fff;
-}
-.entry-content table tbody tr:nth-child(even) td {
-  background: #fff7ef;
+  color: var(--gd-muted);
+  background: #fafaf7;
+  border-bottom-color: var(--gd-line-strong);
+  font-family: var(--gd-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }
 .entry-content table tbody tr:last-child td {
   border-bottom: 0;
 }
-.entry-content table td:first-child {
-  color: var(--lc-coral-hover);
-}
 .entry-content .wp-block-table figcaption {
   margin: 0;
-  padding: 12px 16px;
-  color: var(--lc-muted);
-  border-top: 1px solid var(--lc-line);
-}
-.entry-content > blockquote,
-.entry-content .key-insight {
-  margin: 30px 0;
-  padding: 23px 26px;
-  color: var(--lc-ink);
-  background: var(--lc-pale-blue);
-  border: 1px solid #b9d9dd;
-  border-left: 5px solid var(--lc-blue);
-  border-radius: 0 var(--lc-radius-small) var(--lc-radius-small) 0;
-  box-shadow: none;
-}
-.entry-content :is(blockquote, .key-insight) p:last-child {
-  margin-bottom: 0;
-}
-.entry-content :is(.key-insight.warning, blockquote.warning) {
-  color: #633018;
-  background: #fff0df;
-  border-color: #e8b89e;
-  border-left-color: var(--lc-orange);
-}
-.entry-content :is(.key-insight.success, blockquote.success) {
-  color: #1b5038;
-  background: #eaf8ec;
-  border-color: #acd8b6;
-  border-left-color: var(--lc-green);
+  padding: 10px 14px;
+  border-top: 1px solid var(--gd-line);
+  font-size: .85em;
+  text-align: left;
 }
 
-/* ======================================================================
-   09. IMAGES — NATURAL PHOTO COLORS, SUBTLE FRAME
-   ====================================================================== */
-.post-image img,
-.featured-image img,
-.entry-content > .wp-block-image img {
-  max-width: 100%;
-  height: auto;
-  border: 1px solid var(--lc-line);
-  border-radius: var(--lc-radius-small);
-  box-shadow: none;
+/* Images and embeds */
+.entry-content .wp-block-image img {
+  border: 1px solid var(--gd-line);
+  border-radius: 6px;
 }
-.entry-content figure {
-  max-width: 100%;
-}
-.entry-content figcaption {
-  margin-top: 9px;
-  color: var(--lc-muted);
+.entry-content :is(figcaption, .wp-element-caption) {
+  margin-top: 8px;
+  font-size: .875em;
 }
 
-/* ======================================================================
-   10. SIDEBAR, SEARCH & COMMENTS — FRIENDLY STUDIO NOTES
-   ====================================================================== */
-.sidebar .widget {
-  padding: clamp(20px, 2.7vw, 30px);
-  background: #fffaf2;
-  border-top: 4px solid var(--lc-orange);
+/* Buttons. Colors picked in the editor still win. */
+.entry-content .wp-block-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
-.widget-title {
-  margin-bottom: 17px;
-  padding-bottom: 13px;
-  color: var(--lc-ink);
-  border-bottom: 2px dashed #e6c8b9;
-}
-.sidebar .widget :is(ul, ol) {
-  margin-bottom: 0;
-}
-.sidebar .widget li {
-  margin-bottom: .72em;
-}
-.sidebar .widget li + li {
-  padding-top: .62em;
-  border-top: 1px solid var(--lc-line);
-}
-:where(.comments-area, .sidebar, .search-form) :is(input[type="text"], input[type="email"], input[type="url"], input[type="search"], textarea) {
-  box-sizing: border-box;
-  max-width: 100%;
-  min-height: 44px;
-  padding: 10px 12px;
-  color: var(--lc-ink);
-  background: #fff;
-  border: 1px solid var(--lc-strong-line);
-  border-radius: var(--lc-radius-small);
-}
-:where(.comments-area, .sidebar, .search-form) :is(input, textarea)::placeholder {
-  color: var(--lc-muted);
-  opacity: 1;
-}
-.comments-area label,
-.comments-area .comment-content,
-.comments-area .comment-author,
-.comments-area .comment-meta {
-  color: var(--lc-ink);
-}
-.comments-area .form-submit input[type="submit"],
-.search-form button {
-  min-height: 44px;
-  padding: 10px 16px;
-  color: #fff;
-  background: var(--lc-coral);
-  border: 1px solid var(--lc-coral);
-  border-radius: var(--lc-radius-small);
-  cursor: pointer;
-}
-.comments-area .form-submit input[type="submit"]:hover,
-.search-form button:hover {
-  color: #fff;
-  background: var(--lc-coral-hover);
-}
-
-/* ======================================================================
-   11. BLOG, ARCHIVES, GENERATEBLOCKS — EDITORIAL CARDS
-   Existing markup only. A new illustrated hero needs HTML and its own image.
-   ====================================================================== */
-.page-header {
-  position: relative;
-  margin-bottom: 26px;
-  padding: clamp(23px, 4vw, 43px);
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 96% 19%, #ffdd95 0 26px, transparent 27px),
-    radial-gradient(circle at 90% 70%, #d6eff2 0 41px, transparent 42px),
-    #fff;
-  border-top: 5px solid var(--lc-orange);
-}
-.page-header :is(.entry-title, h1, .page-title) {
-  position: relative;
-  margin: 0;
-  color: var(--lc-ink);
-  text-wrap: balance;
-}
-.page-header :is(.taxonomy-description, .archive-description, p) {
-  position: relative;
-  margin-top: 13px;
-  color: var(--lc-muted);
-}
-.page-header .taxonomy-description p {
-  margin: 0;
-}
-.blog .post,
-.archive .post {
-  margin-bottom: 26px;
-}
-.blog .post + .post,
-.archive .post + .post {
-  margin-top: 0;
-}
-/* The GP article wrapper is already padded; never double-frame the post. */
-.blog .post .inside-article,
-.archive .post .inside-article,
-.gb-loop-item,
-.wp-block-post-template > li {
-  color: var(--lc-ink);
-  background: var(--lc-paper);
-  border: 1px solid var(--lc-line);
-  border-radius: var(--lc-radius);
-  box-shadow: var(--lc-shadow);
-  transition: background-color var(--lc-motion), border-color var(--lc-motion), box-shadow var(--lc-motion);
-}
-.blog .post .inside-article:hover,
-.archive .post .inside-article:hover,
-.gb-loop-item:hover,
-.wp-block-post-template > li:hover {
-  background: #fffefb;
-  border-color: #edaa91;
-  box-shadow: 0 8px 0 -4px #f8c4ad, 0 20px 34px -27px rgb(33 50 51 / 24%);
-}
-.gb-loop-item,
-.wp-block-post-template > li {
-  box-sizing: border-box;
-  min-width: 0;
-  margin-bottom: 23px;
-  padding: clamp(20px, 2.7vw, 32px);
-}
-.generate-column-container {
-  min-width: 0;
-}
-.blog .entry-title,
-.archive .entry-title,
-.gb-loop-item .entry-title,
-.wp-block-post-template .entry-title,
-.wp-block-post-title {
-  margin-bottom: 10px;
-}
-.blog .entry-meta,
-.archive .entry-meta,
-.gb-loop-item .entry-meta,
-.wp-block-post-template .entry-meta,
-.wp-block-post-date,
-.wp-block-post-author,
-.wp-block-post-terms {
-  margin: 8px 0 12px;
-  color: var(--lc-muted);
-}
-.blog .entry-summary,
-.archive .entry-summary,
-.gb-loop-item .entry-summary,
-.wp-block-post-excerpt,
-.wp-block-post-excerpt p,
-.entry-summary p {
-  margin: 12px 0;
-  color: var(--lc-muted);
-}
-.blog .post-image,
-.archive .post-image,
-.gb-loop-item .post-image,
-.wp-block-post-featured-image,
-.blog .featured-image,
-.archive .featured-image {
-  margin-bottom: 18px;
-}
-.blog .post-image img,
-.archive .post-image img,
-.gb-loop-item .post-image img,
-.wp-block-post-featured-image img,
-.blog .featured-image img,
-.archive .featured-image img {
-  width: 100%;
-  height: auto;
-  border: 1px solid var(--lc-line);
-  border-radius: var(--lc-radius-small);
-  object-fit: cover;
-}
-.blog .read-more,
-.archive .read-more,
-.gb-loop-item .read-more,
-.wp-block-read-more,
-.entry-summary .read-more,
-.more-link {
+.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  max-width: 100%;
   min-height: 44px;
-  margin-top: 12px;
-  padding: 8px 15px;
-  color: var(--lc-coral-hover);
-  background: var(--lc-peach);
-  border: 1px solid #eab8a4;
-  border-radius: var(--lc-radius-small);
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
   text-decoration: none;
-  transition: color var(--lc-motion), background-color var(--lc-motion), border-color var(--lc-motion);
+  cursor: pointer;
+  transition: background-color var(--gd-motion), border-color var(--gd-motion), color var(--gd-motion);
 }
-.blog .read-more:hover,
-.archive .read-more:hover,
-.gb-loop-item .read-more:hover,
-.wp-block-read-more:hover,
-.more-link:hover {
+.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button):not(.has-background) {
+  background: var(--gd-accent);
+  border-color: var(--gd-accent);
+}
+.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button):not(.has-text-color) {
   color: #fff;
-  background: var(--lc-coral);
-  border-color: var(--lc-coral);
 }
-.blog .read-more::after,
-.archive .read-more::after,
-.more-link::after {
+.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button):not(.has-background):hover {
+  background: var(--gd-accent-ink);
+  border-color: var(--gd-accent-ink);
+}
+.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button):not(.has-text-color):hover {
+  color: #fff;
+}
+.entry-content .is-style-outline .wp-block-button__link:not(.has-background) {
+  background: transparent;
+  border-color: var(--gd-line-strong);
+}
+.entry-content .is-style-outline .wp-block-button__link:not(.has-text-color) {
+  color: var(--gd-text);
+}
+.entry-content .is-style-outline .wp-block-button__link:not(.has-background):hover {
+  background: var(--gd-panel);
+  border-color: var(--gd-text);
+}
+.entry-content .is-style-outline .wp-block-button__link:not(.has-text-color):hover {
+  color: var(--gd-text);
+}
+
+
+/* ==========================================================================
+   08  SINGLE POST: FOOTER, POST NAVIGATION, COMMENTS
+   ========================================================================== */
+.single-post footer.entry-meta {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gd-line);
+}
+.single-post footer.entry-meta :is(.cat-links, .tags-links) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 0; /* hides the commas between links */
+}
+.single-post footer.entry-meta :is(.cat-links, .tags-links)::before {
+  margin-right: 6px;
+  color: var(--gd-muted);
+  font-family: var(--gd-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.single-post footer.entry-meta .cat-links::before {
+  content: "Filed under";
+}
+.single-post footer.entry-meta .tags-links::before {
+  content: "Tags";
+}
+.single-post footer.entry-meta :is(.cat-links, .tags-links) .gp-icon {
+  display: none;
+}
+.single-post footer.entry-meta :is(.cat-links, .tags-links) a {
+  padding: 4px 9px;
+  color: var(--gd-text);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line-strong);
+  border-radius: 4px;
+  font-family: var(--gd-mono);
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.single-post footer.entry-meta :is(.cat-links, .tags-links) a:hover {
+  border-color: var(--gd-text);
+}
+
+.post-navigation {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+.post-navigation :is(.nav-previous, .nav-next) {
+  padding: 14px 16px;
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line);
+  border-radius: var(--gd-radius);
+  transition: border-color var(--gd-motion);
+}
+.post-navigation :is(.nav-previous, .nav-next):hover {
+  border-color: var(--gd-line-strong);
+}
+.post-navigation .nav-next {
+  grid-column: 2;
+  text-align: right;
+}
+.post-navigation :is(.nav-previous, .nav-next)::before {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--gd-muted);
+  font-family: var(--gd-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.post-navigation .nav-previous::before {
+  content: "← Previous";
+}
+.post-navigation .nav-next::before {
+  content: "Next →";
+}
+.post-navigation .gp-icon {
+  display: none;
+}
+.post-navigation a {
+  color: var(--gd-text);
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.single-post .comments-area {
+  max-width: var(--gd-article);
+  margin-inline: auto;
+}
+.separate-containers .comments-area {
+  padding: clamp(20px, 3vw, 32px);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line);
+  border-radius: 10px;
+}
+.comments-area :is(.comments-title, .comment-reply-title) {
+  color: var(--gd-text);
+}
+.comments-area :is(.comment-author, .comment-content, label) {
+  color: var(--gd-text);
+}
+.comments-area .comment-metadata {
+  font-family: var(--gd-mono);
+  font-size: 12.5px;
+}
+
+
+/* ==========================================================================
+   09  BLOG, ARCHIVES AND SEARCH
+   ========================================================================== */
+.separate-containers .page-header {
+  margin-bottom: 28px;
+  padding: 0 0 20px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--gd-line);
+}
+.page-header :is(.page-title, h1) {
+  margin: 0;
+  color: var(--gd-text);
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+.page-header :is(.taxonomy-description, .archive-description) {
+  max-width: var(--gd-reading);
+  margin-top: 10px;
+  color: var(--gd-muted);
+}
+.page-header :is(.taxonomy-description, .archive-description) p {
+  margin: 0;
+}
+
+:is(.blog, .archive, .search) .post .inside-article,
+.gb-loop-item,
+.gb-query-loop-item,
+.wp-block-post-template > li {
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line);
+  border-radius: 10px;
+  box-shadow: none;
+  transition: border-color var(--gd-motion);
+}
+:is(.blog, .archive, .search) .post .inside-article:hover,
+.gb-loop-item:hover,
+.gb-query-loop-item:hover,
+.wp-block-post-template > li:hover {
+  border-color: var(--gd-line-strong);
+}
+:is(.blog, .archive, .search) .post {
+  margin-bottom: 20px;
+}
+.wp-block-post-template > li {
+  padding: clamp(20px, 2.6vw, 28px);
+}
+:is(.blog, .archive, .search) .entry-title {
+  margin-bottom: 8px;
+  line-height: 1.2;
+  letter-spacing: -.012em;
+  text-wrap: balance;
+}
+:is(.blog, .archive, .search) .entry-meta,
+:is(.wp-block-post-date, .wp-block-post-author) {
+  color: var(--gd-muted);
+  font-family: var(--gd-mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+:is(.blog, .archive, .search) .entry-summary,
+.wp-block-post-excerpt {
+  color: var(--gd-muted);
+}
+:is(.blog, .archive, .search) .entry-summary p {
+  margin-bottom: .6em;
+}
+:is(.blog, .archive, .search) :is(.post-image, .featured-image) img,
+.wp-block-post-featured-image img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--gd-line);
+  border-radius: 6px;
+  object-fit: cover;
+}
+.inside-article :is(.read-more, .more-link),
+.wp-block-read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  color: var(--gd-accent-ink);
+  background: none;
+  border: 0;
+  font-weight: 600;
+  text-decoration: none;
+}
+.inside-article :is(.read-more, .more-link)::after,
+.wp-block-read-more::after {
   content: "→";
-  margin-inline-start: 6px;
+  transition: transform var(--gd-motion);
 }
-.blog .cat-links a,
-.archive .cat-links a,
-.gb-loop-item .entry-meta .cat-links a,
+.inside-article :is(.read-more, .more-link):hover::after,
+.wp-block-read-more:hover::after {
+  transform: translateX(3px);
+}
+:is(.blog, .archive, .search) :is(.cat-links, .tags-links) a,
 .wp-block-post-terms a {
   display: inline-block;
   margin: 2px 4px 2px 0;
-  padding: 4px 10px;
-  color: var(--lc-blue-hover);
-  background: var(--lc-pale-blue);
-  border: 1px solid #add6df;
-  border-radius: 50px;
+  padding: 3px 8px;
+  color: var(--gd-text);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line-strong);
+  border-radius: 4px;
+  font-family: var(--gd-mono);
+  font-size: 12px;
   text-decoration: none;
 }
-.blog .cat-links a:hover,
-.archive .cat-links a:hover,
-.gb-loop-item .entry-meta .cat-links a:hover,
+:is(.blog, .archive, .search) :is(.cat-links, .tags-links) a:hover,
 .wp-block-post-terms a:hover {
-  color: var(--lc-coral-hover);
-  background: var(--lc-peach);
+  border-color: var(--gd-text);
+}
+.no-results .inside-article {
+  text-align: center;
+}
+.no-results .inside-article p {
+  color: var(--gd-muted);
 }
 
-/* ======================================================================
-   12. PAGINATION, POST NAVIGATION, EMPTY STATES
-   ====================================================================== */
+
+/* ==========================================================================
+   10  SIDEBAR, FORMS AND PAGINATION
+   ========================================================================== */
+.sidebar .widget {
+  padding: 22px;
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line);
+  border-radius: 10px;
+}
+.sidebar :is(.widget-title, .widget > :is(h2, h3):first-child) {
+  margin: 0 0 12px;
+  color: var(--gd-muted);
+  font-family: var(--gd-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.sidebar .widget :is(ul, ol) {
+  margin: 0;
+  list-style: none;
+}
+.sidebar .widget li {
+  margin: 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--gd-line);
+}
+.sidebar .widget li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+:is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input[type="text"], input[type="email"], input[type="url"], input[type="search"], textarea, select) {
+  min-height: 44px;
+  max-width: 100%;
+  padding: 10px 12px;
+  color: var(--gd-text);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line-strong);
+  border-radius: 6px;
+}
+:is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input, textarea):focus {
+  border-color: var(--gd-accent);
+}
+:is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input, textarea)::placeholder {
+  color: var(--gd-muted);
+  opacity: 1;
+}
+:is(.comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button) {
+  min-height: 44px;
+  padding: 10px 18px;
+  color: #fff;
+  background: var(--gd-accent);
+  border: 1px solid var(--gd-accent);
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+:is(.comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button):hover {
+  color: #fff;
+  background: var(--gd-accent-ink);
+  border-color: var(--gd-accent-ink);
+}
+
+.separate-containers .paging-navigation {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
 .nav-links .page-numbers {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  margin: 3px;
-  padding: 7px 12px;
-  color: var(--lc-ink);
-  background: #fff;
-  border: 1px solid var(--lc-line);
-  border-radius: var(--lc-radius-small);
+  min-width: 40px;
+  height: 40px;
+  margin: 2px;
+  padding: 0 12px;
+  color: var(--gd-text);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line);
+  border-radius: 6px;
+  font-family: var(--gd-mono);
+  font-size: 13.5px;
+  line-height: 1;
   text-decoration: none;
 }
 .nav-links .page-numbers:hover {
-  color: var(--lc-coral-hover);
-  background: var(--lc-peach);
-  border-color: #edb89e;
+  border-color: var(--gd-line-strong);
 }
 .nav-links .page-numbers.current {
-  color: #fff;
-  background: var(--lc-coral);
-  border-color: var(--lc-coral);
+  color: var(--gd-term-ink);
+  background: var(--gd-term-bg);
+  border-color: var(--gd-term-bg);
 }
-.no-results .inside-article {
-  padding: clamp(28px, 5vw, 60px);
-  text-align: center;
-}
-.no-results .inside-article :is(h1, .page-title) {
-  color: var(--lc-ink);
-}
-.no-results .inside-article p {
-  color: var(--lc-muted);
-}
-.author :is(.author-info, .author-avatar) {
-  color: var(--lc-ink);
-}
-.author .author-avatar img {
-  border: 3px solid var(--lc-orange);
-  border-radius: 50%;
-}
-.post-navigation {
-  margin-top: 26px;
-  padding: 24px;
-  border-top: 4px solid var(--lc-orange);
-}
-.post-navigation :is(.nav-previous, .nav-next) {
-  color: var(--lc-muted);
+.nav-links .page-numbers.dots {
+  background: transparent;
+  border-color: transparent;
 }
 
-/* ======================================================================
-   13. FOOTER — INKY ANCHOR FOR THE AIRY DESIGN
-   ====================================================================== */
+
+/* ==========================================================================
+   11  SITE FOOTER
+   Footer link colors stay under Customizer > Colors > Footer.
+   ========================================================================== */
 .site-footer,
+.footer-widgets,
+.site-info {
+  color: #a9bdb0;
+  background: var(--gd-term-bg);
+}
 .footer-widgets {
-  color: #edf6f7;
-  background: #172b36;
+  border-top: 1px solid var(--gd-term-line);
 }
 .footer-widgets :is(h2, h3, h4, .widget-title) {
   color: #fff;
-  border-color: #41545c;
 }
 .site-info {
-  color: #d0dde0;
-  background: #10232d;
-  border-top: 1px solid #41545c;
+  border-top: 1px solid var(--gd-term-line);
+  font-family: var(--gd-mono);
+  font-size: 13px;
 }
 
-/* ======================================================================
-   14. RESPONSIVE — PRESERVE THE NATIVE GENERATEPRESS MENU BEHAVIOR
-   ====================================================================== */
+
+/* ==========================================================================
+   12  RESPONSIVE
+   768px matches GeneratePress's default mobile menu breakpoint.
+   ========================================================================== */
 @media (min-width: 769px) {
   .main-navigation .main-nav > ul {
     display: flex;
     align-items: center;
-    gap: 3px;
-  }
-}
-@media (min-width: 769px) and (max-width: 1100px) {
-  .main-navigation .inside-navigation {
-    justify-content: space-between;
-    gap: 8px;
-  }
-  .main-navigation .navigation-branding {
-    margin-right: auto;
-  }
-  .main-navigation .navigation-branding img {
-    height: 36px;
-    max-height: 36px;
-  }
-  .main-navigation .main-nav > ul {
-    gap: 0;
-  }
-  .main-navigation .main-nav > ul > li > a {
-    padding-inline: 8px;
+    gap: 2px;
   }
 }
 @media (max-width: 768px) {
-  .site-content {
-    padding-block: 18px;
-  }
   .main-navigation .inside-navigation,
   #mobile-header .inside-navigation {
-    min-height: 64px;
-    padding: 9px 15px;
+    min-height: 58px;
+    padding-inline: 16px;
     gap: 8px;
   }
   .main-navigation .navigation-branding {
     flex: 1 1 auto;
-    justify-content: flex-start;
-    min-width: 0;
-    margin: 0 auto 0 0;
-  }
-  .main-navigation .navigation-branding img,
-  #mobile-header .mobile-header-logo img {
-    height: 36px;
-    max-height: 36px;
   }
   .main-navigation.toggled .main-nav > ul,
   #mobile-header.toggled .main-nav > ul {
-    margin: 10px 0 3px;
-    padding: 7px;
-    background: var(--terminal-deep) !important;
-    border: 1px solid var(--terminal-line);
-    border-radius: 7px;
+    margin: 8px 0 12px;
+    padding: 6px;
+    background: var(--gd-term-raised);
+    border: 1px solid var(--gd-term-line);
+    border-radius: var(--gd-radius);
   }
   .main-navigation .main-nav > ul > li > a,
   #mobile-header .main-nav > ul > li > a {
-    justify-content: flex-start;
-    min-height: 46px;
-    padding: 11px 14px;
+    min-height: 44px;
+    padding: 0 12px;
+    line-height: 44px;
   }
   .main-navigation .main-nav ul ul,
   #mobile-header .main-nav ul ul {
     width: auto;
-    margin: 4px 7px 9px;
+    margin: 2px 0 6px 12px;
+    padding: 0;
+    background: transparent;
+    border: 0;
     box-shadow: none;
   }
-  .separate-containers .inside-article {
-    padding: 25px 20px;
-  }
-  .entry-content > h2 {
-    padding-bottom: 12px;
+  .single-post .entry-header {
+    margin-bottom: 22px;
   }
   .entry-content pre {
-    padding: 17px;
+    padding: 14px;
+    font-size: 13px;
   }
   .entry-content table :is(th, td) {
-    padding: 12px 14px;
+    padding: 10px 12px;
   }
-  .entry-content .btn-primary {
-    max-width: 100%;
-    margin-right: 0;
-  }
-  .gb-loop-item,
-  .wp-block-post-template > li {
-    padding: 19px 17px;
-    margin-bottom: 17px;
-  }
-  .page-header {
-    margin-bottom: 17px;
-    padding: 22px 19px;
-  }
-  .blog .post,
-  .archive .post {
-    margin-bottom: 17px;
+  .separate-containers .page-header {
+    margin-bottom: 20px;
   }
 }
-@media (max-width: 360px) {
-  .main-navigation .inside-navigation,
-  #mobile-header .inside-navigation {
-    padding-inline: 10px;
-    gap: 6px;
+@media (max-width: 600px) {
+  .post-navigation {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .main-navigation .navigation-branding img {
-    height: 32px;
-    max-height: 32px;
-  }
-  .main-navigation .menu-toggle,
-  #mobile-header .menu-toggle {
-    padding-inline: 10px;
+  .post-navigation .nav-next {
+    grid-column: 1;
   }
 }
+
+
+/* ==========================================================================
+   13  MOTION AND PRINT
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .main-navigation .main-nav a,
-  .entry-content a,
-  .blog .post .inside-article,
-  .archive .post .inside-article,
+  :is(.main-navigation, .site-header) .main-title a::after {
+    animation: none;
+  }
+  .main-navigation *,
+  .entry-content *,
+  .inside-article,
+  .post-navigation *,
   .gb-loop-item,
   .wp-block-post-template > li {
-    transition: none;
+    transition: none !important;
   }
 }
 @media print {
@@ -1083,20 +1355,29 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   .entry-content {
     color: #111 !important;
     background: #fff !important;
-    box-shadow: none !important;
-  }
-  .entry-title,
-  .entry-content > :is(h1, h2, h3, h4, h5, h6) {
-    color: #111 !important;
   }
   .main-navigation,
   #mobile-header,
+  .site-header,
   .sidebar,
-  .site-footer {
+  .comments-area,
+  .post-navigation,
+  .site-footer,
+  .entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) {
     display: none !important;
   }
+  .single-post .inside-article {
+    display: block !important;
+    max-width: none;
+  }
+  .single-post .inside-article > .entry-content {
+    display: block !important;
+  }
   .entry-content pre {
+    color: #111;
+    background: #f4f4f4;
+    border-color: #ccc;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
-  }
+}
