@@ -2,7 +2,7 @@
 Theme Name:   GameDev AI Hub Child
 Template:     generatepress
 Description:  Docs layout with a minimal navbar and a reading-progress table of contents. Typography comes from the GeneratePress Customizer; this file loads no fonts.
-Version:      13.0.0
+Version:      14.0.0
 */
 
 /* ==========================================================================
@@ -31,48 +31,48 @@ Version:      13.0.0
 /* 01  TOKENS
    ========================================================================== */
 :root {
-  --gd-bg: #f6f5f1;
-  --gd-panel: #fff;
-  --gd-text: #15191c;
-  --gd-muted: #5a6369;
-  --gd-faint: #7d8580;
-  --gd-line: #e4e1da;
-  --gd-line-strong: #cfcbc2;
+  --gdh-bg: #f6f5f1;
+  --gdh-panel: #fff;
+  --gdh-text: #15191c;
+  --gdh-muted: #5a6369;
+  --gdh-faint: #7d8580;
+  --gdh-line: #e4e1da;
+  --gdh-line-strong: #cfcbc2;
 
-  --gd-accent: #0d7a4e;
-  --gd-accent-ink: #0a5c3b;
-  --gd-accent-soft: #e8f4ed;
+  --gdh-accent: #0d7a4e;
+  --gdh-accent-ink: #0a5c3b;
+  --gdh-accent-soft: #e8f4ed;
 
-  --gd-info-bg: #eef3f9;
-  --gd-info-line: #cfdcec;
-  --gd-info-ink: #28406b;
-  --gd-warn-bg: #fdf3e2;
-  --gd-warn-line: #f0d9b0;
-  --gd-warn-ink: #7a4508;
+  --gdh-info-bg: #eef3f9;
+  --gdh-info-line: #cfdcec;
+  --gdh-info-ink: #28406b;
+  --gdh-warn-bg: #fdf3e2;
+  --gdh-warn-line: #f0d9b0;
+  --gdh-warn-ink: #7a4508;
 
-  --gd-dark-bg: #0b0f13;
-  --gd-dark-text: #d9e6dc;
-  --gd-dark-ink: #c8f7a8;
-  --gd-dark-muted: #7fa58a;
-  --gd-dark-line: #1d2a22;
-  --gd-dark-edge: #2a3a30;
-  --gd-dark-hover: #13201a;
+  --gdh-dark-bg: #0b0f13;
+  --gdh-dark-text: #d9e6dc;
+  --gdh-dark-ink: #c8f7a8;
+  --gdh-dark-muted: #7fa58a;
+  --gdh-dark-line: #1d2a22;
+  --gdh-dark-edge: #2a3a30;
+  --gdh-dark-hover: #13201a;
 
-  --gd-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  --gd-radius: 8px;
-  --gd-motion: 150ms;
+  --gdh-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --gdh-radius: 8px;
+  --gdh-motion: 150ms;
 
-  --gd-content: 800px;                   /* article column: text, headings, code and cards share its edges */
-  --gd-reading: 100%;                    /* paragraphs fill the column, like the headings above them */
-  --gd-article: calc(var(--gd-content) + 2 * var(--gd-pad-x)); /* single post without a table of contents */
-  --gd-toc: 248px;                       /* table-of-contents column */
-  --gd-toc-gap: clamp(48px, 5vw, 104px); /* space between the two columns */
-  --gd-edge: 24px;                       /* minimum space at the window edges */
-  --gd-pad-x: clamp(16px, 3vw, 24px);
-  --gd-sticky-top: 24px;                 /* functions.php raises this under a sticky navbar */
+  --gdh-content: 800px;                   /* article column: text, headings, code and cards share its edges */
+  --gdh-reading: 100%;                    /* paragraphs fill the column, like the headings above them */
+  --gdh-article: calc(var(--gdh-content) + 2 * var(--gdh-pad-x)); /* single post without a table of contents */
+  --gdh-toc: 248px;                       /* table-of-contents column */
+  --gdh-toc-gap: clamp(48px, 5vw, 104px); /* space between the two columns */
+  --gdh-edge: 24px;                       /* minimum space at the window edges */
+  --gdh-pad-x: clamp(16px, 3vw, 24px);
+  --gdh-sticky-top: 24px;                 /* functions.php raises this under a sticky navbar */
 }
 .admin-bar {
-  --gd-sticky-top: 56px;
+  --gdh-sticky-top: 56px;
 }
 
 
@@ -80,8 +80,8 @@ Version:      13.0.0
    ========================================================================== */
 body,
 .one-container .container {
-  color: var(--gd-text);
-  background-color: var(--gd-bg);
+  color: var(--gdh-text);
+  background-color: var(--gdh-bg);
 }
 :where(.site-content, .content-area, .site-main, .inside-article, .entry-content,
        .entry-summary, .gb-loop-item, .gb-query-loop-item, .wp-block-post-template > li) {
@@ -97,12 +97,12 @@ body,
   height: auto;
 }
 :focus-visible {
-  outline: 2px solid var(--gd-accent);
+  outline: 2px solid var(--gdh-accent);
   outline-offset: 2px;
 }
 ::selection {
-  color: var(--gd-dark-bg);
-  background: var(--gd-dark-ink);
+  color: var(--gdh-dark-bg);
+  background: var(--gdh-dark-ink);
 }
 
 
@@ -111,24 +111,24 @@ body,
    a "Menu" button on the right. The menu opens as a full-screen panel with
    large links at every screen size (GeneratePress's own menu toggle).
    Covers the primary navigation, the separate site header (if enabled) and
-   the GP Premium mobile header. Selectors start with "body" so they outrank
+   the GP Premium mobile header. Selectors start with "html body" so they outrank
    navbar CSS left in Additional CSS or a plugin; !important only where
    GeneratePress's Customizer colors would win.
    ========================================================================== */
-body :is(.site-header, .main-navigation, #mobile-header) {
-  color: var(--gd-text);
-  background: var(--gd-bg) !important;
+html body :is(.site-header, .main-navigation, #mobile-header) {
+  color: var(--gdh-text);
+  background: var(--gdh-bg) !important;
   background-image: none !important;
   border-bottom: 0;
   box-shadow: none;
 }
-body .main-navigation.navigation-stick {
-  box-shadow: 0 1px 0 var(--gd-line);
+html body .main-navigation.navigation-stick {
+  box-shadow: 0 1px 0 var(--gdh-line);
 }
-body .site-header .site-description {
-  color: var(--gd-muted);
+html body .site-header .site-description {
+  color: var(--gdh-muted);
 }
-body :is(.main-navigation, #mobile-header) .inside-navigation {
+html body :is(.main-navigation, #mobile-header) .inside-navigation {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -136,7 +136,7 @@ body :is(.main-navigation, #mobile-header) .inside-navigation {
   min-height: 80px;
   padding-inline: clamp(16px, 4vw, 48px);
 }
-body :is(.main-navigation, #mobile-header) .navigation-branding {
+html body :is(.main-navigation, #mobile-header) .navigation-branding {
   display: flex;
   align-items: center;
   order: 0;
@@ -145,52 +145,54 @@ body :is(.main-navigation, #mobile-header) .navigation-branding {
 }
 /* functions.php prints the brand in place of GeneratePress's logo, so
    logo images set in the Customizer must not show beside it. */
-body :is(.main-navigation, #mobile-header, .site-header) :is(.site-logo, .mobile-header-logo, .sticky-navigation-logo):not(:has(.gd-brand)) {
+html body :is(.main-navigation, #mobile-header, .site-header) :is(.site-logo, .mobile-header-logo, .sticky-navigation-logo):not(:has(.gd-brand)) {
   display: none !important;
 }
 
 /* Brand from functions.php: Bracket G mark + "GameDev AI Hub" */
-body .gd-brand {
+html body .gd-brand {
   margin: 0;
   line-height: 1.2;
 }
-body .gd-brand a {
+html body :is(.main-navigation, #mobile-header, .site-header) .gd-brand a,
+html body .gd-brand a {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--gd-text) !important;
+  color: var(--gdh-text) !important;
   text-decoration: none;
   white-space: nowrap;
 }
-body .gd-brand__mark {
+html body .gd-brand__mark {
   flex-shrink: 0;
   width: 38px;
   height: 38px;
 }
-body .gd-brand__word {
+html body .gd-brand__word {
   font-size: clamp(18px, 1.7vw, 23px);
   font-weight: 800;
   letter-spacing: -.03em;
 }
-body .gd-brand__word b {
-  color: var(--gd-accent);
+html body :is(.main-navigation, #mobile-header, .site-header) .gd-brand__word b,
+html body .gd-brand__word b {
+  color: var(--gdh-accent) !important;
   font-weight: 800;
 }
 
 /* Switch off decorations left by older navbar CSS (">", "[ ]", "./", "_"). */
-body :is(.main-navigation, #mobile-header, .site-header) :is(.main-title a, .main-nav a, .mobile-menu)::before,
-body :is(.main-navigation, #mobile-header, .site-header) :is(.main-title a, .main-nav a, .mobile-menu)::after {
+html body :is(.main-navigation, #mobile-header, .site-header) :is(.main-title a, .main-nav a, .mobile-menu)::before,
+html body :is(.main-navigation, #mobile-header, .site-header) :is(.main-title a, .main-nav a, .mobile-menu)::after {
   content: none !important;
 }
 
 /* Search and Menu buttons */
-body :is(.main-navigation, #mobile-header) .menu-bar-items {
+html body :is(.main-navigation, #mobile-header) .menu-bar-items {
   order: 2;
   margin-left: auto;
-  color: var(--gd-text) !important;
+  color: var(--gdh-text) !important;
   background: transparent !important;
 }
-body :is(.main-navigation, #mobile-header) .menu-bar-item > a {
+html body :is(.main-navigation, #mobile-header) .menu-bar-item > a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -198,14 +200,15 @@ body :is(.main-navigation, #mobile-header) .menu-bar-item > a {
   min-width: 0;
   height: 44px;
   padding: 0;
-  color: var(--gd-text) !important;
+  color: var(--gdh-text) !important;
   background: transparent !important;
   border: 0;
   border-radius: 10px;
   line-height: 1;
-  transition: background-color var(--gd-motion);
+  transition: background-color var(--gdh-motion);
 }
-body :is(.main-navigation, #mobile-header) .menu-toggle {
+html body :is(.main-navigation, #mobile-header) button.menu-toggle,
+html body :is(.main-navigation, #mobile-header) .menu-toggle {
   display: inline-flex !important;
   align-items: center;
   gap: 10px;
@@ -213,7 +216,7 @@ body :is(.main-navigation, #mobile-header) .menu-toggle {
   height: 44px;
   margin: 0;
   padding: 0 12px;
-  color: var(--gd-text) !important;
+  color: var(--gdh-text) !important;
   background: transparent !important;
   border: 0;
   border-radius: 10px;
@@ -222,25 +225,25 @@ body :is(.main-navigation, #mobile-header) .menu-toggle {
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color var(--gd-motion);
+  transition: background-color var(--gdh-motion);
 }
-body :is(.main-navigation, #mobile-header) .menu-toggle .gp-icon {
+html body :is(.main-navigation, #mobile-header) .menu-toggle .gp-icon {
   display: none;
 }
-body :is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu {
+html body :is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu {
   padding-left: 0;
 }
 /* Two-line icon that turns into a cross when the menu is open. */
-body :is(.main-navigation, #mobile-header) .menu-toggle::after {
+html body :is(.main-navigation, #mobile-header) .menu-toggle::after {
   content: "";
   width: 22px;
   height: 2px;
   background: currentColor;
   box-shadow: 0 7px 0 currentColor;
   transform: translateY(-3.5px);
-  transition: transform var(--gd-motion), box-shadow var(--gd-motion);
+  transition: transform var(--gdh-motion), box-shadow var(--gdh-motion);
 }
-body :is(.main-navigation, #mobile-header).toggled .menu-toggle::after {
+html body :is(.main-navigation, #mobile-header).toggled .menu-toggle::after {
   box-shadow: none;
   transform: rotate(45deg);
   background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat,
@@ -248,43 +251,43 @@ body :is(.main-navigation, #mobile-header).toggled .menu-toggle::after {
   height: 22px;
   width: 22px;
 }
-body :is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle):is(:hover, :focus-visible) {
+html body :is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle):is(:hover, :focus-visible) {
   background: rgb(21 25 28 / 6%) !important;
 }
-body :is(.main-navigation, #mobile-header) .navigation-search input[type="search"]:is(*, :focus) {
-  color: var(--gd-text);
-  background: var(--gd-bg);
+html body :is(.main-navigation, #mobile-header) .navigation-search input[type="search"]:is(*, :focus) {
+  color: var(--gdh-text);
+  background: var(--gdh-bg);
   border: 0;
   outline: 0;
-  box-shadow: inset 0 -2px 0 var(--gd-accent);
+  box-shadow: inset 0 -2px 0 var(--gdh-accent);
   font-size: 20px;
 }
 
 /* The menu itself: hidden until "Menu" is pressed, then full screen. */
-body :is(.main-navigation, #mobile-header):not(.toggled) .main-nav {
+html body :is(.main-navigation, #mobile-header):not(.toggled) .main-nav {
   display: none !important;
 }
-body :is(.main-navigation, #mobile-header).toggled {
+html body :is(.main-navigation, #mobile-header).toggled {
   position: fixed;
   inset: 0;
   z-index: 9990;
   overflow-y: auto;
   overscroll-behavior: contain;
 }
-body.admin-bar :is(.main-navigation, #mobile-header).toggled {
+html body.admin-bar :is(.main-navigation, #mobile-header).toggled {
   top: 32px;
 }
-body:has(:is(.main-navigation, #mobile-header).toggled) {
+html body:has(:is(.main-navigation, #mobile-header).toggled) {
   overflow: hidden;
 }
-body :is(.main-navigation, #mobile-header):not(.toggled) .inside-navigation {
+html body :is(.main-navigation, #mobile-header):not(.toggled) .inside-navigation {
   flex-wrap: nowrap;
 }
-body :is(.main-navigation, #mobile-header).toggled .inside-navigation {
+html body :is(.main-navigation, #mobile-header).toggled .inside-navigation {
   align-content: flex-start;
   max-width: none;
 }
-body :is(.main-navigation, #mobile-header).toggled .main-nav {
+html body :is(.main-navigation, #mobile-header).toggled .main-nav {
   display: block !important;
   flex-basis: 100%;
   order: 4;
@@ -292,7 +295,7 @@ body :is(.main-navigation, #mobile-header).toggled .main-nav {
   max-width: 1100px;
   margin: clamp(24px, 6vh, 72px) auto 48px;
 }
-body :is(.main-navigation, #mobile-header) .main-nav > ul {
+html body :is(.main-navigation, #mobile-header).toggled .main-nav > ul {
   display: grid !important;
   gap: 4px;
   margin: 0;
@@ -300,15 +303,15 @@ body :is(.main-navigation, #mobile-header) .main-nav > ul {
   background: transparent !important;
   border: 0;
 }
-body :is(.main-navigation, #mobile-header) .main-nav li {
+html body :is(.main-navigation, #mobile-header).toggled .main-nav li {
   float: none;
   width: auto;
   margin: 0;
 }
-body :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
+html body :is(.main-navigation, #mobile-header).toggled .main-nav > ul > li > a {
   display: inline-block;
   padding: 6px 0;
-  color: var(--gd-text) !important;
+  color: var(--gdh-text) !important;
   background: transparent !important;
   border: 0;
   box-shadow: none;
@@ -317,17 +320,18 @@ body :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
   line-height: 1.1;
   letter-spacing: -.035em;
   text-decoration: none;
-  transition: color var(--gd-motion);
+  transition: color var(--gdh-motion);
 }
-body :is(.main-navigation, #mobile-header) .main-nav > ul > li > a:is(:hover, :focus-visible),
-body :is(.main-navigation, #mobile-header) .main-nav > ul > li:is([class*="current-menu-"], [class*="current_page_"]) > a {
-  color: var(--gd-accent) !important;
+html body :is(.main-navigation, #mobile-header).toggled .main-nav > ul > li > a:is(:hover, :focus-visible),
+html body :is(.main-navigation, #mobile-header).toggled .main-nav > ul > li:is([class*="current-menu-"], [class*="current_page_"]) > a {
+  color: var(--gdh-accent) !important;
+  background: transparent !important;
 }
-body :is(.main-navigation, #mobile-header) .main-nav .dropdown-menu-toggle {
+html body :is(.main-navigation, #mobile-header).toggled .main-nav .dropdown-menu-toggle {
   display: none;
 }
 /* Sub-menus show as a row of smaller links under their parent. */
-body :is(.main-navigation, #mobile-header) .main-nav ul ul {
+html body :is(.main-navigation, #mobile-header).toggled .main-nav ul ul {
   position: static !important;
   display: flex !important;
   flex-wrap: wrap;
@@ -345,21 +349,22 @@ body :is(.main-navigation, #mobile-header) .main-nav ul ul {
   left: auto !important;
   pointer-events: auto;
 }
-body :is(.main-navigation, #mobile-header) .main-nav ul ul li a {
+html body :is(.main-navigation, #mobile-header).toggled .main-nav ul ul li a {
   padding: 4px 0;
-  color: var(--gd-muted) !important;
+  color: var(--gdh-muted) !important;
   background: transparent !important;
   font-size: 17px;
   font-weight: 500;
   line-height: 1.4;
   text-decoration: none;
 }
-body :is(.main-navigation, #mobile-header) .main-nav ul ul li a:is(:hover, :focus-visible),
-body :is(.main-navigation, #mobile-header) .main-nav ul ul li.current-menu-item > a {
-  color: var(--gd-accent) !important;
+html body :is(.main-navigation, #mobile-header).toggled .main-nav ul ul li a:is(:hover, :focus-visible),
+html body :is(.main-navigation, #mobile-header).toggled .main-nav ul ul li:is(:hover, .sfHover, :focus-within, .current-menu-item) > a {
+  color: var(--gdh-accent) !important;
+  background: transparent !important;
 }
-body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
-  outline-color: var(--gd-accent);
+html body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
+  outline-color: var(--gdh-accent);
 }
 
 
@@ -372,8 +377,8 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .post-navigation :is(.nav-previous, .nav-next)::before,
 .single-post footer.entry-meta :is(.cat-links, .tags-links)::before,
 .sidebar :is(.widget-title, .widget > :is(h2, h3):first-child) {
-  color: var(--gd-muted);
-  font-family: var(--gd-mono);
+  color: var(--gdh-muted);
+  font-family: var(--gdh-mono);
   font-size: 11px;
   font-weight: 600;
   line-height: 1.3;
@@ -389,11 +394,11 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   display: inline-block;
   margin: 0;
   padding: 4px 9px;
-  color: var(--gd-text);
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line-strong);
+  color: var(--gdh-text);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line-strong);
   border-radius: 4px;
-  font-family: var(--gd-mono);
+  font-family: var(--gdh-mono);
   font-size: 12.5px;
   line-height: 1.4;
   text-decoration: none;
@@ -401,7 +406,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 :is(.single-post footer.entry-meta :is(.cat-links, .tags-links) a,
     :is(.blog, .archive, .search) :is(.cat-links, .tags-links) a,
     .wp-block-post-terms a):hover {
-  border-color: var(--gd-text);
+  border-color: var(--gdh-text);
 }
 
 /* Buttons. Colors picked in the block editor still win. */
@@ -421,12 +426,12 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color var(--gd-motion), border-color var(--gd-motion), color var(--gd-motion);
+  transition: background-color var(--gdh-motion), border-color var(--gdh-motion), color var(--gdh-motion);
 }
 :is(.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button),
     .comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button):not(.has-background) {
-  background: var(--gd-accent);
-  border-color: var(--gd-accent);
+  background: var(--gdh-accent);
+  border-color: var(--gdh-accent);
 }
 :is(.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button),
     .comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button):not(.has-text-color) {
@@ -435,18 +440,18 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 :is(.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button),
     .comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button):not(.has-background):hover {
   color: #fff;
-  background: var(--gd-accent-ink);
-  border-color: var(--gd-accent-ink);
+  background: var(--gdh-accent-ink);
+  border-color: var(--gdh-accent-ink);
 }
 .entry-content .is-style-outline .wp-block-button__link:not(.has-background) {
-  color: var(--gd-text);
+  color: var(--gdh-text);
   background: transparent;
-  border-color: var(--gd-line-strong);
+  border-color: var(--gdh-line-strong);
 }
 .entry-content .is-style-outline .wp-block-button__link:not(.has-background):hover {
-  color: var(--gd-text);
-  background: var(--gd-panel);
-  border-color: var(--gd-text);
+  color: var(--gdh-text);
+  background: var(--gdh-panel);
+  border-color: var(--gdh-text);
 }
 .entry-content .wp-block-buttons {
   display: flex;
@@ -459,16 +464,16 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   min-height: 44px;
   max-width: 100%;
   padding: 10px 12px;
-  color: var(--gd-text);
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line-strong);
+  color: var(--gdh-text);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line-strong);
   border-radius: 6px;
 }
 :is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input, textarea):focus {
-  border-color: var(--gd-accent);
+  border-color: var(--gdh-accent);
 }
 :is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input, textarea)::placeholder {
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
   opacity: 1;
 }
 
@@ -481,11 +486,11 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
    plus its gap, the article moves right just enough to make room.
    ========================================================================== */
 .single-post .inside-article {
-  max-width: var(--gd-article);
+  max-width: var(--gdh-article);
   margin-inline: auto;
 }
 .single-post.separate-containers .inside-article {
-  padding: clamp(28px, 4vw, 56px) var(--gd-pad-x) clamp(32px, 5vw, 64px);
+  padding: clamp(28px, 4vw, 56px) var(--gdh-pad-x) clamp(32px, 5vw, 64px);
   background: transparent;
   border: 0;
   box-shadow: none;
@@ -494,7 +499,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   margin-top: 0;
 }
 .single-post .comments-area {
-  max-width: var(--gd-article);
+  max-width: var(--gdh-article);
   margin-inline: auto;
 }
 
@@ -503,27 +508,27 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
     overflow-x: clip;
   }
   .single-post :is(.gd-has-toc, .site-main > .gd-has-toc ~ .comments-area) {
-    --gd-vw-used: var(--gd-vw, 100vw);
+    --gdh-vw-used: var(--gdh-vw, 100vw);
     /* Width of the left margin when the article is centred. */
-    --gd-margin: max(var(--gd-toc) + var(--gd-toc-gap), (var(--gd-vw-used) - 2 * var(--gd-edge) - var(--gd-content)) / 2);
+    --gdh-margin: max(var(--gdh-toc) + var(--gdh-toc-gap), (var(--gdh-vw-used) - 2 * var(--gdh-edge) - var(--gdh-content)) / 2);
   }
   .single-post .gd-has-toc > .inside-article {
     display: grid;
-    grid-template-columns: var(--gd-margin) minmax(0, var(--gd-content)) minmax(0, 1fr);
+    grid-template-columns: var(--gdh-margin) minmax(0, var(--gdh-content)) minmax(0, 1fr);
     align-items: start;
-    width: var(--gd-vw-used);
+    width: var(--gdh-vw-used);
     max-width: none;
-    margin-left: calc(50% - var(--gd-vw-used) / 2);
-    padding-inline: var(--gd-edge);
+    margin-left: calc(50% - var(--gdh-vw-used) / 2);
+    padding-inline: var(--gdh-edge);
   }
   .single-post .gd-has-toc > .inside-article > * {
     grid-column: 2;
   }
   /* Comments line up with the article column. */
   .single-post .site-main > .gd-has-toc ~ .comments-area {
-    width: min(var(--gd-content), var(--gd-vw-used) - 2 * var(--gd-edge) - var(--gd-margin));
+    width: min(var(--gdh-content), var(--gdh-vw-used) - 2 * var(--gdh-edge) - var(--gdh-margin));
     max-width: none;
-    margin-left: calc(50% - var(--gd-vw-used) / 2 + var(--gd-edge) + var(--gd-margin));
+    margin-left: calc(50% - var(--gdh-vw-used) / 2 + var(--gdh-edge) + var(--gdh-margin));
     margin-right: 0;
   }
 }
@@ -535,20 +540,20 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 /* ~/category/subcategory */
 .gd-crumb {
   margin: 0 0 12px;
-  color: var(--gd-muted);
-  font-family: var(--gd-mono);
+  color: var(--gdh-muted);
+  font-family: var(--gdh-mono);
   font-size: 12.5px;
   line-height: 1.5;
 }
 .gd-crumb a {
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
   text-decoration: none;
 }
 .gd-crumb a:last-child {
-  color: var(--gd-accent-ink);
+  color: var(--gdh-accent-ink);
 }
 .gd-crumb a:hover {
-  color: var(--gd-text);
+  color: var(--gdh-text);
 }
 
 .single-post .entry-header {
@@ -557,7 +562,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .single-post .entry-title {
   max-width: 100%;
   margin: 0 0 16px;
-  color: var(--gd-text);
+  color: var(--gdh-text);
   line-height: 1.08;
   letter-spacing: -.024em;
   text-wrap: pretty; /* fill each line; "balance" squeezes long titles into short, even lines */
@@ -565,7 +570,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .gd-dek {
   max-width: 62ch;
   margin: 0 0 22px;
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
   font-size: 1.15em;
   line-height: 1.5;
 }
@@ -577,14 +582,14 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   align-items: center;
   gap: 6px 12px;
   margin: 0;
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
   font-size: 13.5px;
   line-height: 1.5;
 }
 .single-post .entry-header .entry-meta > * + *::before {
   content: "·";
   margin-right: 12px;
-  color: var(--gd-line-strong);
+  color: var(--gdh-line-strong);
   font-size: 13.5px;
 }
 .single-post .entry-header .byline {
@@ -603,12 +608,12 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   border-radius: 50%;
 }
 .single-post .entry-header .entry-meta a {
-  color: var(--gd-text);
+  color: var(--gdh-text);
   font-weight: 600;
   text-decoration: none;
 }
 .single-post .entry-header .entry-meta a:hover {
-  color: var(--gd-accent-ink);
+  color: var(--gdh-accent-ink);
 }
 .single-post .featured-image {
   margin-bottom: 28px;
@@ -616,8 +621,8 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .single-post .featured-image img {
   display: block;
   width: 100%;
-  border: 1px solid var(--gd-line);
-  border-radius: var(--gd-radius);
+  border: 1px solid var(--gdh-line);
+  border-radius: var(--gdh-radius);
 }
 
 
@@ -631,9 +636,9 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   margin: 0 0 28px;
 }
 .gd-toc__box {
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line);
-  border-radius: var(--gd-radius);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line);
+  border-radius: var(--gdh-radius);
 }
 .gd-toc__title {
   display: flex;
@@ -649,14 +654,14 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .gd-toc__title::after {
   content: "▾";
   font-size: 13px;
-  transition: transform var(--gd-motion);
+  transition: transform var(--gdh-motion);
 }
 .gd-toc__box[open] > .gd-toc__title::after {
   transform: rotate(180deg);
 }
 .gd-toc__count {
   margin-left: auto;
-  color: var(--gd-accent-ink);
+  color: var(--gdh-accent-ink);
   font-size: 12px;
   letter-spacing: 0;
   text-transform: none;
@@ -687,20 +692,20 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 }
 .gd-toc__list > li::before {
   bottom: 0;
-  background: var(--gd-line);
+  background: var(--gdh-line);
 }
 .gd-toc__list > li::after {
   height: var(--fill, 0%);
-  background: var(--gd-accent);
+  background: var(--gdh-accent);
 }
 .gd-toc__list a {
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
   text-decoration: none;
   text-wrap: pretty;
-  transition: color var(--gd-motion);
+  transition: color var(--gdh-motion);
 }
 .gd-toc__list a:is(:hover, :focus-visible) {
-  color: var(--gd-text);
+  color: var(--gdh-text);
 }
 .gd-toc__list > li > a {
   display: grid;
@@ -713,25 +718,25 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 }
 .gd-toc__num,
 .gd-toc__min {
-  font-family: var(--gd-mono);
+  font-family: var(--gdh-mono);
   font-variant-numeric: tabular-nums;
 }
 .gd-toc__num {
-  color: var(--gd-faint);
+  color: var(--gdh-faint);
   font-size: 12px;
 }
 .gd-toc__min {
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
   font-size: 11.5px;
 }
 .gd-toc__list > li.is-done .gd-toc__num {
-  color: var(--gd-accent);
+  color: var(--gdh-accent);
 }
 .gd-toc__list > li.is-open > a {
-  color: var(--gd-text);
+  color: var(--gdh-text);
 }
 .gd-toc__list > li.is-open > a .gd-toc__num {
-  color: var(--gd-accent-ink);
+  color: var(--gdh-accent-ink);
 }
 .gd-toc__list > li.is-open > a .gd-toc__text {
   font-weight: 600;
@@ -747,13 +752,13 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   line-height: 1.4;
 }
 .gd-toc__list ul a[aria-current] {
-  color: var(--gd-text);
+  color: var(--gdh-text);
 }
 .gd-toc__list ul a[aria-current]::before {
   content: "›";
   position: absolute;
   left: -12px;
-  color: var(--gd-accent);
+  color: var(--gdh-accent);
 }
 .gd-toc__foot {
   display: flex;
@@ -762,30 +767,30 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   gap: 12px;
   margin: 8px 16px 0;
   padding: 12px 0 14px;
-  color: var(--gd-muted);
-  border-top: 1px solid var(--gd-line);
-  font-family: var(--gd-mono);
+  color: var(--gdh-muted);
+  border-top: 1px solid var(--gdh-line);
+  font-family: var(--gdh-mono);
   font-size: 12.5px;
   line-height: 1.4;
 }
 .gd-toc__top {
-  color: var(--gd-text);
+  color: var(--gdh-text);
   text-decoration: none;
 }
 .gd-toc__top:is(:hover, :focus-visible) {
-  color: var(--gd-accent-ink);
+  color: var(--gdh-accent-ink);
 }
 
 @media (min-width: 1024px) {
   .single-post .gd-has-toc > .inside-article > .gd-toc {
     grid-column: 1;
     grid-row: 1 / span 20;
-    width: var(--gd-toc);
+    width: var(--gdh-toc);
     /* Sit in the outer part of the margin, leaving the larger gap next to the text. */
-    margin-left: max(0px, (var(--gd-margin) - var(--gd-toc) - var(--gd-toc-gap)) * .4);
+    margin-left: max(0px, (var(--gdh-margin) - var(--gdh-toc) - var(--gdh-toc-gap)) * .4);
     position: sticky;
-    top: var(--gd-sticky-top);
-    max-height: calc(100vh - var(--gd-sticky-top) - 24px);
+    top: var(--gdh-sticky-top);
+    max-height: calc(100vh - var(--gdh-sticky-top) - 24px);
     margin-block: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -793,7 +798,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
     scrollbar-color: transparent transparent;
   }
   .single-post .gd-has-toc > .inside-article > .gd-toc:hover {
-    scrollbar-color: var(--gd-line-strong) transparent;
+    scrollbar-color: var(--gdh-line-strong) transparent;
   }
   .single-post .gd-has-toc .gd-toc__box {
     background: transparent;
@@ -828,7 +833,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
    comfortable line length; headings and wide blocks use the full column.
    ========================================================================== */
 .entry-content {
-  color: var(--gd-text);
+  color: var(--gdh-text);
   line-height: 1.72;
 }
 .entry-content > * {
@@ -847,28 +852,28 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   margin-top: .7em;
 }
 .entry-content > :is(p, ul, ol, dl, blockquote) {
-  max-width: var(--gd-reading);
+  max-width: var(--gdh-reading);
 }
 .entry-content :is(h2, h3, h4, h5, h6) {
-  color: var(--gd-text);
+  color: var(--gdh-text);
   line-height: 1.22;
   letter-spacing: -.014em;
   text-wrap: pretty;
 }
 .entry-content [id] {
-  scroll-margin-top: calc(var(--gd-sticky-top) + 8px);
+  scroll-margin-top: calc(var(--gdh-sticky-top) + 8px);
 }
 .entry-content .gd-anchor {
   margin-left: .35em;
-  color: var(--gd-line-strong);
+  color: var(--gdh-line-strong);
   font-weight: 400;
   text-decoration: none;
 }
 .entry-content .gd-anchor:is(:hover, :focus-visible) {
-  color: var(--gd-accent);
+  color: var(--gdh-accent);
 }
 .entry-content :is(strong, b) {
-  color: var(--gd-text);
+  color: var(--gdh-text);
 }
 .entry-content a :is(strong, b) {
   color: inherit;
@@ -881,23 +886,23 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   margin-top: .5em;
 }
 .entry-content li::marker {
-  color: var(--gd-accent);
+  color: var(--gdh-accent);
 }
 .entry-content > hr {
   height: 1px;
   margin-block: 2.5em 1.25em;
-  background: var(--gd-line);
+  background: var(--gdh-line);
   border: 0;
 }
 .entry-content :is(small, figcaption, .wp-element-caption) {
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
 }
 .entry-content :is(figcaption, .wp-element-caption) {
   margin-top: 8px;
   font-size: .875em;
 }
 .entry-content .wp-block-image img {
-  border: 1px solid var(--gd-line);
+  border: 1px solid var(--gdh-line);
   border-radius: 6px;
 }
 
@@ -915,7 +920,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   max-width: none;
   padding: 12px 0;
   list-style: none;
-  border-block: 1px solid var(--gd-line);
+  border-block: 1px solid var(--gdh-line);
 }
 .entry-content .requires::before {
   content: "Requires";
@@ -928,11 +933,11 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   max-width: 100%;
   padding: 16px 18px;
   overflow-x: auto;
-  color: var(--gd-dark-text);
-  background: var(--gd-dark-bg);
-  border: 1px solid var(--gd-dark-line);
-  border-radius: var(--gd-radius);
-  font-family: var(--gd-mono);
+  color: var(--gdh-dark-text);
+  background: var(--gdh-dark-bg);
+  border: 1px solid var(--gdh-dark-line);
+  border-radius: var(--gdh-radius);
+  font-family: var(--gdh-mono);
   font-size: 13.5px;
   line-height: 1.7;
   white-space: pre;
@@ -956,65 +961,65 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   max-width: none;
   min-height: 38px;
   padding: 0 8px 0 16px;
-  color: var(--gd-dark-muted);
-  background: var(--gd-dark-bg);
-  border: 1px solid var(--gd-dark-line);
-  border-radius: var(--gd-radius) var(--gd-radius) 0 0;
-  font-family: var(--gd-mono);
+  color: var(--gdh-dark-muted);
+  background: var(--gdh-dark-bg);
+  border: 1px solid var(--gdh-dark-line);
+  border-radius: var(--gdh-radius) var(--gdh-radius) 0 0;
+  font-family: var(--gdh-mono);
   font-size: 12.5px;
   line-height: 1.4;
 }
 .entry-content .code-file + pre {
   margin-top: 0;
   border-top: 0;
-  border-radius: 0 0 var(--gd-radius) var(--gd-radius);
+  border-radius: 0 0 var(--gdh-radius) var(--gdh-radius);
 }
 .entry-content .gd-copy {
   height: 24px;
   margin-left: auto;
   padding: 0 9px;
-  color: var(--gd-dark-ink);
+  color: var(--gdh-dark-ink);
   background: transparent;
-  border: 1px solid var(--gd-dark-edge);
+  border: 1px solid var(--gdh-dark-edge);
   border-radius: 4px;
-  font-family: var(--gd-mono);
+  font-family: var(--gdh-mono);
   font-size: 12px;
   line-height: 22px;
   cursor: pointer;
 }
 .entry-content .gd-copy:hover {
-  color: var(--gd-dark-ink);
-  background: var(--gd-dark-hover);
+  color: var(--gdh-dark-ink);
+  background: var(--gdh-dark-hover);
 }
 .entry-content :not(pre) > code {
   padding: .15em .4em;
-  color: var(--gd-text);
+  color: var(--gdh-text);
   background: #ebe8e1;
   border-radius: 4px;
-  font-family: var(--gd-mono);
+  font-family: var(--gdh-mono);
   font-size: .875em;
   overflow-wrap: anywhere;
 }
 .entry-content kbd {
   padding: .1em .45em;
-  color: var(--gd-text);
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line-strong);
+  color: var(--gdh-text);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line-strong);
   border-bottom-width: 2px;
   border-radius: 4px;
-  font-family: var(--gd-mono);
+  font-family: var(--gdh-mono);
   font-size: .85em;
 }
 
 /* Callouts: "note" (labelled Note, Warning or Tip), or "key-insight" (no
    label). Add "warning" or "success" for the amber and green versions. */
 .entry-content :where(.note, .key-insight, blockquote.warning, blockquote.success) {
-  max-width: var(--gd-reading);
+  max-width: var(--gdh-reading);
   padding: 14px 18px;
-  color: var(--gd-text);
-  background: var(--gd-info-bg);
-  border: 1px solid var(--gd-info-line);
-  border-radius: var(--gd-radius);
+  color: var(--gdh-text);
+  background: var(--gdh-info-bg);
+  border: 1px solid var(--gdh-info-line);
+  border-radius: var(--gdh-radius);
   font-size: .95em;
   font-style: normal;
 }
@@ -1035,8 +1040,8 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   position: absolute;
   top: 14px;
   left: 18px;
-  color: var(--gd-info-ink);
-  font-family: var(--gd-mono);
+  color: var(--gdh-info-ink);
+  font-family: var(--gdh-mono);
   font-size: 11px;
   font-weight: 600;
   line-height: calc(15px * 1.55);
@@ -1044,30 +1049,30 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   text-transform: uppercase;
 }
 .entry-content :is(.note, .key-insight, blockquote).warning {
-  background: var(--gd-warn-bg);
-  border-color: var(--gd-warn-line);
+  background: var(--gdh-warn-bg);
+  border-color: var(--gdh-warn-line);
 }
 .entry-content .note.warning::before {
   content: "Warning";
-  color: var(--gd-warn-ink);
+  color: var(--gdh-warn-ink);
 }
 .entry-content :is(.note, .key-insight, blockquote).success {
-  background: var(--gd-accent-soft);
+  background: var(--gdh-accent-soft);
   border-color: #bfdccb;
 }
 .entry-content .note.success::before {
   content: "Tip";
-  color: var(--gd-accent-ink);
+  color: var(--gdh-accent-ink);
 }
 
 /* Quotes */
 .entry-content blockquote:not(.warning, .success) {
   margin-inline: 0;
   padding: 2px 0 2px 20px;
-  color: var(--gd-text);
+  color: var(--gdh-text);
   background: none;
   border: 0;
-  border-left: 3px solid var(--gd-accent);
+  border-left: 3px solid var(--gdh-accent);
   font-size: 1.1em;
   font-style: normal;
   line-height: 1.5;
@@ -1081,8 +1086,8 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .entry-content blockquote cite {
   display: block;
   margin-top: 10px;
-  color: var(--gd-muted);
-  font-family: var(--gd-mono);
+  color: var(--gdh-muted);
+  font-family: var(--gdh-mono);
   font-size: 12.5px;
   font-style: normal;
 }
@@ -1093,9 +1098,9 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   display: block;
   max-width: 100%;
   overflow-x: auto;
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line);
-  border-radius: var(--gd-radius);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line);
+  border-radius: var(--gdh-radius);
 }
 .entry-content table {
   width: 100%;
@@ -1113,15 +1118,15 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .entry-content table :is(th, td) {
   padding: 12px 14px;
   border: 0;
-  border-bottom: 1px solid var(--gd-line);
+  border-bottom: 1px solid var(--gdh-line);
   text-align: left;
   vertical-align: top;
 }
 .entry-content table th {
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
   background: #fafaf7;
-  border-bottom-color: var(--gd-line-strong);
-  font-family: var(--gd-mono);
+  border-bottom-color: var(--gdh-line-strong);
+  font-family: var(--gdh-mono);
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: .06em;
@@ -1133,7 +1138,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .entry-content .wp-block-table figcaption {
   margin: 0;
   padding: 10px 14px;
-  border-top: 1px solid var(--gd-line);
+  border-top: 1px solid var(--gdh-line);
   text-align: left;
 }
 
@@ -1143,7 +1148,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .single-post footer.entry-meta {
   margin-top: 48px;
   padding-top: 20px;
-  border-top: 1px solid var(--gd-line);
+  border-top: 1px solid var(--gdh-line);
 }
 .single-post footer.entry-meta :is(.cat-links, .tags-links) {
   display: flex;
@@ -1174,13 +1179,13 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 }
 .post-navigation :is(.nav-previous, .nav-next) {
   padding: 14px 16px;
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line);
-  border-radius: var(--gd-radius);
-  transition: border-color var(--gd-motion);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line);
+  border-radius: var(--gdh-radius);
+  transition: border-color var(--gdh-motion);
 }
 .post-navigation :is(.nav-previous, .nav-next):hover {
-  border-color: var(--gd-line-strong);
+  border-color: var(--gdh-line-strong);
 }
 .post-navigation .nav-next {
   grid-column: 2;
@@ -1197,7 +1202,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   content: "Next →";
 }
 .post-navigation a {
-  color: var(--gd-text);
+  color: var(--gdh-text);
   font-weight: 600;
   line-height: 1.35;
   text-decoration: none;
@@ -1205,15 +1210,15 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 
 .separate-containers .comments-area {
   padding: clamp(20px, 3vw, 32px);
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line);
   border-radius: 10px;
 }
 .comments-area :is(.comments-title, .comment-reply-title, .comment-author, .comment-content, label) {
-  color: var(--gd-text);
+  color: var(--gdh-text);
 }
 .comments-area .comment-metadata {
-  font-family: var(--gd-mono);
+  font-family: var(--gdh-mono);
   font-size: 12.5px;
 }
 
@@ -1225,33 +1230,33 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   padding: 0 0 20px;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--gd-line);
+  border-bottom: 1px solid var(--gdh-line);
 }
 .page-header :is(.page-title, h1) {
   margin: 0;
-  color: var(--gd-text);
+  color: var(--gdh-text);
   line-height: 1.15;
   letter-spacing: -.02em;
   text-wrap: balance;
 }
 .page-header :is(.taxonomy-description, .archive-description) {
-  max-width: var(--gd-reading);
+  max-width: var(--gdh-reading);
   margin-top: 10px;
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
 }
 .page-header :is(.taxonomy-description, .archive-description) p {
   margin: 0;
 }
 
 :is(:is(.blog, .archive, .search) .post .inside-article, .gb-loop-item, .gb-query-loop-item, .wp-block-post-template > li) {
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line);
   border-radius: 10px;
   box-shadow: none;
-  transition: border-color var(--gd-motion);
+  transition: border-color var(--gdh-motion);
 }
 :is(:is(.blog, .archive, .search) .post .inside-article, .gb-loop-item, .gb-query-loop-item, .wp-block-post-template > li):hover {
-  border-color: var(--gd-line-strong);
+  border-color: var(--gdh-line-strong);
 }
 :is(.blog, .archive, .search) .post {
   margin-bottom: 20px;
@@ -1266,13 +1271,13 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   text-wrap: balance;
 }
 :is(:is(.blog, .archive, .search) .entry-meta, .wp-block-post-date, .wp-block-post-author) {
-  color: var(--gd-muted);
-  font-family: var(--gd-mono);
+  color: var(--gdh-muted);
+  font-family: var(--gdh-mono);
   font-size: 12.5px;
   line-height: 1.5;
 }
 :is(:is(.blog, .archive, .search) .entry-summary, .wp-block-post-excerpt) {
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
 }
 :is(.blog, .archive, .search) .entry-summary p {
   margin-bottom: .6em;
@@ -1280,7 +1285,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 :is(:is(.blog, .archive, .search) :is(.post-image, .featured-image), .wp-block-post-featured-image) img {
   width: 100%;
   height: auto;
-  border: 1px solid var(--gd-line);
+  border: 1px solid var(--gdh-line);
   border-radius: 6px;
   object-fit: cover;
 }
@@ -1289,7 +1294,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   align-items: center;
   gap: 6px;
   padding: 0;
-  color: var(--gd-accent-ink);
+  color: var(--gdh-accent-ink);
   background: none;
   border: 0;
   font-weight: 600;
@@ -1297,7 +1302,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 }
 :is(.inside-article :is(.read-more, .more-link), .wp-block-read-more)::after {
   content: "→";
-  transition: transform var(--gd-motion);
+  transition: transform var(--gdh-motion);
 }
 :is(.inside-article :is(.read-more, .more-link), .wp-block-read-more):hover::after {
   transform: translateX(3px);
@@ -1309,7 +1314,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   text-align: center;
 }
 .no-results .inside-article p {
-  color: var(--gd-muted);
+  color: var(--gdh-muted);
 }
 
 
@@ -1318,8 +1323,8 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
    ========================================================================== */
 .sidebar .widget {
   padding: 22px;
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line);
   border-radius: 10px;
 }
 .sidebar :is(.widget-title, .widget > :is(h2, h3):first-child) {
@@ -1332,7 +1337,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 .sidebar .widget li {
   margin: 0;
   padding: 8px 0;
-  border-top: 1px solid var(--gd-line);
+  border-top: 1px solid var(--gdh-line);
 }
 .sidebar .widget li:first-child {
   padding-top: 0;
@@ -1352,22 +1357,22 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   height: 40px;
   margin: 2px;
   padding: 0 12px;
-  color: var(--gd-text);
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line);
+  color: var(--gdh-text);
+  background: var(--gdh-panel);
+  border: 1px solid var(--gdh-line);
   border-radius: 6px;
-  font-family: var(--gd-mono);
+  font-family: var(--gdh-mono);
   font-size: 13.5px;
   line-height: 1;
   text-decoration: none;
 }
 .nav-links .page-numbers:hover {
-  border-color: var(--gd-line-strong);
+  border-color: var(--gdh-line-strong);
 }
 .nav-links .page-numbers.current {
-  color: var(--gd-dark-ink);
-  background: var(--gd-dark-bg);
-  border-color: var(--gd-dark-bg);
+  color: var(--gdh-dark-ink);
+  background: var(--gdh-dark-bg);
+  border-color: var(--gdh-dark-bg);
 }
 .nav-links .page-numbers.dots {
   background: transparent;
@@ -1376,16 +1381,16 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
 
 :is(.site-footer, .footer-widgets, .site-info) {
   color: #a9bdb0;
-  background: var(--gd-dark-bg);
+  background: var(--gdh-dark-bg);
 }
 :is(.footer-widgets, .site-info) {
-  border-top: 1px solid var(--gd-dark-line);
+  border-top: 1px solid var(--gdh-dark-line);
 }
 .footer-widgets :is(h2, h3, h4, .widget-title) {
   color: #fff;
 }
 .site-info {
-  font-family: var(--gd-mono);
+  font-family: var(--gdh-mono);
   font-size: 13px;
 }
 
@@ -1394,25 +1399,25 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
    768px matches GeneratePress's default mobile menu breakpoint.
    ========================================================================== */
 @media (max-width: 768px) {
-  body :is(.main-navigation, #mobile-header) .inside-navigation {
+  html body :is(.main-navigation, #mobile-header) .inside-navigation {
     min-height: 64px;
     padding-inline: 16px;
     gap: 4px;
   }
-  body .gd-brand__mark {
+  html body .gd-brand__mark {
     width: 32px;
     height: 32px;
   }
-  body .gd-brand a {
+  html body .gd-brand a {
     gap: 10px;
   }
-  body .gd-brand__word {
+  html body .gd-brand__word {
     font-size: 17px;
   }
-  body :is(.main-navigation, #mobile-header) .menu-toggle {
+  html body :is(.main-navigation, #mobile-header) .menu-toggle {
     padding: 0 8px;
   }
-  body.admin-bar :is(.main-navigation, #mobile-header).toggled {
+  html body.admin-bar :is(.main-navigation, #mobile-header).toggled {
     top: 46px;
   }
   .single-post .entry-header {
@@ -1430,7 +1435,7 @@ body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   }
 }
 @media (max-width: 400px) {
-  body :is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu {
+  html body :is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu {
     display: none;
   }
 }

@@ -100,6 +100,30 @@ function gdaih_brand_fallback() {
 add_action( 'generate_inside_navigation', 'gdaih_brand_fallback', 100 );
 
 
+/**
+ * First-paint navbar styles, printed in <head> after every stylesheet.
+ *
+ * Optimisation plugins (Perfmatters "Remove Unused CSS", delayed CSS) can
+ * paint the page with an old cached copy of the theme CSS before style.css
+ * arrives, which briefly shows an outdated navbar. These few rules make
+ * the first frame correct no matter what loads first. They mirror section
+ * 03 of style.css; keep the two in step.
+ */
+function gdaih_critical_navbar_css() {
+	$css = 'html body :is(.site-header,.main-navigation,#mobile-header){color:var(--gdh-text,#15191c);background:var(--gdh-bg,#f6f5f1)!important;background-image:none!important;border-bottom:0;box-shadow:none}'
+		. 'html body :is(.main-navigation,#mobile-header,.site-header) .gd-brand a{display:flex;align-items:center;gap:12px;color:var(--gdh-text,#15191c)!important;text-decoration:none;white-space:nowrap}'
+		. 'html body :is(.main-navigation,#mobile-header,.site-header) .gd-brand__word b{color:var(--gdh-accent,#0d7a4e)!important}'
+		. 'html body :is(.main-navigation,#mobile-header):not(.toggled) .main-nav{display:none!important}'
+		. 'html body :is(.main-navigation,#mobile-header) :is(button.menu-toggle,.menu-toggle,.menu-bar-item>a){color:var(--gdh-text,#15191c)!important;background:transparent!important}'
+		. 'html body :is(.main-navigation,#mobile-header) .menu-toggle{display:inline-flex!important;align-items:center}'
+		. 'html body :is(.main-navigation,#mobile-header,.site-header) :is(.main-title a,.main-nav a,.mobile-menu)::before,'
+		. 'html body :is(.main-navigation,#mobile-header,.site-header) :is(.main-title a,.main-nav a,.mobile-menu)::after{content:none!important}';
+
+	echo '<style id="gdaih-critical-navbar">' . $css . '</style>' . "\n"; // Static CSS, no user input.
+}
+add_action( 'wp_head', 'gdaih_critical_navbar_css', 999 );
+
+
 /* -------------------------------------------------------------------------
  * Layout
  * ---------------------------------------------------------------------- */
@@ -545,13 +569,13 @@ function gdaih_docs_script() {
 		ticking = false;
 		var offset = barsBottom() + 24;
 		if (offset !== lastOffset) {
-			document.body.style.setProperty('--gd-sticky-top', offset + 'px');
+			document.body.style.setProperty('--gdh-sticky-top', offset + 'px');
 			lastOffset = offset;
 		}
 		// Window width without the scrollbar, for the full-width layout.
 		var width = document.documentElement.clientWidth;
 		if (width !== lastWidth) {
-			document.body.style.setProperty('--gd-vw', width + 'px');
+			document.body.style.setProperty('--gdh-vw', width + 'px');
 			lastWidth = width;
 		}
 		if (!items.length) return;
