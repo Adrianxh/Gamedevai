@@ -1,49 +1,48 @@
 /*
 Theme Name:   GameDev AI Hub Child
 Template:     generatepress
-Description:  Docs Split editorial layout with a terminal navbar. Typography comes from the GeneratePress Customizer; this file loads no fonts.
-Version:      10.0.0
+Description:  Docs layout with a terminal navbar and a reading-progress table of contents. Typography comes from the GeneratePress Customizer; this file loads no fonts.
+Version:      11.0.0
 */
 
 /* ==========================================================================
    CONTENTS
    01  Tokens
-   02  Page frame
+   02  Page
    03  Terminal navbar
-   04  Single post: frame and header
-   05  Single post: docs rail (table of contents)
-   06  Reading rhythm
-   07  Docs components
-   08  Single post: footer, post navigation, comments
-   09  Blog, archives and search
-   10  Sidebar, forms and pagination
-   11  Site footer
-   12  Responsive
-   13  Motion and print
+   04  Shared UI: labels, chips, buttons, form fields
+   05  Single post: layout
+   06  Single post: header
+   07  Single post: table of contents
+   08  Post content
+   09  Content components
+   10  Single post: footer and comments
+   11  Blog, archives, search
+   12  Sidebar, pagination, site footer
+   13  Small screens
+   14  Motion and print
 
    Links in post content keep the colors set in Customizer > Colors.
-   Monospace UI text uses the system monospace stack (nothing is downloaded).
+   functions.php adds the table of contents, heading anchors, path, subtitle,
+   reading time and Copy buttons that sections 05–09 style.
    ========================================================================== */
 
 
-/* ==========================================================================
-   01  TOKENS
+/* 01  TOKENS
    ========================================================================== */
 :root {
-  /* Surfaces and text */
   --gd-bg: #f6f5f1;
-  --gd-panel: #ffffff;
+  --gd-panel: #fff;
   --gd-text: #15191c;
   --gd-muted: #5a6369;
+  --gd-faint: #7d8580;
   --gd-line: #e4e1da;
   --gd-line-strong: #cfcbc2;
 
-  /* Accent (terminal green, darkened for light backgrounds) */
   --gd-accent: #0d7a4e;
   --gd-accent-ink: #0a5c3b;
   --gd-accent-soft: #e8f4ed;
 
-  /* Callouts */
   --gd-info-bg: #eef3f9;
   --gd-info-line: #cfdcec;
   --gd-info-ink: #28406b;
@@ -51,62 +50,54 @@ Version:      10.0.0
   --gd-warn-line: #f0d9b0;
   --gd-warn-ink: #7a4508;
 
-  /* Terminal */
   --gd-term-bg: #0b0f13;
   --gd-term-raised: #0f1519;
+  --gd-term-text: #d9e6dc;
   --gd-term-ink: #c8f7a8;
   --gd-term-muted: #7fa58a;
   --gd-term-dim: #6f8a73;
   --gd-term-line: #1d2a22;
+  --gd-term-edge: #2a3a30;
   --gd-term-hover: #13201a;
 
-  /* Type, shape, motion */
   --gd-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --gd-radius: 8px;
   --gd-radius-sm: 5px;
   --gd-motion: 150ms;
 
-  /* Layout */
-  --gd-reading: 70ch;          /* longest line of body text */
-  --gd-article: 800px;         /* single post without a table of contents */
+  --gd-reading: 72ch;                    /* longest line of paragraph text */
+  --gd-article: 860px;                   /* single post without a table of contents */
+  --gd-content: 960px;                   /* content column next to the table of contents */
+  --gd-toc: 248px;                       /* table-of-contents column */
+  --gd-toc-gap: clamp(48px, 5vw, 104px); /* space between the two columns */
+  --gd-edge: 24px;                       /* minimum space at the window edges */
   --gd-pad-x: clamp(16px, 3vw, 24px);
-  --gd-toc: 248px;             /* table-of-contents column */
-  --gd-toc-gap: clamp(56px, 6vw, 88px);
-  --gd-content: 720px;         /* text column next to the table of contents */
-  --gd-rail-inset: clamp(24px, 7vw, 160px); /* space between the window edge and the rail */
-  --gd-sticky-top: 24px;       /* functions.php updates this to clear a sticky navbar */
+  --gd-sticky-top: 24px;                 /* functions.php raises this under a sticky navbar */
 }
 .admin-bar {
   --gd-sticky-top: 56px;
 }
 
 
-/* ==========================================================================
-   02  PAGE FRAME
+/* 02  PAGE
    ========================================================================== */
-body:not(.wp-admin):not(.block-editor-page) {
+body,
+.one-container .container {
   color: var(--gd-text);
-  background-color: var(--gd-bg);
-}
-body:not(.wp-admin) :is(.site, .site-content, .content-area, .site-main),
-body:not(.wp-admin).one-container .container {
   background-color: var(--gd-bg);
 }
 :where(.site-content, .content-area, .site-main, .inside-article, .entry-content,
        .entry-summary, .gb-loop-item, .gb-query-loop-item, .wp-block-post-template > li) {
   min-width: 0;
 }
-.entry-content,
-.entry-summary,
-.comment-content {
+:is(.entry-content, .entry-summary, .comment-content) {
   overflow-wrap: break-word;
 }
-.entry-content :is(img, video) {
+.entry-content :is(img, video, iframe, embed, object) {
   max-width: 100%;
-  height: auto;
 }
-.entry-content :is(iframe, embed, object) {
-  max-width: 100%;
+.entry-content :is(img, video) {
+  height: auto;
 }
 :focus-visible {
   outline: 2px solid var(--gd-accent);
@@ -118,16 +109,12 @@ body:not(.wp-admin).one-container .container {
 }
 
 
-/* ==========================================================================
-   03  TERMINAL NAVBAR
-   Styles the GeneratePress primary navigation, the separate site header
-   (if enabled) and the GP Premium mobile header. Colors use !important
-   only where GeneratePress's Customizer rules would otherwise win.
+/* 03  TERMINAL NAVBAR
+   Primary navigation, separate site header (if enabled) and the GP Premium
+   mobile header. !important only where GeneratePress's Customizer colors
+   would otherwise win.
    ========================================================================== */
-.site-header,
-.main-navigation,
-.main-navigation.navigation-stick,
-#mobile-header {
+:is(.site-header, .main-navigation, #mobile-header) {
   color: var(--gd-term-ink);
   background: var(--gd-term-bg) !important;
   background-image: none !important;
@@ -137,9 +124,7 @@ body:not(.wp-admin).one-container .container {
 .site-header .site-description {
   color: var(--gd-term-muted);
 }
-
-.main-navigation .inside-navigation,
-#mobile-header .inside-navigation {
+:is(.main-navigation, #mobile-header) .inside-navigation {
   min-height: 72px;
   padding-inline: clamp(16px, 3vw, 32px);
   gap: 12px;
@@ -156,7 +141,7 @@ body:not(.wp-admin).one-container .container {
   flex-shrink: 0;
   margin: 0;
 }
-/* GeneratePress pads the logo image vertically; reset it so the logo keeps its full height. */
+/* GeneratePress pads the logo vertically; reset it so the logo keeps its height. */
 :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
   display: block;
   width: auto;
@@ -167,17 +152,15 @@ body:not(.wp-admin).one-container .container {
   object-fit: contain;
 }
 
-/* Brand: ~/gamedevaihub_ */
+/* Text brand: ~/gamedevaihub_ */
 :is(.main-navigation, .site-header) .main-title {
   margin: 0;
   font-family: var(--gd-mono);
   font-size: clamp(16px, 1.4vw, 18px);
   font-weight: 600;
   line-height: 1.2;
-  letter-spacing: 0;
 }
-:is(.main-navigation, .site-header) .main-title a,
-:is(.main-navigation, .site-header) .main-title a:is(:hover, :focus-visible) {
+:is(.main-navigation, .site-header) .main-title a {
   color: var(--gd-term-ink) !important;
   text-decoration: none;
 }
@@ -193,9 +176,8 @@ body:not(.wp-admin).one-container .container {
   50% { opacity: 0; }
 }
 
-/* Top-level links: ./Label */
-.main-navigation .main-nav > ul > li > a,
-#mobile-header .main-nav > ul > li > a {
+/* Menu links: ./Label */
+:is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
   display: flex;
   align-items: center;
   min-height: 38px;
@@ -209,20 +191,15 @@ body:not(.wp-admin).one-container .container {
   text-decoration: none;
   transition: color var(--gd-motion), background-color var(--gd-motion);
 }
-.main-navigation .main-nav > ul > li > a::before,
-#mobile-header .main-nav > ul > li > a::before {
+:is(.main-navigation, #mobile-header) .main-nav > ul > li > a::before {
   content: "./";
   opacity: .7;
 }
-.main-navigation .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a,
-#mobile-header .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a,
-.main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a,
-#mobile-header .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a {
+:is(.main-navigation, #mobile-header) .main-nav > ul > li:is(:hover, .sfHover, :focus-within, [class*="current-menu-"], [class*="current_page_"]) > a {
   color: var(--gd-term-ink) !important;
   background: var(--gd-term-hover) !important;
 }
-.main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a,
-#mobile-header .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a {
+:is(.main-navigation, #mobile-header) .main-nav > ul > li:is([class*="current-menu-"], [class*="current_page_"]) > a {
   box-shadow: inset 0 0 0 1px #24382c;
 }
 :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
@@ -230,8 +207,7 @@ body:not(.wp-admin).one-container .container {
 }
 
 /* Dropdowns */
-.main-navigation .main-nav ul ul,
-#mobile-header .main-nav ul ul {
+:is(.main-navigation, #mobile-header) .main-nav ul ul {
   width: 240px;
   padding: 6px;
   background: var(--gd-term-raised);
@@ -239,8 +215,7 @@ body:not(.wp-admin).one-container .container {
   border-radius: var(--gd-radius);
   box-shadow: 0 16px 32px rgb(0 0 0 / 35%);
 }
-.main-navigation .main-nav ul ul li a,
-#mobile-header .main-nav ul ul li a {
+:is(.main-navigation, #mobile-header) .main-nav ul ul li a {
   padding: 9px 12px;
   color: var(--gd-term-muted) !important;
   background: transparent !important;
@@ -250,69 +225,46 @@ body:not(.wp-admin).one-container .container {
   line-height: 1.4;
   white-space: normal;
 }
-.main-navigation .main-nav ul ul li:is(:hover, .sfHover, :focus-within, .current-menu-item) > a,
-#mobile-header .main-nav ul ul li:is(:hover, .sfHover, :focus-within, .current-menu-item) > a {
+:is(.main-navigation, #mobile-header) .main-nav ul ul li:is(:hover, .sfHover, :focus-within, .current-menu-item) > a {
   color: var(--gd-term-ink) !important;
   background: var(--gd-term-hover) !important;
 }
 
-/* Search icon and the GeneratePress navigation search field */
-.main-navigation .menu-bar-items,
-#mobile-header .menu-bar-items {
+/* Search button, navigation search field, mobile [ Menu ] toggle */
+:is(.main-navigation, #mobile-header) .menu-bar-items {
   gap: 8px;
   margin-left: 8px;
   color: var(--gd-term-ink) !important;
   background: transparent !important;
 }
-.main-navigation .menu-bar-item > a,
-#mobile-header .menu-bar-item > a {
+:is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle) {
+  min-height: 38px;
+  color: var(--gd-term-ink) !important;
+  background: transparent !important;
+  border: 1px solid var(--gd-term-line);
+  border-radius: var(--gd-radius-sm);
+  transition: background-color var(--gd-motion), border-color var(--gd-motion);
+}
+:is(.main-navigation, #mobile-header) .menu-bar-item > a {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 38px;
   height: 38px;
   padding: 0;
-  color: var(--gd-term-ink) !important;
-  background: transparent !important;
-  border: 1px solid var(--gd-term-line);
-  border-radius: var(--gd-radius-sm);
   line-height: 1;
-  transition: background-color var(--gd-motion), border-color var(--gd-motion);
 }
-.main-navigation .menu-bar-item > a:hover,
-#mobile-header .menu-bar-item > a:hover {
-  background: var(--gd-term-hover) !important;
-  border-color: #2a3a30;
-}
-.main-navigation .navigation-search input[type="search"],
-.main-navigation .navigation-search input[type="search"]:focus,
-#mobile-header .navigation-search input[type="search"],
-#mobile-header .navigation-search input[type="search"]:focus {
-  color: var(--gd-term-ink);
-  background: var(--gd-term-bg);
-  border: 0;
-  outline: 0;
-  box-shadow: inset 0 -2px 0 var(--gd-term-ink);
-  font-family: var(--gd-mono);
-}
-:is(.main-navigation, #mobile-header) .navigation-search input::placeholder {
-  color: var(--gd-term-muted);
-  opacity: 1;
-}
-
-/* Mobile toggle: [ Menu ] */
-.main-navigation .menu-toggle,
-#mobile-header .menu-toggle {
-  min-height: 38px;
+:is(.main-navigation, #mobile-header) .menu-toggle {
   padding: 0 12px;
-  color: var(--gd-term-ink) !important;
-  background: transparent !important;
-  border: 1px solid var(--gd-term-line);
-  border-radius: var(--gd-radius-sm);
   font-family: var(--gd-mono);
   font-size: 13px;
   line-height: 36px;
   white-space: nowrap;
+}
+:is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle):is(:hover, :focus-visible),
+:is(.main-navigation, #mobile-header).toggled .menu-toggle {
+  background: var(--gd-term-hover) !important;
+  border-color: var(--gd-term-edge);
 }
 :is(.main-navigation, #mobile-header) .menu-toggle:has(.mobile-menu) .gp-icon {
   display: none;
@@ -326,19 +278,143 @@ body:not(.wp-admin).one-container .container {
 :is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu::after {
   content: " ]";
 }
-.main-navigation .menu-toggle:is(:hover, :focus-visible),
-#mobile-header .menu-toggle:is(:hover, :focus-visible),
-.main-navigation.toggled .menu-toggle,
-#mobile-header.toggled .menu-toggle {
-  background: var(--gd-term-hover) !important;
-  border-color: #2a3a30;
+:is(.main-navigation, #mobile-header) .navigation-search input[type="search"]:is(*, :focus) {
+  color: var(--gd-term-ink);
+  background: var(--gd-term-bg);
+  border: 0;
+  outline: 0;
+  box-shadow: inset 0 -2px 0 var(--gd-term-ink);
+  font-family: var(--gd-mono);
+}
+:is(.main-navigation, #mobile-header) .navigation-search input::placeholder {
+  color: var(--gd-term-muted);
+  opacity: 1;
+}
+@media (min-width: 769px) {
+  .main-navigation .main-nav > ul {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
 }
 
 
-/* ==========================================================================
-   04  SINGLE POST: FRAME AND HEADER
-   Posts sit directly on the page, like documentation, not inside a card.
-   The path, subtitle, avatar and reading time come from functions.php.
+/* 04  SHARED UI
+   ========================================================================== */
+
+/* Small uppercase monospace labels */
+.gd-toc__title,
+.entry-content .requires::before,
+.post-navigation :is(.nav-previous, .nav-next)::before,
+.single-post footer.entry-meta :is(.cat-links, .tags-links)::before,
+.sidebar :is(.widget-title, .widget > :is(h2, h3):first-child) {
+  color: var(--gd-muted);
+  font-family: var(--gd-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* Chips: requirements, categories, tags */
+:is(.entry-content .requires li,
+    .single-post footer.entry-meta :is(.cat-links, .tags-links) a,
+    :is(.blog, .archive, .search) :is(.cat-links, .tags-links) a,
+    .wp-block-post-terms a) {
+  display: inline-block;
+  margin: 0;
+  padding: 4px 9px;
+  color: var(--gd-text);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line-strong);
+  border-radius: 4px;
+  font-family: var(--gd-mono);
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-decoration: none;
+}
+:is(.single-post footer.entry-meta :is(.cat-links, .tags-links) a,
+    :is(.blog, .archive, .search) :is(.cat-links, .tags-links) a,
+    .wp-block-post-terms a):hover {
+  border-color: var(--gd-text);
+}
+
+/* Buttons. Colors picked in the block editor still win. */
+:is(.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button),
+    .comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--gd-motion), border-color var(--gd-motion), color var(--gd-motion);
+}
+:is(.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button),
+    .comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button):not(.has-background) {
+  background: var(--gd-accent);
+  border-color: var(--gd-accent);
+}
+:is(.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button),
+    .comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button):not(.has-text-color) {
+  color: #fff;
+}
+:is(.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button),
+    .comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button):not(.has-background):hover {
+  color: #fff;
+  background: var(--gd-accent-ink);
+  border-color: var(--gd-accent-ink);
+}
+.entry-content .is-style-outline .wp-block-button__link:not(.has-background) {
+  color: var(--gd-text);
+  background: transparent;
+  border-color: var(--gd-line-strong);
+}
+.entry-content .is-style-outline .wp-block-button__link:not(.has-background):hover {
+  color: var(--gd-text);
+  background: var(--gd-panel);
+  border-color: var(--gd-text);
+}
+.entry-content .wp-block-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Form fields in comments, search and widgets */
+:is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input[type="text"], input[type="email"], input[type="url"], input[type="search"], textarea, select) {
+  min-height: 44px;
+  max-width: 100%;
+  padding: 10px 12px;
+  color: var(--gd-text);
+  background: var(--gd-panel);
+  border: 1px solid var(--gd-line-strong);
+  border-radius: 6px;
+}
+:is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input, textarea):focus {
+  border-color: var(--gd-accent);
+}
+:is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input, textarea)::placeholder {
+  color: var(--gd-muted);
+  opacity: 1;
+}
+
+
+/* 05  SINGLE POST: LAYOUT
+   Posts sit on the page like documentation, not inside a card.
+   From 1024px, a post with a table of contents spans the full window:
+   [space 1] [contents] [gap] [content, up to 960px] [space 4]
+   The spare width is split 1:4, so the contents column sits near the left
+   edge and the content starts right after it.
    ========================================================================== */
 .single-post .inside-article {
   max-width: var(--gd-article);
@@ -353,19 +429,48 @@ body:not(.wp-admin).one-container .container {
 .single-post .inside-article > .entry-content {
   margin-top: 0;
 }
-.single-post .featured-image {
-  margin-bottom: 28px;
-}
-.single-post .featured-image img {
-  display: block;
-  width: 100%;
-  border: 1px solid var(--gd-line);
-  border-radius: var(--gd-radius);
+.single-post .comments-area {
+  max-width: var(--gd-article);
+  margin-inline: auto;
 }
 
-/* ~/tutorials/godot */
+@media (min-width: 1024px) {
+  body.single-post {
+    overflow-x: clip;
+  }
+  .single-post .gd-has-toc {
+    --gd-vw-used: var(--gd-vw, 100vw);
+  }
+  .single-post .gd-has-toc > .inside-article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--gd-toc) var(--gd-toc-gap) minmax(0, var(--gd-content)) minmax(0, 4fr);
+    align-items: start;
+    width: var(--gd-vw-used);
+    max-width: none;
+    margin-left: calc(50% - var(--gd-vw-used) / 2);
+    padding-inline: var(--gd-edge);
+  }
+  .single-post .gd-has-toc > .inside-article > * {
+    grid-column: 4;
+  }
+  /* Comments line up with the content column. */
+  .single-post .site-main > .gd-has-toc ~ .comments-area {
+    --gd-vw-used: var(--gd-vw, 100vw);
+    --gd-free: max(0px, var(--gd-vw-used) - 2 * var(--gd-edge) - var(--gd-toc) - var(--gd-toc-gap) - var(--gd-content));
+    width: min(var(--gd-content), var(--gd-vw-used) - 2 * var(--gd-edge) - var(--gd-toc) - var(--gd-toc-gap));
+    max-width: none;
+    margin-left: calc(50% - var(--gd-vw-used) / 2 + var(--gd-edge) + var(--gd-free) / 5 + var(--gd-toc) + var(--gd-toc-gap));
+    margin-right: 0;
+  }
+}
+
+
+/* 06  SINGLE POST: HEADER
+   ========================================================================== */
+
+/* ~/category/subcategory */
 .gd-crumb {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   color: var(--gd-muted);
   font-family: var(--gd-mono);
   font-size: 12.5px;
@@ -383,20 +488,19 @@ body:not(.wp-admin).one-container .container {
 }
 
 .single-post .entry-header {
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 .single-post .entry-title {
-  max-width: 24ch;
-  margin: 0 0 14px;
+  max-width: 100%;
+  margin: 0 0 16px;
   color: var(--gd-text);
-  line-height: 1.1;
-  letter-spacing: -.022em;
-  overflow-wrap: break-word;
-  text-wrap: balance;
+  line-height: 1.08;
+  letter-spacing: -.024em;
+  text-wrap: pretty; /* fill each line; "balance" squeezes long titles into short, even lines */
 }
 .gd-dek {
-  max-width: 60ch;
-  margin: 0 0 20px;
+  max-width: 62ch;
+  margin: 0 0 22px;
   color: var(--gd-muted);
   font-size: 1.15em;
   line-height: 1.5;
@@ -442,16 +546,22 @@ body:not(.wp-admin).one-container .container {
 .single-post .entry-header .entry-meta a:hover {
   color: var(--gd-accent-ink);
 }
+.single-post .featured-image {
+  margin-bottom: 28px;
+}
+.single-post .featured-image img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--gd-line);
+  border-radius: var(--gd-radius);
+}
 
 
-/* ==========================================================================
-   05  SINGLE POST: TABLE OF CONTENTS (PROGRESS RAIL)
-   functions.php prints <nav class="gd-toc"> right after the post header and
-   adds "gd-has-toc" to the article. Sections are numbered with a reading
-   time; the script fills each section's line as it is read and updates the
-   "4/8 · 42%" counter and the minutes left.
-   Below 1024px: a collapsible "On this page" bar under the header.
-   From 1024px: a sticky column on the left of the text.
+/* 07  SINGLE POST: TABLE OF CONTENTS
+   Numbered sections with reading times; each section's line fills green as
+   it is read, and the header shows "done/total · % read".
+   Below 1024px: a collapsible "On this page" box under the post header.
+   From 1024px: a sticky column (see section 05 for its placement).
    ========================================================================== */
 .gd-toc {
   margin: 0 0 28px;
@@ -466,13 +576,6 @@ body:not(.wp-admin).one-container .container {
   align-items: center;
   gap: 10px;
   padding: 12px 16px;
-  color: var(--gd-muted);
-  font-family: var(--gd-mono);
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: .08em;
-  text-transform: uppercase;
   list-style: none;
   cursor: pointer;
 }
@@ -496,22 +599,17 @@ body:not(.wp-admin).one-container .container {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.gd-toc ol,
-.gd-toc ul {
+.gd-toc :is(ol, ul, li) {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-.gd-toc li {
-  margin: 0;
-  padding: 0;
 }
 .gd-toc .gd-toc__list {
   margin: 0 16px;
 }
 
-/* Sections: a grey line per section that fills green as it is read. */
-.gd-toc__list > li {
+/* One grey line per section; ::after fills it by the script's --fill. */
+.gd-toc .gd-toc__list > li {
   position: relative;
   padding-left: 16px;
 }
@@ -531,17 +629,23 @@ body:not(.wp-admin).one-container .container {
   height: var(--fill, 0%);
   background: var(--gd-accent);
 }
+.gd-toc__list a {
+  color: var(--gd-muted);
+  text-decoration: none;
+  text-wrap: pretty;
+  transition: color var(--gd-motion);
+}
+.gd-toc__list a:is(:hover, :focus-visible) {
+  color: var(--gd-text);
+}
 .gd-toc__list > li > a {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr) auto;
   column-gap: 8px;
   align-items: baseline;
   padding: 7px 0;
-  color: var(--gd-muted);
   font-size: 14px;
   line-height: 1.4;
-  text-decoration: none;
-  transition: color var(--gd-motion);
 }
 .gd-toc__num,
 .gd-toc__min {
@@ -549,17 +653,14 @@ body:not(.wp-admin).one-container .container {
   font-variant-numeric: tabular-nums;
 }
 .gd-toc__num {
-  color: #7d8580;
+  color: var(--gd-faint);
   font-size: 12px;
 }
 .gd-toc__min {
   color: var(--gd-muted);
   font-size: 11.5px;
 }
-.gd-toc__text {
-  text-wrap: pretty;
-}
-.gd-toc__list > li.is-done > a .gd-toc__num {
+.gd-toc__list > li.is-done .gd-toc__num {
   color: var(--gd-accent);
 }
 .gd-toc__list > li.is-open > a {
@@ -571,21 +672,15 @@ body:not(.wp-admin).one-container .container {
 .gd-toc__list > li.is-open > a .gd-toc__text {
   font-weight: 600;
 }
-
-/* Sub-sections line up with the section titles. */
-.gd-toc__list ul {
+.gd-toc .gd-toc__list ul {
   padding: 0 0 6px 30px;
 }
 .gd-toc__list ul a {
   position: relative;
   display: block;
   padding: 3px 0;
-  color: var(--gd-muted);
   font-size: 13px;
   line-height: 1.4;
-  text-decoration: none;
-  text-wrap: pretty;
-  transition: color var(--gd-motion);
 }
 .gd-toc__list ul a[aria-current] {
   color: var(--gd-text);
@@ -596,10 +691,6 @@ body:not(.wp-admin).one-container .container {
   left: -12px;
   color: var(--gd-accent);
 }
-.gd-toc__list a:is(:hover, :focus-visible) {
-  color: var(--gd-text);
-}
-
 .gd-toc__foot {
   display: flex;
   align-items: center;
@@ -622,29 +713,8 @@ body:not(.wp-admin).one-container .container {
 }
 
 @media (min-width: 1024px) {
-  /* The article spans the full window width so the text column can sit in
-     the centre of the screen and the rail can sit near the left edge.
-     Columns: [rail + gap] [text, up to 720px] [matching space]. When the
-     window is too narrow for both sides, the right side gives way first. */
-  body.single-post {
-    overflow-x: clip;
-  }
-  .single-post .gd-has-toc > .inside-article {
-    display: grid;
-    grid-template-columns: minmax(calc(var(--gd-toc) + var(--gd-toc-gap)), 1fr) minmax(0, var(--gd-content)) minmax(0, 1fr);
-    align-items: start;
-    box-sizing: border-box;
-    width: var(--gd-vw, 100vw);
-    max-width: none;
-    margin-left: calc(50% - var(--gd-vw, 100vw) / 2);
-    padding-inline: var(--gd-rail-inset);
-  }
-  .single-post .gd-has-toc > .inside-article > * {
-    grid-column: 2;
-  }
   .single-post .gd-has-toc > .inside-article > .gd-toc {
-    grid-column: 1;
-    width: var(--gd-toc);
+    grid-column: 2;
     grid-row: 1 / span 20;
     position: sticky;
     top: var(--gd-sticky-top);
@@ -678,27 +748,17 @@ body:not(.wp-admin).one-container .container {
     margin: 16px 0 0;
     padding-bottom: 4px;
   }
-  /* With the script running, only the current section shows its sub-sections. */
+  /* With the script running, only the current section lists its sub-sections. */
   .single-post .gd-toc.is-enhanced .gd-toc__list > li:not(.is-open) > ul {
     display: none;
   }
-  /* Comments line up with the text column. */
-  .single-post .site-main > .gd-has-toc ~ .comments-area {
-    max-width: var(--gd-content);
-    margin-inline: auto;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  html:focus-within {
-    scroll-behavior: smooth;
-  }
 }
 
 
-/* ==========================================================================
-   06  READING RHYTHM
-   Spacing comes only from margin-top, so it looks the same whether or not
-   the docs rail is active (grid items don't collapse margins).
+/* 08  POST CONTENT
+   Spacing uses margin-top only, so it is identical inside the grid (where
+   margins do not collapse) and outside it. Paragraphs and lists keep a
+   comfortable line length; headings and wide blocks use the full column.
    ========================================================================== */
 .entry-content {
   color: var(--gd-text);
@@ -713,24 +773,23 @@ body:not(.wp-admin).one-container .container {
   margin-top: 1.9em;
 }
 .entry-content > * + :is(h3, h4, h5, h6) {
-  margin-top: 1.8em;
+  margin-top: 1.7em;
 }
 .entry-content > :is(h2, h3, h4, h5, h6) + * {
   margin-top: .65em;
 }
-.entry-content > :is(p, ul, ol, dl, h2, h3, h4, h5, h6, blockquote) {
+.entry-content > :is(p, ul, ol, dl, blockquote) {
   max-width: var(--gd-reading);
 }
 .entry-content :is(h2, h3, h4, h5, h6) {
   color: var(--gd-text);
-  line-height: 1.25;
-  letter-spacing: -.012em;
-  text-wrap: balance;
+  line-height: 1.22;
+  letter-spacing: -.014em;
+  text-wrap: pretty;
 }
 .entry-content [id] {
   scroll-margin-top: calc(var(--gd-sticky-top) + 8px);
 }
-/* "#" link that functions.php adds after each H2/H3 */
 .entry-content .gd-anchor {
   margin-left: .35em;
   color: var(--gd-line-strong);
@@ -765,14 +824,21 @@ body:not(.wp-admin).one-container .container {
 .entry-content :is(small, figcaption, .wp-element-caption) {
   color: var(--gd-muted);
 }
+.entry-content :is(figcaption, .wp-element-caption) {
+  margin-top: 8px;
+  font-size: .875em;
+}
+.entry-content .wp-block-image img {
+  border: 1px solid var(--gd-line);
+  border-radius: 6px;
+}
 
 
-/* ==========================================================================
-   07  DOCS COMPONENTS
+/* 09  CONTENT COMPONENTS
    Add the class in the block's Advanced > Additional CSS class(es) field.
    ========================================================================== */
 
-/* Requirements bar. List block + class "requires". */
+/* Requirements bar: List block + "requires" */
 .entry-content :is(ul, ol).requires {
   display: flex;
   flex-wrap: wrap;
@@ -786,31 +852,15 @@ body:not(.wp-admin).one-container .container {
 .entry-content .requires::before {
   content: "Requires";
   margin-right: 6px;
-  color: var(--gd-muted);
-  font-family: var(--gd-mono);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-.entry-content .requires li {
-  margin: 0;
-  padding: 4px 9px;
-  color: var(--gd-text);
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line-strong);
-  border-radius: 4px;
-  font-family: var(--gd-mono);
-  font-size: 12.5px;
-  line-height: 1.4;
 }
 
-/* Code */
+/* Code blocks. functions.php adds a header with a Copy button to each one;
+   a Paragraph with "code-file" right before a Code block names the file. */
 .entry-content pre {
   max-width: 100%;
   padding: 16px 18px;
   overflow-x: auto;
-  color: #d9e6dc;
+  color: var(--gd-term-text);
   background: var(--gd-term-bg);
   border: 1px solid var(--gd-term-line);
   border-radius: var(--gd-radius);
@@ -831,9 +881,6 @@ body:not(.wp-admin).one-container .container {
   white-space: inherit;
   overflow-wrap: normal;
 }
-/* Code block header with the filename and a Copy button. Add a Paragraph
-   with the class "code-file" directly before the Code block to show a
-   filename; functions.php adds the header and Copy button to every block. */
 .entry-content .code-file {
   display: flex;
   align-items: center;
@@ -855,12 +902,12 @@ body:not(.wp-admin).one-container .container {
   border-radius: 0 0 var(--gd-radius) var(--gd-radius);
 }
 .entry-content .gd-copy {
+  height: 24px;
   margin-left: auto;
   padding: 0 9px;
-  height: 24px;
   color: var(--gd-term-ink);
   background: transparent;
-  border: 1px solid #2a3a30;
+  border: 1px solid var(--gd-term-edge);
   border-radius: 4px;
   font-family: var(--gd-mono);
   font-size: 12px;
@@ -891,8 +938,8 @@ body:not(.wp-admin).one-container .container {
   font-size: .85em;
 }
 
-/* Callouts. Paragraph or Group + class "note" (adds a label) or
-   "key-insight" (no label). Add "warning" or "success" for variants. */
+/* Callouts: "note" (labelled Note, Warning or Tip), or "key-insight" (no
+   label). Add "warning" or "success" for the amber and green versions. */
 .entry-content :where(.note, .key-insight, blockquote.warning, blockquote.success) {
   max-width: var(--gd-reading);
   padding: 14px 18px;
@@ -927,16 +974,6 @@ body:not(.wp-admin).one-container .container {
   line-height: calc(15px * 1.55);
   letter-spacing: .08em;
   text-transform: uppercase;
-}
-@media (max-width: 600px) {
-  .entry-content .note {
-    padding-left: 18px;
-  }
-  .entry-content .note::before {
-    position: static;
-    display: block;
-    margin-bottom: 2px;
-  }
 }
 .entry-content :is(.note, .key-insight, blockquote).warning {
   background: var(--gd-warn-bg);
@@ -1029,75 +1066,11 @@ body:not(.wp-admin).one-container .container {
   margin: 0;
   padding: 10px 14px;
   border-top: 1px solid var(--gd-line);
-  font-size: .85em;
   text-align: left;
 }
 
-/* Images and embeds */
-.entry-content .wp-block-image img {
-  border: 1px solid var(--gd-line);
-  border-radius: 6px;
-}
-.entry-content :is(figcaption, .wp-element-caption) {
-  margin-top: 8px;
-  font-size: .875em;
-}
 
-/* Buttons. Colors picked in the editor still win. */
-.entry-content .wp-block-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  max-width: 100%;
-  min-height: 44px;
-  padding: 10px 18px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  font-weight: 600;
-  line-height: 1.3;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color var(--gd-motion), border-color var(--gd-motion), color var(--gd-motion);
-}
-.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button):not(.has-background) {
-  background: var(--gd-accent);
-  border-color: var(--gd-accent);
-}
-.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button):not(.has-text-color) {
-  color: #fff;
-}
-.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button):not(.has-background):hover {
-  background: var(--gd-accent-ink);
-  border-color: var(--gd-accent-ink);
-}
-.entry-content :is(.btn-primary, .wp-block-button__link, .wp-element-button):not(.has-text-color):hover {
-  color: #fff;
-}
-.entry-content .is-style-outline .wp-block-button__link:not(.has-background) {
-  background: transparent;
-  border-color: var(--gd-line-strong);
-}
-.entry-content .is-style-outline .wp-block-button__link:not(.has-text-color) {
-  color: var(--gd-text);
-}
-.entry-content .is-style-outline .wp-block-button__link:not(.has-background):hover {
-  background: var(--gd-panel);
-  border-color: var(--gd-text);
-}
-.entry-content .is-style-outline .wp-block-button__link:not(.has-text-color):hover {
-  color: var(--gd-text);
-}
-
-
-/* ==========================================================================
-   08  SINGLE POST: FOOTER, POST NAVIGATION, COMMENTS
+/* 10  SINGLE POST: FOOTER AND COMMENTS
    ========================================================================== */
 .single-post footer.entry-meta {
   margin-top: 48px;
@@ -1114,12 +1087,6 @@ body:not(.wp-admin).one-container .container {
 }
 .single-post footer.entry-meta :is(.cat-links, .tags-links)::before {
   margin-right: 6px;
-  color: var(--gd-muted);
-  font-family: var(--gd-mono);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
 }
 .single-post footer.entry-meta .cat-links::before {
   content: "Filed under";
@@ -1127,22 +1094,8 @@ body:not(.wp-admin).one-container .container {
 .single-post footer.entry-meta .tags-links::before {
   content: "Tags";
 }
-.single-post footer.entry-meta :is(.cat-links, .tags-links) .gp-icon {
+:is(.single-post footer.entry-meta, .post-navigation) .gp-icon {
   display: none;
-}
-.single-post footer.entry-meta :is(.cat-links, .tags-links) a {
-  padding: 4px 9px;
-  color: var(--gd-text);
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line-strong);
-  border-radius: 4px;
-  font-family: var(--gd-mono);
-  font-size: 12.5px;
-  line-height: 1.4;
-  text-decoration: none;
-}
-.single-post footer.entry-meta :is(.cat-links, .tags-links) a:hover {
-  border-color: var(--gd-text);
 }
 
 .post-navigation {
@@ -1168,21 +1121,12 @@ body:not(.wp-admin).one-container .container {
 .post-navigation :is(.nav-previous, .nav-next)::before {
   display: block;
   margin-bottom: 4px;
-  color: var(--gd-muted);
-  font-family: var(--gd-mono);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
 }
 .post-navigation .nav-previous::before {
   content: "← Previous";
 }
 .post-navigation .nav-next::before {
   content: "Next →";
-}
-.post-navigation .gp-icon {
-  display: none;
 }
 .post-navigation a {
   color: var(--gd-text);
@@ -1191,20 +1135,13 @@ body:not(.wp-admin).one-container .container {
   text-decoration: none;
 }
 
-.single-post .comments-area {
-  max-width: var(--gd-article);
-  margin-inline: auto;
-}
 .separate-containers .comments-area {
   padding: clamp(20px, 3vw, 32px);
   background: var(--gd-panel);
   border: 1px solid var(--gd-line);
   border-radius: 10px;
 }
-.comments-area :is(.comments-title, .comment-reply-title) {
-  color: var(--gd-text);
-}
-.comments-area :is(.comment-author, .comment-content, label) {
+.comments-area :is(.comments-title, .comment-reply-title, .comment-author, .comment-content, label) {
   color: var(--gd-text);
 }
 .comments-area .comment-metadata {
@@ -1213,8 +1150,7 @@ body:not(.wp-admin).one-container .container {
 }
 
 
-/* ==========================================================================
-   09  BLOG, ARCHIVES AND SEARCH
+/* 11  BLOG, ARCHIVES, SEARCH
    ========================================================================== */
 .separate-containers .page-header {
   margin-bottom: 28px;
@@ -1239,20 +1175,14 @@ body:not(.wp-admin).one-container .container {
   margin: 0;
 }
 
-:is(.blog, .archive, .search) .post .inside-article,
-.gb-loop-item,
-.gb-query-loop-item,
-.wp-block-post-template > li {
+:is(:is(.blog, .archive, .search) .post .inside-article, .gb-loop-item, .gb-query-loop-item, .wp-block-post-template > li) {
   background: var(--gd-panel);
   border: 1px solid var(--gd-line);
   border-radius: 10px;
   box-shadow: none;
   transition: border-color var(--gd-motion);
 }
-:is(.blog, .archive, .search) .post .inside-article:hover,
-.gb-loop-item:hover,
-.gb-query-loop-item:hover,
-.wp-block-post-template > li:hover {
+:is(:is(.blog, .archive, .search) .post .inside-article, .gb-loop-item, .gb-query-loop-item, .wp-block-post-template > li):hover {
   border-color: var(--gd-line-strong);
 }
 :is(.blog, .archive, .search) .post {
@@ -1267,30 +1197,26 @@ body:not(.wp-admin).one-container .container {
   letter-spacing: -.012em;
   text-wrap: balance;
 }
-:is(.blog, .archive, .search) .entry-meta,
-:is(.wp-block-post-date, .wp-block-post-author) {
+:is(:is(.blog, .archive, .search) .entry-meta, .wp-block-post-date, .wp-block-post-author) {
   color: var(--gd-muted);
   font-family: var(--gd-mono);
   font-size: 12.5px;
   line-height: 1.5;
 }
-:is(.blog, .archive, .search) .entry-summary,
-.wp-block-post-excerpt {
+:is(:is(.blog, .archive, .search) .entry-summary, .wp-block-post-excerpt) {
   color: var(--gd-muted);
 }
 :is(.blog, .archive, .search) .entry-summary p {
   margin-bottom: .6em;
 }
-:is(.blog, .archive, .search) :is(.post-image, .featured-image) img,
-.wp-block-post-featured-image img {
+:is(:is(.blog, .archive, .search) :is(.post-image, .featured-image), .wp-block-post-featured-image) img {
   width: 100%;
   height: auto;
   border: 1px solid var(--gd-line);
   border-radius: 6px;
   object-fit: cover;
 }
-.inside-article :is(.read-more, .more-link),
-.wp-block-read-more {
+:is(.inside-article :is(.read-more, .more-link), .wp-block-read-more) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1301,31 +1227,15 @@ body:not(.wp-admin).one-container .container {
   font-weight: 600;
   text-decoration: none;
 }
-.inside-article :is(.read-more, .more-link)::after,
-.wp-block-read-more::after {
+:is(.inside-article :is(.read-more, .more-link), .wp-block-read-more)::after {
   content: "→";
   transition: transform var(--gd-motion);
 }
-.inside-article :is(.read-more, .more-link):hover::after,
-.wp-block-read-more:hover::after {
+:is(.inside-article :is(.read-more, .more-link), .wp-block-read-more):hover::after {
   transform: translateX(3px);
 }
-:is(.blog, .archive, .search) :is(.cat-links, .tags-links) a,
-.wp-block-post-terms a {
-  display: inline-block;
+:is(.blog, .archive, .search) :is(.cat-links, .tags-links) a {
   margin: 2px 4px 2px 0;
-  padding: 3px 8px;
-  color: var(--gd-text);
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line-strong);
-  border-radius: 4px;
-  font-family: var(--gd-mono);
-  font-size: 12px;
-  text-decoration: none;
-}
-:is(.blog, .archive, .search) :is(.cat-links, .tags-links) a:hover,
-.wp-block-post-terms a:hover {
-  border-color: var(--gd-text);
 }
 .no-results .inside-article {
   text-align: center;
@@ -1335,8 +1245,8 @@ body:not(.wp-admin).one-container .container {
 }
 
 
-/* ==========================================================================
-   10  SIDEBAR, FORMS AND PAGINATION
+/* 12  SIDEBAR, PAGINATION, SITE FOOTER
+   Footer link colors stay under Customizer > Colors > Footer.
    ========================================================================== */
 .sidebar .widget {
   padding: 22px;
@@ -1346,12 +1256,6 @@ body:not(.wp-admin).one-container .container {
 }
 .sidebar :is(.widget-title, .widget > :is(h2, h3):first-child) {
   margin: 0 0 12px;
-  color: var(--gd-muted);
-  font-family: var(--gd-mono);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
 }
 .sidebar .widget :is(ul, ol) {
   margin: 0;
@@ -1363,40 +1267,8 @@ body:not(.wp-admin).one-container .container {
   border-top: 1px solid var(--gd-line);
 }
 .sidebar .widget li:first-child {
-  border-top: 0;
   padding-top: 0;
-}
-
-:is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input[type="text"], input[type="email"], input[type="url"], input[type="search"], textarea, select) {
-  min-height: 44px;
-  max-width: 100%;
-  padding: 10px 12px;
-  color: var(--gd-text);
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line-strong);
-  border-radius: 6px;
-}
-:is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input, textarea):focus {
-  border-color: var(--gd-accent);
-}
-:is(.comments-area, .sidebar, .search-form, .widget, .wp-block-search) :is(input, textarea)::placeholder {
-  color: var(--gd-muted);
-  opacity: 1;
-}
-:is(.comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button) {
-  min-height: 44px;
-  padding: 10px 18px;
-  color: #fff;
-  background: var(--gd-accent);
-  border: 1px solid var(--gd-accent);
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-}
-:is(.comments-area .form-submit input[type="submit"], .search-form .search-submit, .wp-block-search__button):hover {
-  color: #fff;
-  background: var(--gd-accent-ink);
-  border-color: var(--gd-accent-ink);
+  border-top: 0;
 }
 
 .separate-containers .paging-navigation {
@@ -1434,44 +1306,27 @@ body:not(.wp-admin).one-container .container {
   border-color: transparent;
 }
 
-
-/* ==========================================================================
-   11  SITE FOOTER
-   Footer link colors stay under Customizer > Colors > Footer.
-   ========================================================================== */
-.site-footer,
-.footer-widgets,
-.site-info {
+:is(.site-footer, .footer-widgets, .site-info) {
   color: #a9bdb0;
   background: var(--gd-term-bg);
 }
-.footer-widgets {
+:is(.footer-widgets, .site-info) {
   border-top: 1px solid var(--gd-term-line);
 }
 .footer-widgets :is(h2, h3, h4, .widget-title) {
   color: #fff;
 }
 .site-info {
-  border-top: 1px solid var(--gd-term-line);
   font-family: var(--gd-mono);
   font-size: 13px;
 }
 
 
-/* ==========================================================================
-   12  RESPONSIVE
+/* 13  SMALL SCREENS
    768px matches GeneratePress's default mobile menu breakpoint.
    ========================================================================== */
-@media (min-width: 769px) {
-  .main-navigation .main-nav > ul {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
-}
 @media (max-width: 768px) {
-  .main-navigation .inside-navigation,
-  #mobile-header .inside-navigation {
+  :is(.main-navigation, #mobile-header) .inside-navigation {
     min-height: 58px;
     padding-inline: 16px;
     gap: 8px;
@@ -1483,22 +1338,19 @@ body:not(.wp-admin).one-container .container {
     height: 36px;
     max-height: 36px;
   }
-  .main-navigation.toggled .main-nav > ul,
-  #mobile-header.toggled .main-nav > ul {
+  :is(.main-navigation, #mobile-header).toggled .main-nav > ul {
     margin: 8px 0 12px;
     padding: 6px;
     background: var(--gd-term-raised);
     border: 1px solid var(--gd-term-line);
     border-radius: var(--gd-radius);
   }
-  .main-navigation .main-nav > ul > li > a,
-  #mobile-header .main-nav > ul > li > a {
+  :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
     min-height: 44px;
     padding: 0 12px;
     line-height: 44px;
   }
-  .main-navigation .main-nav ul ul,
-  #mobile-header .main-nav ul ul {
+  :is(.main-navigation, #mobile-header) .main-nav ul ul {
     width: auto;
     margin: 2px 0 6px 12px;
     padding: 0;
@@ -1507,7 +1359,7 @@ body:not(.wp-admin).one-container .container {
     box-shadow: none;
   }
   .single-post .entry-header {
-    margin-bottom: 22px;
+    margin-bottom: 24px;
   }
   .entry-content pre {
     padding: 14px;
@@ -1521,11 +1373,22 @@ body:not(.wp-admin).one-container .container {
   }
 }
 @media (max-width: 600px) {
+  .single-post .entry-title {
+    font-size: clamp(28px, 8vw, 36px);
+  }
   .single-post .entry-header .byline {
     flex-basis: 100%;
   }
   .single-post .entry-header .byline + *::before {
     content: none;
+  }
+  .entry-content .note {
+    padding-left: 18px;
+  }
+  .entry-content .note::before {
+    position: static;
+    display: block;
+    margin-bottom: 2px;
   }
   .post-navigation {
     grid-template-columns: minmax(0, 1fr);
@@ -1536,46 +1399,36 @@ body:not(.wp-admin).one-container .container {
 }
 
 
-/* ==========================================================================
-   13  MOTION AND PRINT
+/* 14  MOTION AND PRINT
    ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   :is(.main-navigation, .site-header) .main-title a::after {
     animation: none;
   }
-  .main-navigation *,
-  .entry-content *,
-  .inside-article,
-  .post-navigation *,
-  .gb-loop-item,
-  .wp-block-post-template > li {
+  *,
+  *::before,
+  *::after {
     transition: none !important;
   }
 }
 @media print {
-  body,
-  .site,
-  .site-content,
-  .inside-article,
-  .entry-content {
+  :is(body, .site, .site-content, .inside-article, .entry-content) {
     color: #111 !important;
     background: #fff !important;
   }
-  .main-navigation,
-  #mobile-header,
-  .site-header,
-  .sidebar,
-  .comments-area,
-  .post-navigation,
-  .site-footer,
-  .gd-toc,
-  .gd-anchor,
-  .gd-copy {
+  :is(.main-navigation, #mobile-header, .site-header, .sidebar, .comments-area, .post-navigation, .site-footer, .gd-toc, .gd-anchor, .gd-copy) {
     display: none !important;
   }
   .single-post .inside-article {
     display: block !important;
+    width: auto !important;
     max-width: none;
+    margin: 0 !important;
   }
   .entry-content pre {
     color: #111;
