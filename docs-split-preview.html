@@ -108,29 +108,15 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
               </div>
             </header>
             <div class="entry-content" itemprop="text">
-              <div class="wp-block-rank-math-toc-block" id="rank-math-toc">
-                <h2>On this page</h2>
-                <nav>
-                  <ul>
-                    <li><a href="#overview">Overview</a></li>
-                    <li><a href="#install-the-model">Install the model</a>
-                      <ul>
-                        <li><a href="#pick-a-model-size">Pick a model size</a></li>
-                        <li><a href="#folder-layout">Folder layout</a></li>
-                      </ul>
-                    </li>
-                    <li><a href="#stream-replies">Stream replies</a></li>
-                    <li><a href="#cache-and-latency">Cache and latency</a></li>
-                    <li><a href="#troubleshooting">Troubleshooting</a></li>
-                  </ul>
-                </nav>
-              </div>
               <p>Run a small language model on the player's machine, stream replies into a dialogue box, and keep latency low enough to feel like conversation. No server, no per-request cost, and it works offline.</p>
               <ul class="requires">
                 <li>Godot 4.4+</li>
                 <li>8 GB VRAM</li>
                 <li>~2 GB disk</li>
               </ul>
+              <nav class="toc" aria-label="On this page"><p class="toc-title">On this page</p><ul><li><a href="#overview">Overview</a></li><li><a href="#install-the-model">Install the model</a><ul><li><a href="#pick-a-model-size">Pick a model size</a></li><li><a href="#folder-layout">Folder layout</a></li></ul></li><li><a href="#stream-replies">Stream replies</a></li><li><a href="#cache-and-latency">Cache and latency</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ul></nav>
+              
+              
               <h2 class="wp-block-heading" id="overview">Overview</h2>
               <p>The setup has three parts: a quantized model file shipped next to your game, a <code>LocalLLM</code> node that loads it once at startup, and a dialogue script that streams tokens into your UI as they arrive.</p>
               <p>If you've used <a href="#">Godot's signals</a> before, the streaming part will feel familiar. Each token arrives as a signal and you append it to a label.</p>
@@ -203,6 +189,32 @@ func ask_npc(prompt: String) -> String:
   </footer>
 </div>
 
+<script>
+(function () {
+	var links = Array.prototype.slice.call(document.querySelectorAll('.entry-content > .toc a[href^="#"]'));
+	var items = links.map(function (a) {
+		return { link: a, target: document.getElementById(decodeURIComponent(a.hash.slice(1))) };
+	}).filter(function (item) { return item.target; });
+	if (!items.length) return;
+
+	var ticking = false;
+	function update() {
+		var current = items[0];
+		items.forEach(function (item) {
+			if (item.target.getBoundingClientRect().top <= 140) current = item;
+		});
+		items.forEach(function (item) {
+			if (item === current) item.link.setAttribute('aria-current', 'true');
+			else item.link.removeAttribute('aria-current');
+		});
+		ticking = false;
+	}
+	window.addEventListener('scroll', function () {
+		if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+	}, { passive: true });
+	update();
+})();
+</script>
 <script>
   // Stand-in for GeneratePress's menu toggle script.
   document.querySelector('.menu-toggle').addEventListener('click', function () {

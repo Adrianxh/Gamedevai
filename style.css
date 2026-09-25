@@ -139,7 +139,7 @@ body:not(.wp-admin).one-container .container {
 
 .main-navigation .inside-navigation,
 #mobile-header .inside-navigation {
-  min-height: 64px;
+  min-height: 72px;
   padding-inline: clamp(16px, 3vw, 32px);
   gap: 12px;
   align-items: center;
@@ -155,12 +155,15 @@ body:not(.wp-admin).one-container .container {
   flex-shrink: 0;
   margin: 0;
 }
-:is(.main-navigation, #mobile-header, .site-header) :is(.site-logo, .mobile-header-logo) img {
+/* GeneratePress pads the logo image vertically; reset it so the logo keeps its full height. */
+:is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
   display: block;
   width: auto;
-  height: 36px;
-  max-height: 36px;
+  height: 42px;
+  max-height: 42px;
+  padding: 0;
   border-radius: 6px;
+  object-fit: contain;
 }
 
 /* Brand: ~/gamedevaihub_ */
@@ -412,8 +415,10 @@ body:not(.wp-admin).one-container .container {
 
 /* ==========================================================================
    05  SINGLE POST: DOCS RAIL (TABLE OF CONTENTS)
-   Works with the TOC from Rank Math, Yoast, Easy Table of Contents,
-   LuckyWP, Table of Contents Plus, or a List block with the class "toc".
+   The child theme's functions.php builds this automatically from each
+   post's H2/H3 headings. It also styles the TOC from Rank Math, Yoast,
+   Easy Table of Contents, LuckyWP, Table of Contents Plus, or a List
+   block with the class "toc" (functions.php steps aside if one exists).
    Mobile and tablet: a boxed "On this page" list where it sits in the post.
    Desktop, single posts set to "No sidebar": a sticky rail on the left.
    ========================================================================== */
@@ -431,7 +436,7 @@ body:not(.wp-admin).one-container .container {
   line-height: 1.45;
   list-style: none;
 }
-.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(h2, h3, h4, .ez-toc-title, .toc_title, .lwptoc_title),
+.entry-content > :is(.toc, #ez-toc-container, #toc_container, .wp-block-rank-math-toc-block, .wp-block-yoast-seo-table-of-contents, .lwptoc) :is(h2, h3, h4, .toc-title, .ez-toc-title, .toc_title, .lwptoc_title),
 .entry-content > :is(ul, ol).toc::before {
   display: block;
   margin: 0 0 10px;
@@ -1283,6 +1288,10 @@ body:not(.wp-admin).one-container .container {
   }
   .main-navigation .navigation-branding {
     flex: 1 1 auto;
+  }
+  :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
+    height: 36px;
+    max-height: 36px;
   }
   .main-navigation.toggled .main-nav > ul,
   #mobile-header.toggled .main-nav > ul {
