@@ -365,7 +365,7 @@ add_filter( 'generate_post_author_output', 'gdaih_author_avatar' );
 
 
 /* -------------------------------------------------------------------------
- * Front-end behaviour (single posts only, about 50 lines, no library)
+ * Front-end behaviour (single posts only, no library)
  * ---------------------------------------------------------------------- */
 
 function gdaih_docs_script() {
@@ -376,40 +376,85 @@ function gdaih_docs_script() {
 	$script = <<<'JS'
 (function () {
 	var desktop = window.matchMedia('(min-width: 1024px)');
+	var toc = document.querySelector('.gd-toc');
+	var box = toc && toc.querySelector('.gd-toc__box');
+	var items = [];
+	var sections = [];
+	var active = null;
 
-	// TOC: an open rail on desktop, a collapsed "On this page" bar below that.
-	var box = document.querySelector('.gd-toc__box');
-	if (box) {
+	// Height of fixed or sticky bars at the top (admin bar, sticky navigation).
+	function barsBottom() {
+		var bars = [];
+		document.querySelectorAll('#wpadminbar, .site-header, .main-navigation, #mobile-header').forEach(function (el) {
+			var position = getComputedStyle(el).position;
+			if (position === 'fixed' || position === 'sticky') bars.push(el.getBoundingClientRect());
+		});
+		bars.sort(function (a, b) { return a.top - b.top; });
+		var bottom = 0;
+		bars.forEach(function (r) {
+			if (r.height && r.top <= bottom + 1 && r.bottom > bottom) bottom = r.bottom;
+		});
+		return bottom;
+	}
+
+	if (toc) {
+		toc.classList.add('is-enhanced');
+		items = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'))
+			.map(function (a) { return { link: a, target: document.getElementById(decodeURIComponent(a.hash.slice(1))) }; })
+			.filter(function (item) { return item.target; });
+		sections = Array.prototype.slice.call(toc.querySelectorAll('.gd-toc__list > li'));
+
+		// Open rail on desktop, collapsed bar on smaller screens.
 		box.open = desktop.matches;
 		box.addEventListener('toggle', function () {
 			if (desktop.matches && !box.open) box.open = true;
 		});
 		desktop.addEventListener('change', function (e) { box.open = e.matches; });
+		toc.addEventListener('click', function (e) {
+			if (!desktop.matches && e.target.closest('a')) box.open = false;
+		});
 	}
 
-	// Highlight the section being read.
-	var items = Array.prototype.slice.call(document.querySelectorAll('.gd-toc a[href^="#"]'))
-		.map(function (a) { return { link: a, target: document.getElementById(decodeURIComponent(a.hash.slice(1))) }; })
-		.filter(function (item) { return item.target; });
-	if (items.length) {
-		var ticking = false;
-		var update = function () {
-			var offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gd-sticky-top')) || 88;
-			var current = items[0];
-			items.forEach(function (item) {
-				if (item.target.getBoundingClientRect().top <= offset + 40) current = item;
-			});
-			items.forEach(function (item) {
-				if (item === current) item.link.setAttribute('aria-current', 'true');
-				else item.link.removeAttribute('aria-current');
-			});
-			ticking = false;
-		};
-		window.addEventListener('scroll', function () {
-			if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
-		}, { passive: true });
-		update();
+	var lastOffset = null;
+	var ticking = false;
+	function update() {
+		ticking = false;
+		var offset = barsBottom() + 24;
+		if (offset !== lastOffset) {
+			document.body.style.setProperty('--gd-sticky-top', offset + 'px');
+			lastOffset = offset;
+		}
+		if (!items.length) return;
+
+		var current = items[0];
+		items.forEach(function (item) {
+			if (item.target.getBoundingClientRect().top <= offset + 16) current = item;
+		});
+		var root = document.documentElement;
+		if (window.innerHeight + window.scrollY >= root.scrollHeight - 2) current = items[items.length - 1];
+		if (current === active) return;
+		active = current;
+
+		items.forEach(function (item) {
+			if (item === current) item.link.setAttribute('aria-current', 'true');
+			else item.link.removeAttribute('aria-current');
+		});
+		sections.forEach(function (li) { li.classList.toggle('is-open', li.contains(current.link)); });
+
+		// Keep the current entry visible inside a long rail.
+		if (desktop.matches && toc.scrollHeight > toc.clientHeight) {
+			var top = current.link.offsetTop;
+			var bottom = top + current.link.offsetHeight;
+			if (top < toc.scrollTop + 40) toc.scrollTop = top - 40;
+			else if (bottom > toc.scrollTop + toc.clientHeight - 40) toc.scrollTop = bottom - toc.clientHeight + 40;
+		}
 	}
+	function schedule() {
+		if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+	}
+	window.addEventListener('scroll', schedule, { passive: true });
+	window.addEventListener('resize', schedule);
+	update();
 
 	// Copy buttons on code blocks.
 	if (!navigator.clipboard) return;

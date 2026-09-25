@@ -92,48 +92,57 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 </nav>
 
 <div class="site grid-container container hfeed" id="page"><div class="site-content" id="content"><div class="content-area" id="primary"><main class="site-main" id="main">
-<article id="post-42" class="post-42 post type-post status-publish format-standard hentry category-godot gd-has-toc"><div class="inside-article"><header class="entry-header"><p class="gd-crumb">~/<a href="#category-tutorials">tutorials</a>/<a href="#category-godot">godot</a></p><h1 class="entry-title" itemprop="headline">Set Up Local LLM Dialogue for NPCs in Godot 4</h1><p class="gd-dek">Stream replies from a local model into your dialogue UI, with no server, no per-request cost and no internet connection.</p><div class="entry-meta"><span class="byline"><img alt="" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%231f2a24%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2240%22%20font-family%3D%22monospace%22%20font-size%3D%2222%22%20font-weight%3D%22600%22%20fill%3D%22%23c8f7a8%22%20text-anchor%3D%22middle%22%3EAM%3C%2Ftext%3E%3C%2Fsvg%3E" class="avatar avatar-32 photo gd-avatar" height="32" width="32">by <span class="author vcard"><a class="url fn n" href="#" rel="author"><span class="author-name">Alex Moreno</span></a></span></span> <span class="posted-on"><time class="entry-date updated" datetime="2026-09-20T09:00:00+00:00">Updated 20 Sep 2026</time></span> <span class="reading-time">2 min read</span></div></header><nav class="gd-toc" aria-label="On this page"><details class="gd-toc__box" open><summary class="gd-toc__title">On this page</summary><ul class="gd-toc__list"><li><a href="#overview">Overview</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#install-the-model">Install the model</a><ul><li><a href="#model-size">Pick a model size</a></li><li><a href="#folder-layout">Folder layout</a></li></ul></li><li><a href="#stream-replies">Stream replies</a></li><li><a href="#cache-and-latency">Cache and latency</a></li><li><a href="#troubleshooting">Troubleshooting</a></li></ul></details></nav><div class="entry-content" itemprop="text"><!-- wp:paragraph -->
-<p>Run a small language model on the player's machine, stream replies into a dialogue box, and keep latency low enough to feel like conversation. No server, no per-request cost, and it works offline.</p>
-<!-- /wp:paragraph -->
-<ul class="wp-block-list requires"><li>Godot 4.4+</li><li>8 GB VRAM</li><li>~2 GB disk</li></ul>
-<div class="wp-block-group"><div class="wp-block-group__inner-container">
-<h2 id="overview" class="wp-block-heading">Overview<a class="gd-anchor" href="#overview" aria-label="Link to “Overview”">#</a></h2>
-<p>The setup has three parts: a quantized model file shipped next to your game, a <code>LocalLLM</code> node that loads it once at startup, and a dialogue script that streams tokens into your UI as they arrive.</p>
-<p>If you've used <a href="#">Godot's signals</a> before, the streaming part will feel familiar. Each token arrives as a signal and you append it to a label.</p>
-</div></div>
-<div class="gb-container gb-container-a1b2c3"><h2 id="requirements" class="gb-headline gb-headline-9f8e7d gb-headline-text">Requirements<a class="gd-anchor" href="#requirements" aria-label="Link to “Requirements”">#</a></h2>
-<p>You need Godot 4.4 or newer, a GPU with at least 8 GB of VRAM for the 7B model, and about 2 GB of disk space per model.</p></div>
-<h2 id="install-the-model" class="wp-block-heading">Install the model<a class="gd-anchor" href="#install-the-model" aria-label="Link to “Install the model”">#</a></h2>
-<p>Download a quantized model and place it in <code>res://models/</code>. Anything around 3–4B parameters runs comfortably on mid-range GPUs.</p>
-<p class="code-file">npc_dialogue.gd</p>
-<pre class="wp-block-code"><code>extends Node
-
-@onready var llm := $LocalLLM
-
-func ask_npc(prompt: String) -> String:
-	# Keep replies short so they fit a dialogue box
-	var reply := await llm.generate(prompt, {"max_tokens": 80})
-	return reply.strip_edges()</code></pre>
-<p class="note">Ship the model as a separate download. Bundling it inflates your export and slows store review.</p>
-<div class="wp-block-group"><div class="wp-block-group__inner-container">
-<h3 class="wp-block-heading" id="model-size">Pick a model size<a class="gd-anchor" href="#model-size" aria-label="Link to “Pick a model size”">#</a></h3>
-<p>Bigger isn't better here. Players notice latency long before they notice a slightly smarter NPC.</p>
-<figure class="wp-block-table"><table><thead><tr><th>Model size</th><th>VRAM</th><th>First token</th><th>Good for</th></tr></thead><tbody><tr><td>1B</td><td>2 GB</td><td>~80 ms</td><td>Barks, short replies</td></tr><tr><td>3B</td><td>4 GB</td><td>~150 ms</td><td>Most NPC dialogue</td></tr><tr><td>7B</td><td>8 GB</td><td>~320 ms</td><td>Companions, quest givers</td></tr></tbody></table><figcaption class="wp-element-caption">Sample figures for layout preview.</figcaption></figure>
-</div></div>
-<h3 id="folder-layout" class="wp-block-heading">Folder layout<a class="gd-anchor" href="#folder-layout" aria-label="Link to “Folder layout”">#</a></h3>
-<ul class="wp-block-list"><li>Keep models in <code>res://models/</code> and exclude them from the export filter.</li><li>Put prompt templates in <code>res://dialogue/prompts/</code> so writers can edit them.</li><li>Press <kbd>Ctrl</kbd> + <kbd>S</kbd> after editing a template; the node reloads it on save.</li></ul>
-<h2 id="stream-replies" class="wp-block-heading">Stream replies<a class="gd-anchor" href="#stream-replies" aria-label="Link to “Stream replies”">#</a></h2>
-<p>Waiting for the full reply feels slow. Streaming each token as it arrives makes even a 7B model feel responsive.</p>
-<pre class="wp-block-code"><code>llm.token_received.connect(func(token): label.text += token)</code></pre>
-<blockquote class="wp-block-quote"><p>Players forgave a two-second reply once the text started appearing instantly. Perceived latency is what matters.</p><cite>Playtest notes, build 0.4</cite></blockquote>
-<p class="note warning">Never block the main thread while generating. Use <code>await</code> or a worker thread, or the game will stutter.</p>
-<h2 id="cache-and-latency" class="wp-block-heading">Cache and latency<a class="gd-anchor" href="#cache-and-latency" aria-label="Link to “Cache and latency”">#</a></h2>
-<p>Cache the system prompt once per NPC. Rebuilding it for every line doubles the time to first token.</p>
-<p class="note success">Warm the model up with a one-token request during the loading screen. The first real reply will be much faster.</p>
-<h2 id="troubleshooting" class="wp-block-heading">Troubleshooting<a class="gd-anchor" href="#troubleshooting" aria-label="Link to “Troubleshooting”">#</a></h2>
-<p>If replies cut off mid-sentence, raise <code>max_tokens</code> or ask the model for shorter answers in the system prompt.</p>
-<div class="wp-block-buttons"><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#">Download the sample project</a></div><div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="#">View on GitHub</a></div></div>
-</div><footer class="entry-meta" aria-label="Entry meta">
+<article id="post-42" class="post-42 post type-post status-publish format-standard hentry category-godot gd-has-toc"><div class="inside-article"><header class="entry-header"><p class="gd-crumb">~/<a href="#category-tutorials">tutorials</a>/<a href="#category-godot">godot</a></p><h1 class="entry-title" itemprop="headline">Set Up Local LLM Dialogue for NPCs in Godot 4</h1><p class="gd-dek">Stream replies from a local model into your dialogue UI, with no server, no per-request cost and no internet connection.</p><div class="entry-meta"><span class="byline"><img alt="" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%231f2a24%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2240%22%20font-family%3D%22monospace%22%20font-size%3D%2222%22%20font-weight%3D%22600%22%20fill%3D%22%23c8f7a8%22%20text-anchor%3D%22middle%22%3EAM%3C%2Ftext%3E%3C%2Fsvg%3E" class="avatar avatar-32 photo gd-avatar" height="32" width="32">by <span class="author vcard"><a class="url fn n" href="#" rel="author"><span class="author-name">Alex Moreno</span></a></span></span> <span class="posted-on"><time class="entry-date updated" datetime="2026-09-20T09:00:00+00:00">Updated 20 Sep 2026</time></span> <span class="reading-time">5 min read</span></div></header><nav class="gd-toc" aria-label="On this page"><details class="gd-toc__box" open><summary class="gd-toc__title">On this page</summary><ul class="gd-toc__list"><li><a href="#what-unity-mcp-actually-does">What Unity MCP actually does</a></li><li><a href="#what-you-need-before-you-start">What you need before you start</a></li><li><a href="#step-1-install-claude-code-and-sign-in">Step 1: Install Claude Code and sign in</a></li><li><a href="#step-2-add-the-unity-mcp-package-to-your-project">Step 2: Add the Unity MCP package to your project</a><ul><li><a href="#install-from-the-package-manager">Install from the Package Manager</a></li><li><a href="#install-from-a-git-url">Install from a Git URL</a></li></ul></li><li><a href="#step-3-connect-claude-code-to-the-unity-mcp-server">Step 3: Connect Claude Code to the Unity MCP server</a><ul><li><a href="#edit-the-mcp-config-file">Edit the MCP config file</a></li><li><a href="#check-the-connection">Check the connection</a></li></ul></li><li><a href="#step-4-run-your-first-prompt-inside-unity">Step 4: Run your first prompt inside Unity</a></li><li><a href="#tips-for-better-results-with-unity-mcp">Tips for better results with Unity MCP</a></li><li><a href="#troubleshooting-common-connection-problems">Troubleshooting common connection problems</a><ul><li><a href="#claude-code-cannot-find-the-server">Claude Code cannot find the server</a></li><li><a href="#the-unity-editor-freezes-during-a-request">The Unity editor freezes during a request</a></li><li><a href="#tools-are-missing-from-the-list">Tools are missing from the list</a></li></ul></li><li><a href="#frequently-asked-questions">Frequently asked questions</a><ul><li><a href="#is-unity-mcp-free-to-use">Is Unity MCP free to use?</a></li><li><a href="#does-it-work-with-unity-2022-lts">Does it work with Unity 2022 LTS?</a></li><li><a href="#can-claude-code-edit-prefabs-and-scenes">Can Claude Code edit prefabs and scenes?</a></li><li><a href="#is-my-project-code-sent-to-anthropic">Is my project code sent to Anthropic?</a></li><li><a href="#can-i-use-it-with-cursor-or-vs-code-instead">Can I use it with Cursor or VS Code instead?</a></li></ul></li><li><a href="#final-thoughts">Final thoughts</a></li></ul></details></nav><div class="entry-content" itemprop="text"><p>This guide connects Claude Code to the Unity editor through the Model Context Protocol, so you can ask for changes in plain English and watch them happen in your project.</p>
+<ul class="wp-block-list requires"><li>Unity 6</li><li>Claude Code</li><li>Node.js 20+</li></ul>
+<h2 id="what-unity-mcp-actually-does" class="wp-block-heading">What Unity MCP actually does<a class="gd-anchor" href="#what-unity-mcp-actually-does" aria-label="Link to “What Unity MCP actually does”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h2 id="what-you-need-before-you-start" class="wp-block-heading">What you need before you start<a class="gd-anchor" href="#what-you-need-before-you-start" aria-label="Link to “What you need before you start”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h2 id="step-1-install-claude-code-and-sign-in" class="wp-block-heading">Step 1: Install Claude Code and sign in<a class="gd-anchor" href="#step-1-install-claude-code-and-sign-in" aria-label="Link to “Step 1: Install Claude Code and sign in”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h2 id="step-2-add-the-unity-mcp-package-to-your-project" class="wp-block-heading">Step 2: Add the Unity MCP package to your project<a class="gd-anchor" href="#step-2-add-the-unity-mcp-package-to-your-project" aria-label="Link to “Step 2: Add the Unity MCP package to your project”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="install-from-the-package-manager" class="wp-block-heading">Install from the Package Manager<a class="gd-anchor" href="#install-from-the-package-manager" aria-label="Link to “Install from the Package Manager”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="install-from-a-git-url" class="wp-block-heading">Install from a Git URL<a class="gd-anchor" href="#install-from-a-git-url" aria-label="Link to “Install from a Git URL”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h2 id="step-3-connect-claude-code-to-the-unity-mcp-server" class="wp-block-heading">Step 3: Connect Claude Code to the Unity MCP server<a class="gd-anchor" href="#step-3-connect-claude-code-to-the-unity-mcp-server" aria-label="Link to “Step 3: Connect Claude Code to the Unity MCP server”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<p class="code-file">.mcp.json</p><pre class="wp-block-code"><code>{
+  "mcpServers": {
+    "unity": { "command": "npx", "args": ["-y", "unity-mcp"] }
+  }
+}</code></pre>
+<h3 id="edit-the-mcp-config-file" class="wp-block-heading">Edit the MCP config file<a class="gd-anchor" href="#edit-the-mcp-config-file" aria-label="Link to “Edit the MCP config file”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="check-the-connection" class="wp-block-heading">Check the connection<a class="gd-anchor" href="#check-the-connection" aria-label="Link to “Check the connection”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h2 id="step-4-run-your-first-prompt-inside-unity" class="wp-block-heading">Step 4: Run your first prompt inside Unity<a class="gd-anchor" href="#step-4-run-your-first-prompt-inside-unity" aria-label="Link to “Step 4: Run your first prompt inside Unity”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h2 id="tips-for-better-results-with-unity-mcp" class="wp-block-heading">Tips for better results with Unity MCP<a class="gd-anchor" href="#tips-for-better-results-with-unity-mcp" aria-label="Link to “Tips for better results with Unity MCP”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h2 id="troubleshooting-common-connection-problems" class="wp-block-heading">Troubleshooting common connection problems<a class="gd-anchor" href="#troubleshooting-common-connection-problems" aria-label="Link to “Troubleshooting common connection problems”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="claude-code-cannot-find-the-server" class="wp-block-heading">Claude Code cannot find the server<a class="gd-anchor" href="#claude-code-cannot-find-the-server" aria-label="Link to “Claude Code cannot find the server”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="the-unity-editor-freezes-during-a-request" class="wp-block-heading">The Unity editor freezes during a request<a class="gd-anchor" href="#the-unity-editor-freezes-during-a-request" aria-label="Link to “The Unity editor freezes during a request”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="tools-are-missing-from-the-list" class="wp-block-heading">Tools are missing from the list<a class="gd-anchor" href="#tools-are-missing-from-the-list" aria-label="Link to “Tools are missing from the list”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h2 id="frequently-asked-questions" class="wp-block-heading">Frequently asked questions<a class="gd-anchor" href="#frequently-asked-questions" aria-label="Link to “Frequently asked questions”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="is-unity-mcp-free-to-use" class="wp-block-heading">Is Unity MCP free to use?<a class="gd-anchor" href="#is-unity-mcp-free-to-use" aria-label="Link to “Is Unity MCP free to use?”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="does-it-work-with-unity-2022-lts" class="wp-block-heading">Does it work with Unity 2022 LTS?<a class="gd-anchor" href="#does-it-work-with-unity-2022-lts" aria-label="Link to “Does it work with Unity 2022 LTS?”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="can-claude-code-edit-prefabs-and-scenes" class="wp-block-heading">Can Claude Code edit prefabs and scenes?<a class="gd-anchor" href="#can-claude-code-edit-prefabs-and-scenes" aria-label="Link to “Can Claude Code edit prefabs and scenes?”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="is-my-project-code-sent-to-anthropic" class="wp-block-heading">Is my project code sent to Anthropic?<a class="gd-anchor" href="#is-my-project-code-sent-to-anthropic" aria-label="Link to “Is my project code sent to Anthropic?”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h3 id="can-i-use-it-with-cursor-or-vs-code-instead" class="wp-block-heading">Can I use it with Cursor or VS Code instead?<a class="gd-anchor" href="#can-i-use-it-with-cursor-or-vs-code-instead" aria-label="Link to “Can I use it with Cursor or VS Code instead?”">#</a></h3>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p>
+<h2 id="final-thoughts" class="wp-block-heading">Final thoughts<a class="gd-anchor" href="#final-thoughts" aria-label="Link to “Final thoughts”">#</a></h2>
+<p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Once it is connected, Claude can read your scene hierarchy, create GameObjects, edit scripts and run tests without you copying anything back and forth.</p></div><footer class="entry-meta" aria-label="Entry meta">
               <span class="cat-links"><span class="gp-icon icon-categories"></span><span class="screen-reader-text">Categories </span><a href="#" rel="category tag">Godot</a>, <a href="#" rel="category tag">Tutorials</a></span>
               <span class="tags-links"><span class="gp-icon icon-tags"></span><span class="screen-reader-text">Tags </span><a href="#" rel="tag">llm</a>, <a href="#" rel="tag">npc</a>, <a href="#" rel="tag">dialogue</a></span>
               <nav id="nav-below" class="post-navigation" aria-label="Posts">
@@ -155,40 +164,85 @@ func ask_npc(prompt: String) -> String:
 <script>
 (function () {
 	var desktop = window.matchMedia('(min-width: 1024px)');
+	var toc = document.querySelector('.gd-toc');
+	var box = toc && toc.querySelector('.gd-toc__box');
+	var items = [];
+	var sections = [];
+	var active = null;
 
-	// TOC: an open rail on desktop, a collapsed "On this page" bar below that.
-	var box = document.querySelector('.gd-toc__box');
-	if (box) {
+	// Height of fixed or sticky bars at the top (admin bar, sticky navigation).
+	function barsBottom() {
+		var bars = [];
+		document.querySelectorAll('#wpadminbar, .site-header, .main-navigation, #mobile-header').forEach(function (el) {
+			var position = getComputedStyle(el).position;
+			if (position === 'fixed' || position === 'sticky') bars.push(el.getBoundingClientRect());
+		});
+		bars.sort(function (a, b) { return a.top - b.top; });
+		var bottom = 0;
+		bars.forEach(function (r) {
+			if (r.height && r.top <= bottom + 1 && r.bottom > bottom) bottom = r.bottom;
+		});
+		return bottom;
+	}
+
+	if (toc) {
+		toc.classList.add('is-enhanced');
+		items = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'))
+			.map(function (a) { return { link: a, target: document.getElementById(decodeURIComponent(a.hash.slice(1))) }; })
+			.filter(function (item) { return item.target; });
+		sections = Array.prototype.slice.call(toc.querySelectorAll('.gd-toc__list > li'));
+
+		// Open rail on desktop, collapsed bar on smaller screens.
 		box.open = desktop.matches;
 		box.addEventListener('toggle', function () {
 			if (desktop.matches && !box.open) box.open = true;
 		});
 		desktop.addEventListener('change', function (e) { box.open = e.matches; });
+		toc.addEventListener('click', function (e) {
+			if (!desktop.matches && e.target.closest('a')) box.open = false;
+		});
 	}
 
-	// Highlight the section being read.
-	var items = Array.prototype.slice.call(document.querySelectorAll('.gd-toc a[href^="#"]'))
-		.map(function (a) { return { link: a, target: document.getElementById(decodeURIComponent(a.hash.slice(1))) }; })
-		.filter(function (item) { return item.target; });
-	if (items.length) {
-		var ticking = false;
-		var update = function () {
-			var offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gd-sticky-top')) || 88;
-			var current = items[0];
-			items.forEach(function (item) {
-				if (item.target.getBoundingClientRect().top <= offset + 40) current = item;
-			});
-			items.forEach(function (item) {
-				if (item === current) item.link.setAttribute('aria-current', 'true');
-				else item.link.removeAttribute('aria-current');
-			});
-			ticking = false;
-		};
-		window.addEventListener('scroll', function () {
-			if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
-		}, { passive: true });
-		update();
+	var lastOffset = null;
+	var ticking = false;
+	function update() {
+		ticking = false;
+		var offset = barsBottom() + 24;
+		if (offset !== lastOffset) {
+			document.body.style.setProperty('--gd-sticky-top', offset + 'px');
+			lastOffset = offset;
+		}
+		if (!items.length) return;
+
+		var current = items[0];
+		items.forEach(function (item) {
+			if (item.target.getBoundingClientRect().top <= offset + 16) current = item;
+		});
+		var root = document.documentElement;
+		if (window.innerHeight + window.scrollY >= root.scrollHeight - 2) current = items[items.length - 1];
+		if (current === active) return;
+		active = current;
+
+		items.forEach(function (item) {
+			if (item === current) item.link.setAttribute('aria-current', 'true');
+			else item.link.removeAttribute('aria-current');
+		});
+		sections.forEach(function (li) { li.classList.toggle('is-open', li.contains(current.link)); });
+
+		// Keep the current entry visible inside a long rail.
+		if (desktop.matches && toc.scrollHeight > toc.clientHeight) {
+			var top = current.link.offsetTop;
+			var bottom = top + current.link.offsetHeight;
+			if (top < toc.scrollTop + 40) toc.scrollTop = top - 40;
+			else if (bottom > toc.scrollTop + toc.clientHeight - 40) toc.scrollTop = bottom - toc.clientHeight + 40;
+		}
 	}
+	function schedule() {
+		if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+	}
+	window.addEventListener('scroll', schedule, { passive: true });
+	window.addEventListener('resize', schedule);
+	update();
 
 	// Copy buttons on code blocks.
 	if (!navigator.clipboard) return;

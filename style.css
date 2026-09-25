@@ -69,14 +69,15 @@ Version:      10.0.0
   /* Layout */
   --gd-reading: 70ch;          /* longest line of body text */
   --gd-article: 800px;         /* single post without a table of contents */
-  --gd-article-wide: 1160px;   /* single post with the table-of-contents rail */
   --gd-pad-x: clamp(16px, 3vw, 24px);
-  --gd-toc: 220px;
+  --gd-toc: 236px;             /* table-of-contents column */
   --gd-toc-gap: clamp(32px, 4vw, 56px);
-  --gd-sticky-top: 88px;       /* clears a sticky navbar; use 24px if yours scrolls away */
+  --gd-content: 720px;         /* text column next to the table of contents */
+  --gd-article-wide: calc(var(--gd-toc) + var(--gd-toc-gap) + var(--gd-content) + 2 * var(--gd-pad-x));
+  --gd-sticky-top: 24px;       /* functions.php updates this to clear a sticky navbar */
 }
 .admin-bar {
-  --gd-sticky-top: 120px;
+  --gd-sticky-top: 56px;
 }
 
 
@@ -446,8 +447,10 @@ body:not(.wp-admin).one-container .container {
 /* ==========================================================================
    05  SINGLE POST: TABLE OF CONTENTS
    functions.php prints <nav class="gd-toc"> right after the post header and
-   adds "gd-has-toc" to the article. Below 1024px it is a collapsible
-   "On this page" bar; from 1024px it is a sticky column on the left.
+   adds "gd-has-toc" to the article.
+   Below 1024px: a collapsible "On this page" bar under the header.
+   From 1024px: a sticky column on the left, one thin rule with a green bar
+   on the current section. Sub-headings open only for the current section.
    ========================================================================== */
 .gd-toc {
   margin: 0 0 28px;
@@ -488,8 +491,9 @@ body:not(.wp-admin).one-container .container {
   padding: 0;
   list-style: none;
 }
-.gd-toc__list {
-  padding: 0 16px 14px !important;
+.gd-toc .gd-toc__list {
+  margin: 0 16px 14px;
+  border-left: 1px solid var(--gd-line-strong);
 }
 .gd-toc li {
   margin: 0;
@@ -497,21 +501,27 @@ body:not(.wp-admin).one-container .container {
 }
 .gd-toc a {
   display: block;
-  padding: 5px 0 5px 14px;
+  margin-left: -1px;
+  padding: 6px 0 6px 14px;
   color: var(--gd-muted);
-  border-left: 2px solid var(--gd-line);
+  border-left: 2px solid transparent;
   font-size: 14px;
+  font-weight: 400;
   line-height: 1.4;
   text-decoration: none;
+  text-wrap: pretty;
   transition: color var(--gd-motion), border-color var(--gd-motion);
 }
 .gd-toc li li > a {
-  padding-left: 26px;
+  padding-block: 4px;
+  padding-left: 28px;
   font-size: 13px;
 }
 .gd-toc a:is(:hover, :focus-visible) {
   color: var(--gd-text);
-  border-left-color: var(--gd-line-strong);
+}
+.gd-toc li.is-open > a {
+  color: var(--gd-text);
 }
 .gd-toc a[aria-current] {
   color: var(--gd-text);
@@ -537,9 +547,14 @@ body:not(.wp-admin).one-container .container {
     top: var(--gd-sticky-top);
     max-height: calc(100vh - var(--gd-sticky-top) - 24px);
     margin: 0;
+    padding-bottom: 8px;
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  .single-post .gd-has-toc > .inside-article > .gd-toc:hover {
+    scrollbar-color: var(--gd-line-strong) transparent;
   }
   .single-post .gd-has-toc .gd-toc__box {
     background: transparent;
@@ -555,13 +570,22 @@ body:not(.wp-admin).one-container .container {
     content: none;
   }
   .single-post .gd-has-toc .gd-toc__list {
-    padding: 0 4px 0 0 !important;
+    margin: 0;
+  }
+  /* With the script running, only the current section shows its sub-headings. */
+  .single-post .gd-toc.is-enhanced .gd-toc__list > li:not(.is-open) > ul {
+    display: none;
   }
   /* Comments line up with the text column. */
   .single-post .site-main > .gd-has-toc ~ .comments-area {
-    max-width: none;
+    max-width: var(--gd-content);
     margin-left: calc(max(0px, (100% - var(--gd-article-wide)) / 2) + var(--gd-pad-x) + var(--gd-toc) + var(--gd-toc-gap));
-    margin-right: calc(max(0px, (100% - var(--gd-article-wide)) / 2) + var(--gd-pad-x));
+    margin-right: auto;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within {
+    scroll-behavior: smooth;
   }
 }
 
@@ -764,7 +788,7 @@ body:not(.wp-admin).one-container .container {
 
 /* Callouts. Paragraph or Group + class "note" (adds a label) or
    "key-insight" (no label). Add "warning" or "success" for variants. */
-.entry-content :is(.note, .key-insight, blockquote.warning, blockquote.success) {
+.entry-content :where(.note, .key-insight, blockquote.warning, blockquote.success) {
   max-width: var(--gd-reading);
   padding: 14px 18px;
   color: var(--gd-text);
@@ -780,17 +804,34 @@ body:not(.wp-admin).one-container .container {
 .entry-content :is(.note, .key-insight, blockquote.warning, blockquote.success) :is(p, ul, ol) + * {
   margin-top: .6em;
 }
+.entry-content .note {
+  position: relative;
+  padding-left: 96px;
+  font-size: 15px;
+  line-height: 1.55;
+}
 .entry-content .note::before {
   content: "Note";
-  display: block;
-  margin-bottom: 4px;
+  position: absolute;
+  top: 14px;
+  left: 18px;
   color: var(--gd-info-ink);
   font-family: var(--gd-mono);
   font-size: 11px;
   font-weight: 600;
-  line-height: 1.6;
+  line-height: calc(15px * 1.55);
   letter-spacing: .08em;
   text-transform: uppercase;
+}
+@media (max-width: 600px) {
+  .entry-content .note {
+    padding-left: 18px;
+  }
+  .entry-content .note::before {
+    position: static;
+    display: block;
+    margin-bottom: 2px;
+  }
 }
 .entry-content :is(.note, .key-insight, blockquote).warning {
   background: var(--gd-warn-bg);
@@ -1375,6 +1416,12 @@ body:not(.wp-admin).one-container .container {
   }
 }
 @media (max-width: 600px) {
+  .single-post .entry-header .byline {
+    flex-basis: 100%;
+  }
+  .single-post .entry-header .byline + *::before {
+    content: none;
+  }
   .post-navigation {
     grid-template-columns: minmax(0, 1fr);
   }
