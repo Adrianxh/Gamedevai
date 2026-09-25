@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rail Concepts</title>
+<style>
+:root {
+  --bg: #f6f5f1; --paper: #fff; --ink: #15191c; --muted: #5a6369; --line: #e4e1da; --line-2: #cfcbc2;
+  --accent: #0d7a4e; --accent-ink: #0a5c3b; --accent-soft: #e8f4ed;
+  --t-bg: #0b0f13; --t-raised: #0f1519; --t-ink: #c8f7a8; --t-mute: #7fa58a; --t-dim: #6f8a73; --t-line: #1d2a22; --t-hover: #13201a;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background: #eceae4; font: 15px/1.55 var(--sans); }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 20px 72px; }
+.intro { padding: 44px 0 8px; }
+.intro .cmd { margin: 0 0 12px; color: var(--muted); font: 13px var(--mono); }
+.intro h1 { margin: 0 0 10px; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.1; letter-spacing: -.02em; }
+.intro p { max-width: 70ch; margin: 0; color: var(--muted); }
+
+.cx { padding-top: 48px; }
+.cx-h { display: grid; grid-template-columns: 56px minmax(0, 1.2fr) minmax(0, 1fr); gap: 22px; margin-bottom: 20px; }
+.cx-n { margin: 0; color: #9d988c; font: 500 36px/1 var(--mono); }
+.cx-h h2 { margin: 0 0 8px; font-size: 23px; letter-spacing: -.015em; }
+.cx-h p { margin: 0; color: var(--muted); }
+.cx-m { display: grid; gap: 10px; margin: 0; font-size: 13.5px; }
+.cx-m div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid #d6d3cb; }
+.cx-m dt { color: var(--muted); font: 600 11px/1.75 var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.cx-m dd { margin: 0; }
+
+.frame { overflow: hidden; background: var(--bg); border: 1px solid #cfcbc2; border-radius: 10px; box-shadow: 0 30px 60px -40px rgb(20 24 27 / 45%); }
+.nav { display: flex; align-items: center; gap: 20px; height: 64px; padding: 0 32px; color: var(--t-ink); background: var(--t-bg); font: 500 14px var(--mono); }
+.nav b { font-size: 17px; }
+.nav b::before { content: "~/"; color: var(--t-dim); }
+.nav b::after { content: "_"; }
+.nav ul { display: flex; gap: 2px; margin: 0 0 0 auto; padding: 0; list-style: none; }
+.nav li { padding: 8px 11px; color: var(--t-mute); border-radius: 5px; }
+.nav li::before { content: "./"; opacity: .7; }
+.nav li.on { color: var(--t-ink); background: var(--t-hover); }
+
+.page { display: grid; grid-template-columns: 256px minmax(0, 720px); justify-content: center; gap: 64px; padding: 48px 32px 56px; }
+.crumb { margin: 0 0 8px; color: var(--muted); font: 12.5px var(--mono); }
+.crumb b { color: var(--accent-ink); font-weight: 500; }
+h3.ttl { margin: 0 0 12px; font-size: 40px; line-height: 1.1; letter-spacing: -.024em; }
+.dek { margin: 0 0 18px; color: var(--muted); font-size: 18px; }
+.by { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; color: var(--muted); font-size: 13.5px; }
+.by i { display: grid; place-items: center; width: 32px; height: 32px; color: var(--t-ink); background: #1f2a24; border-radius: 50%; font: 600 12px var(--mono); font-style: normal; }
+.by b { color: var(--ink); }
+.art h4 { margin: 30px 0 10px; font-size: 24px; letter-spacing: -.012em; }
+.art h4 span { margin-left: 8px; color: var(--line-2); font-weight: 400; }
+.art p { margin: 0 0 14px; }
+.sk { display: grid; gap: 11px; margin-bottom: 16px; }
+.sk i { display: block; height: 9px; background: #e1ded6; border-radius: 5px; }
+.sk i:nth-child(3n) { width: 86%; }
+.sk i:last-child { width: 55%; }
+.lbl { margin: 0 0 12px; color: var(--muted); font: 600 11px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+
+/* ---------- Concept A: Progress Rail ---------- */
+.pr { position: sticky; top: 24px; align-self: start; font-size: 14px; }
+.pr-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+.pr-head .lbl { margin: 0; }
+.pr-pct { color: var(--accent-ink); font: 600 12px var(--mono); }
+.pr ol { margin: 0; padding: 0; list-style: none; counter-reset: s; }
+.pr li { position: relative; display: grid; grid-template-columns: 30px 1fr auto; gap: 0 8px; padding: 7px 0 7px 16px; color: var(--muted); counter-increment: s; }
+.pr li::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 2px; background: var(--line); }
+.pr li::after { content: ""; position: absolute; top: 0; left: 0; width: 2px; height: var(--fill, 0%); background: var(--accent); }
+.pr li.done { --fill: 100%; }
+.pr li.cur { --fill: 45%; color: var(--ink); font-weight: 600; }
+.pr .num::before { content: counter(s, decimal-leading-zero); font: 12px/1.6 var(--mono); color: var(--line-2); }
+.pr li.done .num::before { color: var(--accent); }
+.pr li.cur .num::before { color: var(--accent-ink); }
+.pr .min { color: var(--line-2); font: 11.5px/1.7 var(--mono); font-weight: 400; }
+.pr li.done { color: var(--muted); }
+.pr li.done .t { text-decoration: line-through; text-decoration-color: var(--line-2); text-decoration-thickness: 1px; }
+.pr ul { grid-column: 2 / -1; margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; font-weight: 400; }
+.pr ul li { display: block; padding: 3px 0; color: var(--muted); counter-increment: none; }
+.pr ul li::before, .pr ul li::after { content: none; }
+.pr ul li.on { color: var(--ink); }
+.pr ul li.on::before { content: "›"; position: static; display: inline; margin-right: 6px; width: auto; background: none; color: var(--accent); }
+.pr-foot { display: flex; justify-content: space-between; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font: 12.5px var(--mono); }
+.pr-foot a { color: var(--ink); text-decoration: none; }
+
+/* ---------- Concept B: Terminal Outline ---------- */
+.to { position: sticky; top: 24px; align-self: start; overflow: hidden; color: #d6e6da; background: var(--t-bg); border: 1px solid var(--t-line); border-radius: 10px; font: 13px/1.55 var(--mono); }
+.to-bar { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; background: var(--t-raised); border-bottom: 1px solid var(--t-line); }
+.to-bar i { width: 8px; height: 8px; background: #26352c; border-radius: 50%; }
+.to-bar span { margin-left: 6px; color: var(--t-mute); font-size: 11.5px; }
+.to-body { padding: 12px 8px 12px 12px; }
+.to-cmd { margin: 0 0 10px; color: var(--t-mute); }
+.to-cmd b { color: var(--t-ink); font-weight: 500; }
+.to ul { margin: 0; padding: 0; list-style: none; }
+.to li { display: flex; gap: 8px; padding: 3px 6px; color: #9fb7a7; border-radius: 4px; white-space: nowrap; }
+.to li .br { flex-shrink: 0; color: #3b5244; }
+.to li .t { overflow: hidden; text-overflow: ellipsis; }
+.to li.done { color: #6c8573; }
+.to li.done .t::after { content: " ✓"; color: var(--t-dim); }
+.to li.cur { color: var(--t-ink); background: var(--t-hover); box-shadow: inset 2px 0 0 var(--t-ink); }
+.to li.cur .br { color: var(--t-ink); }
+.to li.cur .t::before { content: "> "; }
+.to li.sub { color: #86a08f; }
+.to-foot { display: grid; gap: 6px; padding: 12px; border-top: 1px solid var(--t-line); }
+.to-foot div { display: flex; justify-content: space-between; color: var(--t-mute); font-size: 12px; }
+.to-foot div b { color: var(--t-ink); font-weight: 500; }
+.to-meter { height: 4px; overflow: hidden; background: #18231d; border-radius: 2px; }
+.to-meter i { display: block; width: 42%; height: 100%; background: var(--t-ink); }
+.to-keys { display: flex; gap: 6px; color: var(--t-dim); font-size: 11.5px; }
+.to-keys kbd { padding: 1px 5px; color: var(--t-ink); border: 1px solid #2a3a30; border-radius: 3px; font: inherit; }
+
+@media (max-width: 960px) {
+  .cx-h { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .page { grid-template-columns: minmax(0, 1fr); gap: 28px; padding: 28px 18px; }
+  .pr, .to { position: static; }
+  .nav ul { display: none; }
+  h3.ttl { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="intro">
+    <p class="cmd">$ ls ~/gamedevaihub/layouts/rail --next</p>
+    <h1>Two next steps for the "On this page" rail</h1>
+    <p>Both keep the current Docs Split layout and change only the rail. Concept A stays light and editorial; concept B pulls the terminal navbar into the page. Both are shown on your Unity MCP guide's structure.</p>
+  </header>
+
+  <!-- A -->
+  <section class="cx">
+    <header class="cx-h">
+      <p class="cx-n">A</p>
+      <div><h2>Progress Rail</h2><p>The rail becomes a reading tracker. Each section is numbered and shows its reading time. The line beside it fills green as you read, and finished sections get struck through. A "% read" counter and a back-to-top link sit at the bottom.</p></div>
+      <dl class="cx-m">
+        <div><dt>Feels like</dt><dd>A course outline: calm and editorial, close to what you have now</dd></div>
+        <div><dt>Engagement</dt><dd>Visible progress pushes readers to finish long guides; per-section minutes set expectations</dd></div>
+        <div><dt>Build</dt><dd>CSS + small script changes; reading time per section from PHP</dd></div>
+      </dl>
+    </header>
+    <div class="frame">
+      <div class="nav"><b>gamedevaihub</b><ul><li>AI Tools</li><li>Engines</li><li class="on">Tutorials</li><li>Reviews</li><li>About</li></ul></div>
+      <div class="page">
+        <aside class="pr">
+          <div class="pr-head"><p class="lbl">On this page</p><span class="pr-pct">42% read</span></div>
+          <ol>
+            <li class="done"><span class="num"></span><span class="t">What Unity MCP does</span><span class="min">1m</span></li>
+            <li class="done"><span class="num"></span><span class="t">What you need</span><span class="min">1m</span></li>
+            <li class="done"><span class="num"></span><span class="t">Install Claude Code</span><span class="min">2m</span></li>
+            <li class="cur"><span class="num"></span><span class="t">Add the Unity MCP package</span><span class="min">3m</span>
+              <ul><li>Package Manager</li><li class="on">Git URL</li></ul>
+            </li>
+            <li><span class="num"></span><span class="t">Connect to the MCP server</span><span class="min">3m</span></li>
+            <li><span class="num"></span><span class="t">Run your first prompt</span><span class="min">2m</span></li>
+            <li><span class="num"></span><span class="t">Troubleshooting</span><span class="min">4m</span></li>
+            <li><span class="num"></span><span class="t">FAQ</span><span class="min">3m</span></li>
+          </ol>
+          <div class="pr-foot"><span>~11 min left</span><a href="#">↑ Top</a></div>
+        </aside>
+        <article class="art">
+          <p class="crumb">~/tutorials/<b>unity</b></p>
+          <h3 class="ttl">How to Set Up Claude Code with Unity MCP</h3>
+          <p class="dek">Connect Claude Code to the Unity editor and ask for scene, prefab and script changes in plain English.</p>
+          <div class="by"><i>AM</i><b>Alex Moreno</b> · Updated 20 Sep 2026 · 19 min read</div>
+          <h4>Step 2: Add the Unity MCP package<span>#</span></h4>
+          <p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Install it once per project.</p>
+          <div class="sk"><i></i><i></i><i></i><i></i></div>
+          <h4>Install from a Git URL<span>#</span></h4>
+          <div class="sk"><i></i><i></i><i></i></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="cx">
+    <header class="cx-h">
+      <p class="cx-n">B</p>
+      <div><h2>Terminal Outline</h2><p>The rail becomes a small terminal window matching the navbar: a file-tree outline with <code>├──</code> branches, a <code>&gt;</code> prompt on the current section, a progress meter, and keyboard hints (<kbd>j</kbd>/<kbd>k</kbd> to move between sections).</p></div>
+      <dl class="cx-m">
+        <div><dt>Feels like</dt><dd>An IDE side panel: the strongest brand signature, tying the page to the navbar</dd></div>
+        <div><dt>Engagement</dt><dd>Memorable and shareable; keyboard jumps reward power readers</dd></div>
+        <div><dt>Build</dt><dd>CSS + script (keyboard shortcuts, meter); same PHP</dd></div>
+      </dl>
+    </header>
+    <div class="frame">
+      <div class="nav"><b>gamedevaihub</b><ul><li>AI Tools</li><li>Engines</li><li class="on">Tutorials</li><li>Reviews</li><li>About</li></ul></div>
+      <div class="page">
+        <aside class="to">
+          <div class="to-bar"><i></i><i></i><i></i><span>outline.md</span></div>
+          <div class="to-body">
+            <p class="to-cmd">$ tree <b>./claude-code-unity-mcp</b></p>
+            <ul>
+              <li class="done"><span class="br">├──</span><span class="t">what-unity-mcp-does</span></li>
+              <li class="done"><span class="br">├──</span><span class="t">what-you-need</span></li>
+              <li class="done"><span class="br">├──</span><span class="t">install-claude-code</span></li>
+              <li class="cur"><span class="br">├──</span><span class="t">add-the-package</span></li>
+              <li class="sub"><span class="br">│   ├──</span><span class="t">package-manager</span></li>
+              <li class="sub"><span class="br">│   └──</span><span class="t">git-url</span></li>
+              <li><span class="br">├──</span><span class="t">connect-mcp-server</span></li>
+              <li><span class="br">├──</span><span class="t">first-prompt</span></li>
+              <li><span class="br">├──</span><span class="t">troubleshooting</span></li>
+              <li><span class="br">└──</span><span class="t">faq</span></li>
+            </ul>
+          </div>
+          <div class="to-foot">
+            <div><span>progress</span><b>4/10 · 42%</b></div>
+            <div class="to-meter"><i></i></div>
+            <div class="to-keys"><kbd>j</kbd><kbd>k</kbd> next / prev section</div>
+          </div>
+        </aside>
+        <article class="art">
+          <p class="crumb">~/tutorials/<b>unity</b></p>
+          <h3 class="ttl">How to Set Up Claude Code with Unity MCP</h3>
+          <p class="dek">Connect Claude Code to the Unity editor and ask for scene, prefab and script changes in plain English.</p>
+          <div class="by"><i>AM</i><b>Alex Moreno</b> · Updated 20 Sep 2026 · 19 min read</div>
+          <h4>Step 2: Add the Unity MCP package<span>#</span></h4>
+          <p>Unity talks to Claude Code through a small MCP server that runs inside the editor. Install it once per project.</p>
+          <div class="sk"><i></i><i></i><i></i><i></i></div>
+          <h4>Install from a Git URL<span>#</span></h4>
+          <div class="sk"><i></i><i></i><i></i></div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
