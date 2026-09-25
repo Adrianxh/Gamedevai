@@ -5,7 +5,7 @@
  * GeneratePress loads this child theme's style.css by itself, so there is
  * no stylesheet enqueue here.
  *
- * Navbar brand: the "Hub" mark and "GameDev AI Hub" wordmark replace the
+ * Navbar brand: the Bracket G mark and "GameDev AI Hub" wordmark replace the
  * GeneratePress logo and site title in every header.
  *
  * Single posts (the "Docs Split" layout):
@@ -37,19 +37,18 @@ function gdaih_is_docs_post() {
 
 
 /* -------------------------------------------------------------------------
- * Brand: "Hub" mark + wordmark in the navbar
+ * Brand: Bracket G mark + wordmark in the navbar
  * ---------------------------------------------------------------------- */
 
 /**
- * The logo markup: a d-pad drawn as a node network, and the wordmark.
+ * The logo markup: the Bracket G mark (a G drawn like a code bracket, with
+ * a green cursor block) and the wordmark.
  */
 function gdaih_brand_markup( $tag = 'p' ) {
-	$mark = '<svg class="gd-brand__mark" viewBox="0 0 32 32" width="36" height="36" aria-hidden="true" focusable="false">'
-		. '<rect width="32" height="32" rx="9" fill="#fff"/>'
-		. '<path d="M16 9v14M9 16h14" stroke="#9fd9bb" stroke-width="2" stroke-linecap="round"/>'
-		. '<circle cx="16" cy="16" r="3.2" fill="#0f7a52"/>'
-		. '<circle cx="16" cy="8" r="2.2" fill="#0f7a52"/><circle cx="24" cy="16" r="2.2" fill="#0f7a52"/>'
-		. '<circle cx="16" cy="24" r="2.2" fill="#0f7a52"/><circle cx="8" cy="16" r="2.2" fill="#0f7a52"/>'
+	$mark = '<svg class="gd-brand__mark" viewBox="0 0 32 32" width="38" height="38" aria-hidden="true" focusable="false">'
+		. '<rect x="1" y="1" width="30" height="30" rx="8" fill="#fff" stroke="#15191c" stroke-width="2"/>'
+		. '<path d="M21.5 11.2A7 7 0 1 0 22.4 19h-5.4" fill="none" stroke="#15191c" stroke-width="3" stroke-linecap="round"/>'
+		. '<rect x="20.5" y="17.5" width="3" height="3" rx=".5" fill="#0d7a4e"/>'
 		. '</svg>';
 
 	return sprintf(
@@ -639,3 +638,13 @@ JS;
 	wp_print_inline_script_tag( $script );
 }
 add_action( 'wp_footer', 'gdaih_docs_script' );
+
+/**
+ * Close the full-screen menu with Escape (every page).
+ */
+function gdaih_menu_script() {
+	wp_print_inline_script_tag(
+		"document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;var b=document.querySelector('.main-navigation.toggled .menu-toggle,#mobile-header.toggled .menu-toggle');if(b){b.click();b.focus();}});"
+	);
+}
+add_action( 'wp_footer', 'gdaih_menu_script' );

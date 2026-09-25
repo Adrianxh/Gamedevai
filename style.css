@@ -1,8 +1,8 @@
 /*
 Theme Name:   GameDev AI Hub Child
 Template:     generatepress
-Description:  Docs layout with a brand-green navbar and a reading-progress table of contents. Typography comes from the GeneratePress Customizer; this file loads no fonts.
-Version:      12.0.0
+Description:  Docs layout with a minimal navbar and a reading-progress table of contents. Typography comes from the GeneratePress Customizer; this file loads no fonts.
+Version:      13.0.0
 */
 
 /* ==========================================================================
@@ -49,9 +49,6 @@ Version:      12.0.0
   --gd-warn-bg: #fdf3e2;
   --gd-warn-line: #f0d9b0;
   --gd-warn-ink: #7a4508;
-
-  --gd-brand: #0f7a52;                   /* navbar */
-  --gd-brand-deep: #0b6243;
 
   --gd-dark-bg: #0b0f13;
   --gd-dark-text: #d9e6dc;
@@ -109,87 +106,74 @@ body,
 }
 
 
-/* 03  NAVBAR: BRAND COLOUR BAR
-   Brand green with white links. Covers the primary navigation, the separate
-   site header (if enabled) and the GP Premium mobile header. Selectors start
-   with "body" so they outrank navbar CSS left in Additional CSS or a plugin;
-   !important only where GeneratePress's Customizer colors would win.
+/* 03  NAVBAR: STUDIO MINIMAL
+   The bar blends into the page: the Bracket G logo on the left, search and
+   a "Menu" button on the right. The menu opens as a full-screen panel with
+   large links at every screen size (GeneratePress's own menu toggle).
+   Covers the primary navigation, the separate site header (if enabled) and
+   the GP Premium mobile header. Selectors start with "body" so they outrank
+   navbar CSS left in Additional CSS or a plugin; !important only where
+   GeneratePress's Customizer colors would win.
    ========================================================================== */
 body :is(.site-header, .main-navigation, #mobile-header) {
-  color: #fff;
-  background: var(--gd-brand) !important;
+  color: var(--gd-text);
+  background: var(--gd-bg) !important;
   background-image: none !important;
   border-bottom: 0;
-  box-shadow: 0 1px 0 rgb(0 0 0 / 8%);
+  box-shadow: none;
+}
+body .main-navigation.navigation-stick {
+  box-shadow: 0 1px 0 var(--gd-line);
 }
 body .site-header .site-description {
-  color: rgb(255 255 255 / 80%);
-}
-/* functions.php prints the brand in place of GeneratePress's logo, so an
-   old logo image set for the sticky navbar must not show. */
-body .sticky-navigation-logo {
-  display: none !important;
+  color: var(--gd-muted);
 }
 body :is(.main-navigation, #mobile-header) .inside-navigation {
-  min-height: 72px;
-  padding-inline: clamp(16px, 3vw, 32px);
-  gap: 12px;
-  align-items: center;
-}
-body .main-navigation .navigation-branding {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+  min-height: 80px;
+  padding-inline: clamp(16px, 4vw, 48px);
+}
+body :is(.main-navigation, #mobile-header) .navigation-branding {
+  display: flex;
+  align-items: center;
+  order: 0;
   min-width: 0;
   margin: 0 auto 0 0;
 }
-body .main-navigation .navigation-branding .site-logo {
-  flex-shrink: 0;
-  margin: 0;
-}
-/* GeneratePress pads the logo vertically; reset it so the logo keeps its height. */
-body :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo) img {
-  display: block;
-  width: auto;
-  height: 42px;
-  max-height: 42px;
-  padding: 0;
-  border-radius: 6px;
-  object-fit: contain;
-}
-body :is(.main-navigation, .site-header) .main-title {
-  margin: 0;
-  font-size: clamp(17px, 1.4vw, 20px);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -.02em;
-}
-body :is(.main-navigation, .site-header) .main-title a {
-  color: #fff !important;
-  text-decoration: none;
+/* functions.php prints the brand in place of GeneratePress's logo, so
+   logo images set in the Customizer must not show beside it. */
+body :is(.main-navigation, #mobile-header, .site-header) :is(.site-logo, .mobile-header-logo, .sticky-navigation-logo):not(:has(.gd-brand)) {
+  display: none !important;
 }
 
-/* Brand from functions.php: "Hub" mark + "GameDev AI Hub" */
+/* Brand from functions.php: Bracket G mark + "GameDev AI Hub" */
+body .gd-brand {
+  margin: 0;
+  line-height: 1.2;
+}
 body .gd-brand a {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  color: var(--gd-text) !important;
+  text-decoration: none;
   white-space: nowrap;
 }
 body .gd-brand__mark {
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 18%);
+  width: 38px;
+  height: 38px;
 }
 body .gd-brand__word {
-  font-size: clamp(17px, 1.5vw, 21px);
+  font-size: clamp(18px, 1.7vw, 23px);
   font-weight: 800;
   letter-spacing: -.03em;
 }
 body .gd-brand__word b {
-  color: inherit;
+  color: var(--gd-accent);
   font-weight: 800;
 }
 
@@ -199,120 +183,183 @@ body :is(.main-navigation, #mobile-header, .site-header) :is(.main-title a, .mai
   content: none !important;
 }
 
-/* Menu links */
-body :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
-  display: flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 0 13px;
-  color: rgb(255 255 255 / 88%) !important;
-  background: transparent !important;
-  border: 0;
-  border-radius: 8px;
-  box-shadow: none;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 40px;
-  text-decoration: none;
-  transition: color var(--gd-motion), background-color var(--gd-motion);
-}
-body :is(.main-navigation, #mobile-header) .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a {
-  color: #fff !important;
-  background: rgb(255 255 255 / 12%) !important;
-}
-body :is(.main-navigation, #mobile-header) .main-nav > ul > li:is([class*="current-menu-"], [class*="current_page_"]) > a {
-  color: #fff !important;
-  background: rgb(255 255 255 / 18%) !important;
-  font-weight: 600;
-  box-shadow: none;
-}
-body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
-  outline-color: #fff;
-}
-
-/* Dropdowns: a white card under the bar */
-body :is(.main-navigation, #mobile-header) .main-nav ul ul {
-  width: 240px;
-  padding: 6px;
-  background: var(--gd-panel);
-  border: 1px solid var(--gd-line);
-  border-radius: 10px;
-  box-shadow: 0 18px 36px -12px rgb(0 0 0 / 28%);
-}
-body :is(.main-navigation, #mobile-header) .main-nav ul ul li a {
-  padding: 9px 12px;
+/* Search and Menu buttons */
+body :is(.main-navigation, #mobile-header) .menu-bar-items {
+  order: 2;
+  margin-left: auto;
   color: var(--gd-text) !important;
   background: transparent !important;
-  border-radius: 6px;
-  font-size: 14.5px;
-  line-height: 1.4;
-  white-space: normal;
-}
-body :is(.main-navigation, #mobile-header) .main-nav ul ul li:is(:hover, .sfHover, :focus-within, .current-menu-item) > a {
-  color: var(--gd-accent-ink) !important;
-  background: var(--gd-accent-soft) !important;
-}
-
-/* Search button, navigation search field, mobile menu toggle */
-body :is(.main-navigation, #mobile-header) .menu-bar-items {
-  gap: 8px;
-  margin-left: 8px;
-  color: #fff !important;
-  background: transparent !important;
-}
-body :is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle) {
-  min-height: 40px;
-  color: #fff !important;
-  background: transparent !important;
-  border: 1px solid rgb(255 255 255 / 28%);
-  border-radius: 8px;
-  transition: background-color var(--gd-motion), border-color var(--gd-motion);
 }
 body :is(.main-navigation, #mobile-header) .menu-bar-item > a {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
+  width: 44px;
   min-width: 0;
-  height: 40px;
+  height: 44px;
   padding: 0;
+  color: var(--gd-text) !important;
+  background: transparent !important;
+  border: 0;
+  border-radius: 10px;
   line-height: 1;
+  transition: background-color var(--gd-motion);
 }
 body :is(.main-navigation, #mobile-header) .menu-toggle {
-  padding: 0 14px;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 38px;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+  order: 3;
+  height: 44px;
+  margin: 0;
+  padding: 0 12px;
+  color: var(--gd-text) !important;
+  background: transparent !important;
+  border: 0;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
   white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--gd-motion);
 }
 body :is(.main-navigation, #mobile-header) .menu-toggle .gp-icon {
-  margin-right: 8px;
+  display: none;
 }
 body :is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu {
   padding-left: 0;
 }
-body :is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle):is(:hover, :focus-visible),
-body :is(.main-navigation, #mobile-header).toggled .menu-toggle {
-  background: rgb(255 255 255 / 14%) !important;
-  border-color: rgb(255 255 255 / 45%);
+/* Two-line icon that turns into a cross when the menu is open. */
+body :is(.main-navigation, #mobile-header) .menu-toggle::after {
+  content: "";
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 7px 0 currentColor;
+  transform: translateY(-3.5px);
+  transition: transform var(--gd-motion), box-shadow var(--gd-motion);
+}
+body :is(.main-navigation, #mobile-header).toggled .menu-toggle::after {
+  box-shadow: none;
+  transform: rotate(45deg);
+  background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat,
+              linear-gradient(currentColor, currentColor) center / 2px 22px no-repeat;
+  height: 22px;
+  width: 22px;
+}
+body :is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle):is(:hover, :focus-visible) {
+  background: rgb(21 25 28 / 6%) !important;
 }
 body :is(.main-navigation, #mobile-header) .navigation-search input[type="search"]:is(*, :focus) {
-  color: #fff;
-  background: var(--gd-brand-deep);
+  color: var(--gd-text);
+  background: var(--gd-bg);
   border: 0;
   outline: 0;
-  box-shadow: inset 0 -2px 0 #fff;
+  box-shadow: inset 0 -2px 0 var(--gd-accent);
+  font-size: 20px;
 }
-body :is(.main-navigation, #mobile-header) .navigation-search input::placeholder {
-  color: rgb(255 255 255 / 75%);
-  opacity: 1;
+
+/* The menu itself: hidden until "Menu" is pressed, then full screen. */
+body :is(.main-navigation, #mobile-header):not(.toggled) .main-nav {
+  display: none !important;
 }
-@media (min-width: 769px) {
-  body .main-navigation .main-nav > ul {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
+body :is(.main-navigation, #mobile-header).toggled {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+body.admin-bar :is(.main-navigation, #mobile-header).toggled {
+  top: 32px;
+}
+body:has(:is(.main-navigation, #mobile-header).toggled) {
+  overflow: hidden;
+}
+body :is(.main-navigation, #mobile-header):not(.toggled) .inside-navigation {
+  flex-wrap: nowrap;
+}
+body :is(.main-navigation, #mobile-header).toggled .inside-navigation {
+  align-content: flex-start;
+  max-width: none;
+}
+body :is(.main-navigation, #mobile-header).toggled .main-nav {
+  display: block !important;
+  flex-basis: 100%;
+  order: 4;
+  width: 100%;
+  max-width: 1100px;
+  margin: clamp(24px, 6vh, 72px) auto 48px;
+}
+body :is(.main-navigation, #mobile-header) .main-nav > ul {
+  display: grid !important;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+  border: 0;
+}
+body :is(.main-navigation, #mobile-header) .main-nav li {
+  float: none;
+  width: auto;
+  margin: 0;
+}
+body :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
+  display: inline-block;
+  padding: 6px 0;
+  color: var(--gd-text) !important;
+  background: transparent !important;
+  border: 0;
+  box-shadow: none;
+  font-size: clamp(30px, 5vw, 56px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.035em;
+  text-decoration: none;
+  transition: color var(--gd-motion);
+}
+body :is(.main-navigation, #mobile-header) .main-nav > ul > li > a:is(:hover, :focus-visible),
+body :is(.main-navigation, #mobile-header) .main-nav > ul > li:is([class*="current-menu-"], [class*="current_page_"]) > a {
+  color: var(--gd-accent) !important;
+}
+body :is(.main-navigation, #mobile-header) .main-nav .dropdown-menu-toggle {
+  display: none;
+}
+/* Sub-menus show as a row of smaller links under their parent. */
+body :is(.main-navigation, #mobile-header) .main-nav ul ul {
+  position: static !important;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  width: auto;
+  height: auto;
+  margin: 2px 0 14px;
+  padding: 0;
+  overflow: visible;
+  background: transparent !important;
+  border: 0;
+  box-shadow: none;
+  opacity: 1 !important;
+  visibility: visible !important;
+  left: auto !important;
+  pointer-events: auto;
+}
+body :is(.main-navigation, #mobile-header) .main-nav ul ul li a {
+  padding: 4px 0;
+  color: var(--gd-muted) !important;
+  background: transparent !important;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+}
+body :is(.main-navigation, #mobile-header) .main-nav ul ul li a:is(:hover, :focus-visible),
+body :is(.main-navigation, #mobile-header) .main-nav ul ul li.current-menu-item > a {
+  color: var(--gd-accent) !important;
+}
+body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
+  outline-color: var(--gd-accent);
 }
 
 
@@ -1348,43 +1395,25 @@ body :is(.main-navigation, #mobile-header) .navigation-search input::placeholder
    ========================================================================== */
 @media (max-width: 768px) {
   body :is(.main-navigation, #mobile-header) .inside-navigation {
-    min-height: 58px;
+    min-height: 64px;
     padding-inline: 16px;
-    gap: 8px;
-  }
-  body .main-navigation .navigation-branding {
-    flex: 1 1 auto;
-  }
-  body :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo) img {
-    height: 36px;
-    max-height: 36px;
+    gap: 4px;
   }
   body .gd-brand__mark {
     width: 32px;
     height: 32px;
   }
-  body :is(.main-navigation, #mobile-header).toggled .main-nav > ul {
-    margin: 8px 0 12px;
-    padding: 6px;
-    background: var(--gd-brand-deep) !important;
-    border: 0;
-    border-radius: 10px;
+  body .gd-brand a {
+    gap: 10px;
   }
-  body :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
-    min-height: 44px;
-    padding: 0 12px;
-    line-height: 44px;
+  body .gd-brand__word {
+    font-size: 17px;
   }
-  body :is(.main-navigation, #mobile-header) .main-nav ul ul {
-    width: auto;
-    margin: 2px 0 6px 12px;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    box-shadow: none;
+  body :is(.main-navigation, #mobile-header) .menu-toggle {
+    padding: 0 8px;
   }
-  body :is(.main-navigation, #mobile-header) .main-nav ul ul li a {
-    color: rgb(255 255 255 / 88%) !important;
+  body.admin-bar :is(.main-navigation, #mobile-header).toggled {
+    top: 46px;
   }
   .single-post .entry-header {
     margin-bottom: 24px;
@@ -1398,6 +1427,11 @@ body :is(.main-navigation, #mobile-header) .navigation-search input::placeholder
   }
   .separate-containers .page-header {
     margin-bottom: 20px;
+  }
+}
+@media (max-width: 400px) {
+  body :is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu {
+    display: none;
   }
 }
 @media (max-width: 600px) {
