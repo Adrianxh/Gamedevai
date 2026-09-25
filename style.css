@@ -2,7 +2,7 @@
 Theme Name:   GameDev AI Hub Child
 Template:     generatepress
 Description:  Docs layout with a brand-green navbar and a reading-progress table of contents. Typography comes from the GeneratePress Customizer; this file loads no fonts.
-Version:      11.0.0
+Version:      12.0.0
 */
 
 /* ==========================================================================
@@ -54,18 +54,15 @@ Version:      11.0.0
   --gd-brand-deep: #0b6243;
 
   --gd-dark-bg: #0b0f13;
-  --gd-dark-raised: #0f1519;
   --gd-dark-text: #d9e6dc;
   --gd-dark-ink: #c8f7a8;
   --gd-dark-muted: #7fa58a;
-  --gd-dark-dim: #6f8a73;
   --gd-dark-line: #1d2a22;
   --gd-dark-edge: #2a3a30;
   --gd-dark-hover: #13201a;
 
   --gd-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --gd-radius: 8px;
-  --gd-radius-sm: 5px;
   --gd-motion: 150ms;
 
   --gd-content: 800px;                   /* article column: text, headings, code and cards share its edges */
@@ -113,12 +110,10 @@ body,
 
 
 /* 03  NAVBAR: BRAND COLOUR BAR
-   Selectors start with "body" so they win over navbar CSS left in the
-   Customizer's Additional CSS or a plugin.
-   The whole bar in brand green with white links (concept 16). Covers the
-   primary navigation, the separate site header (if enabled) and the GP
-   Premium mobile header. !important only where GeneratePress's Customizer
-   colors would otherwise win.
+   Brand green with white links. Covers the primary navigation, the separate
+   site header (if enabled) and the GP Premium mobile header. Selectors start
+   with "body" so they outrank navbar CSS left in Additional CSS or a plugin;
+   !important only where GeneratePress's Customizer colors would win.
    ========================================================================== */
 body :is(.site-header, .main-navigation, #mobile-header) {
   color: #fff;
@@ -127,8 +122,13 @@ body :is(.site-header, .main-navigation, #mobile-header) {
   border-bottom: 0;
   box-shadow: 0 1px 0 rgb(0 0 0 / 8%);
 }
-body .site-header :is(.main-title a, .site-description) {
-  color: #fff !important;
+body .site-header .site-description {
+  color: rgb(255 255 255 / 80%);
+}
+/* functions.php prints the brand in place of GeneratePress's logo, so an
+   old logo image set for the sticky navbar must not show. */
+body .sticky-navigation-logo {
+  display: none !important;
 }
 body :is(.main-navigation, #mobile-header) .inside-navigation {
   min-height: 72px;
@@ -148,7 +148,7 @@ body .main-navigation .navigation-branding .site-logo {
   margin: 0;
 }
 /* GeneratePress pads the logo vertically; reset it so the logo keeps its height. */
-body :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
+body :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo) img {
   display: block;
   width: auto;
   height: 42px;
@@ -1355,7 +1355,7 @@ body :is(.main-navigation, #mobile-header) .navigation-search input::placeholder
   body .main-navigation .navigation-branding {
     flex: 1 1 auto;
   }
-  body :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
+  body :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo) img {
     height: 36px;
     max-height: 36px;
   }

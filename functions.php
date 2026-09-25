@@ -5,7 +5,10 @@
  * GeneratePress loads this child theme's style.css by itself, so there is
  * no stylesheet enqueue here.
  *
- * Builds the "Docs Split" single post (concept 02):
+ * Navbar brand: the "Hub" mark and "GameDev AI Hub" wordmark replace the
+ * GeneratePress logo and site title in every header.
+ *
+ * Single posts (the "Docs Split" layout):
  *  - single posts always use the no-sidebar layout
  *  - "~/category/subcategory" path above the title
  *  - the post's manual excerpt as a subtitle under the title
