@@ -1,0 +1,1293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blog Layout Concepts</title>
+<style>
+/* ======================================================================
+   Gallery chrome + proposed blog tokens
+   System fonts only: the live site inherits typography from GeneratePress.
+   ====================================================================== */
+:root {
+  --g-bg: #eceae4;
+  --g-ink: #14181b;
+  --g-muted: #5b6369;
+  --g-line: #d6d3cb;
+
+  --bg: #f6f5f1;
+  --paper: #ffffff;
+  --ink: #15191c;
+  --muted: #5a6369;
+  --line: #e4e1da;
+  --line-2: #cfcbc2;
+  --accent: #0d7a4e;
+  --accent-ink: #0a5c3b;
+  --accent-soft: #e8f4ed;
+
+  --t-bg: #0b0f13;
+  --t-ink: #c8f7a8;
+  --t-mute: #7fa58a;
+  --t-line: #1d2a22;
+  --t-hover: #13201a;
+
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--g-ink); background: var(--g-bg); font: 15px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+
+/* Gallery header */
+.gh { color: #e6efe8; background: var(--t-bg); border-bottom: 1px solid var(--t-line); }
+.gh .wrap { padding-block: 52px 44px; }
+.gh .cmd { margin: 0 0 18px; font: 13px/1.4 var(--mono); color: var(--t-mute); }
+.gh .cmd b { color: var(--t-ink); font-weight: 500; }
+.gh h1 { max-width: 24ch; margin: 0 0 14px; color: #fff; font-size: clamp(28px, 4.2vw, 46px); line-height: 1.08; letter-spacing: -.022em; }
+.gh .lead { max-width: 68ch; margin: 0 0 30px; color: #a9bdb0; font-size: 16px; }
+.idx { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1px; margin: 0; padding: 0; list-style: none; background: var(--t-line); border: 1px solid var(--t-line); border-radius: 8px; overflow: hidden; }
+.idx a { display: flex; gap: 10px; height: 100%; padding: 12px 14px; color: #d6e6da; background: #0e1317; text-decoration: none; font-size: 14px; }
+.idx a span { font-family: var(--mono); color: var(--t-mute); }
+.idx a:is(:hover, :focus-visible) { color: var(--t-ink); background: var(--t-hover); }
+.rec { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 16px; margin-top: 20px; padding: 18px 20px; border: 1px solid #2a3a30; border-radius: 8px; font-size: 15px; color: #c9d6cd; }
+.rec p { margin: 0; }
+.rec .k { font: 600 11px/1.9 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--t-ink); }
+.rec b { color: #fff; }
+.rec code { font: 13px var(--mono); color: var(--t-ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 18px; font-size: 13px; color: #a9bdb0; }
+
+/* Concept header */
+.cx { padding-top: 64px; scroll-margin-top: 12px; }
+.cx:last-of-type { padding-bottom: 80px; }
+.cx-h { display: grid; grid-template-columns: 64px minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; margin-bottom: 22px; }
+.cx-n { margin: 0; font: 500 40px/1 var(--mono); color: #9d988c; }
+.cx-h h2 { margin: 0 0 8px; font-size: 24px; line-height: 1.2; letter-spacing: -.015em; }
+.cx-h p { max-width: 62ch; margin: 0; color: var(--g-muted); }
+.cx-m { display: grid; gap: 10px; margin: 0; font-size: 13.5px; }
+.cx-m div { display: grid; grid-template-columns: 96px 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid var(--g-line); }
+.cx-m dt { font: 600 11px/1.75 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--g-muted); }
+.cx-m dd { margin: 0; }
+.tag { display: inline-block; margin-right: 6px; padding: 4px 7px; border-radius: 3px; font: 600 11px/1 var(--mono); vertical-align: 1px; }
+.tag.css { color: #0a5c3b; background: #dcefe3; }
+.tag.blk { color: #28406b; background: #e3e9f3; }
+.tag.el { color: #7a4508; background: #f6e7cf; }
+@media (max-width: 920px) {
+  .cx-h { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .cx-n { font-size: 28px; }
+  .rec { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+}
+
+/* Browser frame: overflow clip keeps position:sticky demos working */
+.frame { container-type: inline-size; color: var(--ink); background: var(--bg); border: 1px solid #cfcbc2; border-radius: 10px; overflow: hidden; overflow: clip; font: 16px/1.65 var(--sans); box-shadow: 0 30px 60px -40px rgb(20 24 27 / 45%); }
+.chrome { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; background: #dedad2; border-bottom: 1px solid #cfcbc2; }
+.chrome i { width: 10px; height: 10px; border-radius: 50%; background: #c2bdb3; }
+.chrome span { flex: 1; min-width: 0; max-width: 440px; height: 22px; margin-left: 10px; padding: 0 10px; overflow: hidden; color: #666d73; background: #f3f1ec; border-radius: 5px; font: 11.5px/22px var(--mono); white-space: nowrap; text-overflow: ellipsis; }
+
+/* ======================================================================
+   Terminal navbar (from terminal.html, concept 13)
+   ====================================================================== */
+.tn { position: relative; display: flex; align-items: center; gap: 20px; height: 60px; padding: 0 clamp(14px, 3cqi, 32px); color: var(--t-ink); background: var(--t-bg); border-bottom: 1px solid var(--t-line); font: 500 14px/1 var(--mono); }
+.tn a { color: inherit; text-decoration: none; }
+.tn-brand { font-size: 16px; font-weight: 600; white-space: nowrap; }
+.tn-brand::before { content: "~/"; color: #6f8a73; }
+.tn-brand::after { content: "_"; animation: blink 1s steps(1) infinite; }
+.tn .tn-links { display: flex; gap: 2px; margin: 0 0 0 auto; padding: 0; list-style: none; }
+.tn-links a { display: block; padding: 9px 11px; color: var(--t-mute); border-radius: 5px; white-space: nowrap; transition: color .15s, background-color .15s; }
+.tn-links a::before { content: "./"; opacity: .7; }
+.tn-links a:is(:hover, .on) { color: var(--t-ink); background: var(--t-hover); }
+.tn-search, .tn-menu { height: 36px; color: var(--t-ink); background: transparent; border: 1px solid var(--t-line); border-radius: 6px; cursor: pointer; }
+.tn-search { display: grid; place-items: center; width: 36px; padding: 0; }
+.tn-search svg { width: 17px; height: 17px; }
+.tn-menu { display: none; padding: 0 12px; font: 500 13px/1 var(--mono); white-space: nowrap; }
+.tn-prog { display: none; position: absolute; left: 0; bottom: -1px; width: 37%; height: 2px; background: var(--t-ink); }
+[data-nav="prog"] .tn-prog { display: block; }
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .tn-brand::after { animation: none; } }
+@container (max-width: 780px) {
+  .tn .tn-links { display: none; }
+  .tn-search { margin-left: auto; }
+  .tn-menu { display: block; }
+}
+
+/* ======================================================================
+   Shared post primitives
+   ====================================================================== */
+.pg { max-width: 1120px; margin: 0 auto; padding: clamp(22px, 4.5cqi, 52px) clamp(16px, 4cqi, 44px) clamp(32px, 5cqi, 60px); }
+.col { max-width: 720px; margin: 0 auto; }
+.frame p { margin: 0 0 1.05em; }
+.frame :is(h3, h4) { margin: 0; font-weight: 700; line-height: 1.25; letter-spacing: -.012em; }
+.frame :is(ul, ol) { margin: 0; padding: 0; }
+.frame p code { padding: 2px 5px; background: #ebe8e1; border-radius: 4px; font: .86em var(--mono); }
+.crumb { margin: 0 0 4px !important; font: 12.5px/1.4 var(--mono); color: var(--muted); }
+.crumb b { color: var(--accent-ink); font-weight: 500; }
+.kick { display: inline-block; margin: 0 0 4px !important; font: 600 11.5px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); }
+.ttl { max-width: 22ch; margin: 8px 0 14px !important; font-size: clamp(27px, 4.2cqi, 46px); line-height: 1.08 !important; letter-spacing: -.024em !important; font-weight: 750 !important; text-wrap: balance; }
+.dek { max-width: 60ch; margin: 0 0 20px !important; color: var(--muted); font-size: clamp(16px, 1.8cqi, 19px); line-height: 1.5; }
+.by { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--muted); font-size: 13.5px; }
+.by b { color: var(--ink); font-weight: 600; }
+.by > span:not(.av) + span::before { content: "·"; margin-right: 10px; color: var(--line-2); }
+.av { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; color: var(--t-ink); background: #1f2a24; border-radius: 50%; font: 600 12px/1 var(--mono); }
+.img { position: relative; aspect-ratio: 16 / 9; background: repeating-linear-gradient(135deg, rgb(20 24 27 / 5%) 0 1px, transparent 1px 9px), #dfe3df; border: 1px solid var(--line); border-radius: 6px; }
+.img::after { content: attr(data-l); position: absolute; left: 10px; bottom: 10px; padding: 5px 7px; color: #4f5954; background: rgb(255 255 255 / 85%); border-radius: 3px; font: 11px/1 var(--mono); }
+.img.t2 { background-color: #d9e0e6; }
+.img.t3 { background-color: #e6dfd4; }
+.img.dk { background: repeating-linear-gradient(135deg, rgb(200 247 168 / 5%) 0 1px, transparent 1px 9px), #1a2226; border-color: #1d2a22; }
+.img.dk::after { color: #9fbfa9; background: rgb(11 15 19 / 85%); }
+.h2 { margin: 1.9em 0 .6em !important; font-size: clamp(20px, 2.3cqi, 25px); }
+.sk { display: grid; gap: 11px; max-width: 68ch; margin: 0 0 1.4em; }
+.sk i { display: block; height: 9px; background: #e1ded6; border-radius: 5px; }
+.sk i:nth-child(3n) { width: 88%; }
+.sk i:last-child { width: 56%; }
+.lbl { margin: 0 0 10px !important; font: 600 11px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 42px; padding: 0 16px; color: #fff; background: var(--ink); border: 1px solid transparent; border-radius: 6px; font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.btn.acc { background: var(--accent); }
+.btn.alt { color: var(--ink); background: transparent; border-color: var(--line-2); }
+.lnk { color: var(--accent-ink); font-size: 13.5px; font-weight: 600; text-decoration: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+.chip { display: inline-flex; align-items: center; height: 26px; padding: 0 9px; color: var(--ink); background: var(--paper); border: 1px solid var(--line-2); border-radius: 4px; font: 12px/1 var(--mono); }
+.logo { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; color: var(--t-ink); background: var(--ink); border-radius: 9px; font: 700 14px/1 var(--mono); }
+.logo.b2 { color: #fff; background: #28406b; }
+.logo.b3 { color: #fff; background: #7a4508; }
+
+/* Code block with filename tab */
+.code { margin: 22px 0; overflow: hidden; background: var(--t-bg); border: 1px solid var(--t-line); border-radius: 8px; }
+.code-h { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 14px; color: var(--t-mute); border-bottom: 1px solid var(--t-line); font: 12px/1 var(--mono); }
+.code-h button { height: 24px; padding: 0 9px; color: var(--t-ink); background: transparent; border: 1px solid #2a3a30; border-radius: 4px; font: inherit; cursor: pointer; }
+.code pre { margin: 0; padding: 14px 16px; overflow-x: auto; color: #d9e6dc; font: 13px/1.7 var(--mono); tab-size: 4; }
+.code .k { color: #8fc7ff; }
+.code .s { color: #c8f7a8; }
+.code .c { color: #6f8a73; }
+.code .f { color: #f2d58a; }
+
+/* Tables */
+.tbl { margin: 10px 0 8px; overflow-x: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; }
+.tbl table { width: 100%; min-width: 540px; border-collapse: collapse; font-size: 14px; }
+.tbl th { padding: 12px 14px; color: var(--muted); background: #fafaf7; border-bottom: 1px solid var(--line-2); font: 600 11px/1.3 var(--mono); letter-spacing: .07em; text-transform: uppercase; text-align: left; }
+.tbl td { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.tbl tbody tr:last-child td { border-bottom: 0; }
+.tbl .n { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.cap { margin: 0 0 24px !important; color: var(--muted); font-size: 13px; }
+
+/* Terminal newsletter prompt */
+.subx { margin-top: 32px; padding: 20px; color: #dfe9e2; background: var(--t-bg); border-radius: 8px; }
+.subx .cmdl { margin: 0 0 8px; color: var(--t-ink); font: 13px/1.4 var(--mono); }
+.subx p { color: #a9bdb0; font-size: 14.5px; }
+.subx .f { display: flex; gap: 8px; }
+.subx input { flex: 1; min-width: 0; height: 42px; padding: 0 12px; color: #e6efe8; background: #0f1519; border: 1px solid #2a3a30; border-radius: 6px; font: 14px var(--mono); }
+.subx input::placeholder { color: #6f8a73; }
+.subx button { height: 42px; padding: 0 16px; color: var(--t-bg); background: var(--t-ink); border: 0; border-radius: 6px; font: 600 14px var(--mono); cursor: pointer; }
+
+/* ======================================================================
+   01 · Commit Log Editorial
+   ====================================================================== */
+.c01 .commit { display: flex; flex-wrap: wrap; margin: 24px 0; overflow: hidden; color: var(--muted); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; font: 12.5px/1.3 var(--mono); }
+.c01 .commit span { padding: 10px 14px; border-right: 1px solid var(--line); }
+.c01 .commit span:last-child { border-right: 0; }
+.c01 .commit .hash { color: var(--accent-ink); background: var(--accent-soft); }
+.c01 .commit b { color: var(--ink); font-weight: 600; }
+.c01 .tldr { margin: 0 0 28px; padding: 18px 22px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; }
+.c01 .tldr ul { padding-left: 18px; font-size: 15px; }
+.c01 .tldr li + li { margin-top: 6px; }
+.c01 .tldr li::marker { color: var(--accent); }
+.c01 .img { margin: 0 0 28px; }
+.c01 .h2 { position: relative; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.c01 .h2::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 48px; height: 2px; background: var(--accent); }
+.c01 .log { margin-top: 32px; padding: 18px 22px 8px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; }
+.c01 .log ol { list-style: none; font-size: 14px; }
+.c01 .log li { display: grid; grid-template-columns: 104px 1fr; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); }
+.c01 .log time { color: var(--muted); font: 12.5px/1.65 var(--mono); }
+@container (max-width: 600px) {
+  .c01 .commit { flex-direction: column; }
+  .c01 .commit span { border-right: 0; border-bottom: 1px solid var(--line); }
+  .c01 .log li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+
+/* ======================================================================
+   02 · Docs Split
+   ====================================================================== */
+.c02 { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: clamp(28px, 5cqi, 56px); align-items: start; }
+.c02 .toc { position: sticky; top: 16px; font-size: 14px; }
+.c02 .toc ol { margin-bottom: 24px; list-style: none; border-left: 1px solid var(--line-2); }
+.c02 .toc a { display: block; margin-left: -1px; padding: 6px 0 6px 14px; color: var(--muted); border-left: 2px solid transparent; text-decoration: none; }
+.c02 .toc .on a { color: var(--ink); font-weight: 600; border-left-color: var(--accent); }
+.c02 .toc .sub a { padding-left: 28px; font-size: 13px; }
+.c02 .help { padding-top: 16px; color: var(--muted); border-top: 1px solid var(--line); font-size: 13px; }
+.c02 .help div { display: flex; gap: 8px; margin-top: 8px; }
+.c02 .help button { height: 30px; padding: 0 12px; color: var(--ink); background: var(--paper); border: 1px solid var(--line-2); border-radius: 5px; font: inherit; cursor: pointer; }
+.c02 article { max-width: 720px; }
+.c02 .req { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 20px; padding: 12px 0; border-block: 1px solid var(--line); }
+.c02 .req .lbl { margin: 0 6px 0 0 !important; }
+.c02 .h2 a { margin-left: 8px; color: var(--line-2); font-weight: 500; text-decoration: none; }
+.c02 .note { display: grid; grid-template-columns: auto 1fr; gap: 12px; margin: 22px 0; padding: 14px 16px; background: #eef3f9; border: 1px solid #cfdcec; border-radius: 8px; font-size: 14.5px; }
+.c02 .note b { color: #28406b; font: 600 11px/2 var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+@container (max-width: 780px) {
+  .c02 { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .c02 .toc { position: static; padding: 12px 14px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; }
+  .c02 .toc :is(ol, .help) { display: none; }
+  .c02 .toc .lbl { display: flex; justify-content: space-between; margin: 0 !important; }
+  .c02 .toc .lbl::after { content: "▾"; }
+}
+
+/* ======================================================================
+   03 · Verdict First
+   ====================================================================== */
+.c03 .hero { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: clamp(24px, 4cqi, 48px); align-items: start; padding-bottom: 32px; border-bottom: 1px solid var(--line); }
+.c03 .verdict { padding: 22px; color: #dfe9e2; background: var(--t-bg); border: 1px solid var(--t-line); border-radius: 10px; font-size: 14px; }
+.c03 .score { display: flex; align-items: baseline; gap: 6px; font-family: var(--mono); }
+.c03 .score b { color: var(--t-ink); font-size: 52px; font-weight: 600; line-height: 1; }
+.c03 .score span { color: var(--t-mute); }
+.c03 .vl { display: inline-block; margin: 12px 0 14px; padding: 5px 8px; color: var(--t-ink); border: 1px solid #2f5a40; border-radius: 4px; font: 600 11px/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.c03 dl { margin: 0 0 16px; font: 12.5px/1.4 var(--mono); }
+.c03 dl div { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; }
+.c03 dt { display: flex; flex: 1; gap: 8px; color: #a9bdb0; }
+.c03 dt::after { content: ""; flex: 1; border-bottom: 1px dotted #33463a; transform: translateY(-4px); }
+.c03 dd { margin: 0; color: #fff; }
+.c03 .best { padding-top: 14px; color: #c9d6cd; border-top: 1px solid var(--t-line); line-height: 1.5; }
+.c03 .best b { display: block; margin-bottom: 6px; color: var(--t-mute); font: 600 11px/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.c03 .verdict .btn { width: 100%; color: var(--t-bg); background: var(--t-ink); }
+.c03 .verdict small { display: block; margin-top: 10px; color: #8fa596; font-size: 11.5px; line-height: 1.45; }
+.c03 .pc { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
+.c03 .pc > div { padding: 18px 20px 10px; background: var(--paper); border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: 0 0 8px 8px; }
+.c03 .pc .con { border-top-color: #b42318; }
+.c03 .pc ul { list-style: none; font-size: 14.5px; }
+.c03 .pc li { position: relative; margin-bottom: 8px; padding-left: 20px; }
+.c03 .pc li::before { content: "+"; position: absolute; left: 0; color: var(--accent); font: 700 15px/1.5 var(--mono); }
+.c03 .pc .con li::before { content: "−"; color: #b42318; }
+@container (max-width: 780px) { .c03 :is(.hero, .pc) { grid-template-columns: minmax(0, 1fr); } }
+
+/* ======================================================================
+   04 · Test Bench
+   ====================================================================== */
+.c04 .method { margin: 28px 0 8px; overflow: hidden; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+.c04 .method .lbl { padding: 16px 20px 0; }
+.c04 .specs { display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; }
+.c04 .specs div { padding: 10px 20px 18px; border-right: 1px solid var(--line); }
+.c04 .specs div:last-child { border-right: 0; }
+.c04 .specs dt { color: var(--muted); font-size: 12.5px; }
+.c04 .specs dd { margin: 4px 0 0; font: 600 20px/1.2 var(--mono); }
+.c04 .dl { margin: 0 !important; padding: 12px 20px; background: #fafaf7; border-top: 1px solid var(--line); font-size: 13.5px; }
+.c04 .dl a { color: var(--accent-ink); font-weight: 600; text-underline-offset: 3px; }
+.c04 .rk { width: 40px; color: var(--muted); font-family: var(--mono); }
+.c04 tr.win td { background: var(--accent-soft); }
+.c04 .wt { margin-left: 8px; padding: 3px 6px; color: #fff; background: var(--accent); border-radius: 3px; font: 600 10px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; vertical-align: 2px; }
+@container (max-width: 780px) {
+  .c04 .specs { grid-template-columns: repeat(2, 1fr); }
+  .c04 .specs div { border-bottom: 1px solid var(--line); }
+  .c04 .specs div:nth-child(even) { border-right: 0; }
+  .c04 .specs div:last-child { grid-column: span 2; border-bottom: 0; }
+}
+
+/* ======================================================================
+   05 · Magazine Feature
+   ====================================================================== */
+.c05 .hero-img { aspect-ratio: 21 / 8; border: 0; border-radius: 0; }
+.c05 .hero-img::after { top: 10px; bottom: auto; }
+.c05 .pg { padding-top: 0; }
+.c05 .card { position: relative; max-width: 820px; margin-top: calc(-1 * clamp(56px, 10cqi, 130px)); padding: clamp(20px, 3.5cqi, 36px) clamp(20px, 3.5cqi, 40px) 0; background: var(--bg); border-top: 4px solid var(--ink); }
+.c05 .ttl { max-width: 18ch; font-size: clamp(30px, 5.2cqi, 58px); letter-spacing: -.03em !important; }
+.c05 .body { max-width: 680px; margin-left: clamp(0px, 3.5cqi, 40px); padding-top: 28px; }
+.c05 .drop::first-letter { float: left; margin: .06em .1em 0 0; font-size: 4.1em; font-weight: 700; line-height: .82; }
+.c05 .pull { margin: 32px 0; padding: 4px 0 4px 22px; border-left: 3px solid var(--accent); font-size: clamp(20px, 2.6cqi, 26px); font-weight: 600; line-height: 1.35; letter-spacing: -.01em; }
+.c05 .pull cite { display: block; margin-top: 12px; color: var(--muted); font: 500 12.5px/1 var(--mono); font-style: normal; }
+.c05 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0; }
+.c05 figure { margin: 0; }
+.c05 .pair .img { aspect-ratio: 4 / 3; }
+.c05 figcaption { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+@container (max-width: 640px) {
+  .c05 .pair { grid-template-columns: minmax(0, 1fr); }
+  .c05 .hero-img { aspect-ratio: 4 / 3; }
+}
+
+/* ======================================================================
+   06 · Terminal Continuum
+   ====================================================================== */
+.c06 .band { color: #e6efe8; background: var(--t-bg); }
+.c06 .band-in { max-width: 1120px; margin: 0 auto; padding: clamp(28px, 5cqi, 56px) clamp(16px, 4cqi, 44px) clamp(88px, 11cqi, 124px); }
+.c06 .cmdl { margin: 0 0 14px; color: var(--t-mute); font: 13px/1.4 var(--mono); }
+.c06 .cmdl b { color: var(--t-ink); font-weight: 500; }
+.c06 .ttl { max-width: 20ch; color: #fff; }
+.c06 .dek { color: #a9bdb0; }
+.c06 .flags { display: flex; flex-wrap: wrap; gap: 8px; }
+.c06 .flags span { padding: 7px 9px; color: var(--t-ink); background: #0f1519; border: 1px solid #243429; border-radius: 4px; font: 12.5px/1 var(--mono); }
+.c06 .flags i { color: var(--t-mute); font-style: normal; }
+.c06 .pg { padding-top: 0; }
+.c06 .sheet { max-width: 820px; margin: calc(-1 * clamp(56px, 8cqi, 88px)) auto 0; padding: clamp(20px, 4cqi, 44px); background: var(--paper); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 20px 40px -32px rgb(11 15 19 / 40%); }
+.c06 .sheet .by { margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.c06 .sheet .img { margin-bottom: 24px; }
+
+/* ======================================================================
+   07 · Spec Sheet Rail
+   ====================================================================== */
+.c07 { display: grid; grid-template-columns: minmax(0, 1fr) 300px; grid-template-areas: "head rail" "body rail"; column-gap: clamp(28px, 5cqi, 56px); align-items: start; }
+.c07 .head { grid-area: head; }
+.c07 .body { grid-area: body; }
+.c07 .body .img { margin: 8px 0 24px; }
+.c07 .rail { grid-area: rail; position: sticky; top: 16px; display: grid; gap: 16px; }
+.c07 .spec { overflow: hidden; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; font-size: 14px; }
+.c07 .spec-h { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+.c07 .spec-h b { display: block; font-size: 16px; }
+.c07 .spec-h small { color: var(--muted); font-size: 12.5px; }
+.c07 .spec-h .sc { margin-left: auto; color: var(--accent-ink); font: 600 22px/1 var(--mono); }
+.c07 .spec dl { margin: 0; padding: 4px 18px; }
+.c07 .spec dl div { display: grid; grid-template-columns: 100px 1fr; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.c07 .spec dl div:last-child { border-bottom: 0; }
+.c07 .spec dt { color: var(--muted); font-size: 13px; }
+.c07 .spec dd { margin: 0; font-weight: 500; }
+.c07 .spec .ok { color: var(--accent-ink); }
+.c07 .spec .ok::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; background: var(--accent); border-radius: 50%; vertical-align: 1px; }
+.c07 .acts { display: grid; gap: 8px; padding: 14px 18px 18px; border-top: 1px solid var(--line); }
+.c07 .alts { padding: 16px 18px 8px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; font-size: 14px; }
+.c07 .alts div { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); }
+.c07 .alts span { font-family: var(--mono); color: var(--muted); }
+@container (max-width: 820px) {
+  .c07 { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "rail" "body"; }
+  .c07 .rail { position: static; margin: 8px 0 24px; }
+}
+
+/* ======================================================================
+   08 · Numbered Ledger
+   ====================================================================== */
+.c08 .top { max-width: 820px; margin-bottom: 28px; }
+.c08 .index { margin: 0 0 40px; padding: 18px 0 12px; border-block: 2px solid var(--ink); }
+.c08 .index ol { columns: 2; column-gap: 48px; list-style: none; font-size: 14.5px; }
+.c08 .index li { display: flex; align-items: baseline; gap: 10px; padding: 5px 0; break-inside: avoid; }
+.c08 .index li span { width: 22px; color: var(--muted); font: 12.5px/1 var(--mono); }
+.c08 .index li em { margin-left: auto; color: var(--muted); font: 12px/1 var(--mono); font-style: normal; }
+.c08 .item { display: grid; grid-template-columns: clamp(56px, 9cqi, 110px) minmax(0, 1fr); gap: clamp(12px, 2.5cqi, 28px); margin-bottom: 34px; padding-top: 22px; border-top: 1px solid var(--line-2); }
+.c08 .item > div { max-width: 700px; }
+.c08 .num { color: var(--accent); font: 500 clamp(34px, 5cqi, 56px)/1 var(--mono); letter-spacing: -.04em; }
+.c08 .item h4 { margin: 2px 0 6px; font-size: clamp(20px, 2.4cqi, 26px); }
+.c08 .bf { margin: 0 0 12px !important; color: var(--muted); font-size: 14px; }
+.c08 .bf b { color: var(--ink); }
+@container (max-width: 640px) { .c08 .index ol { columns: 1; } }
+
+/* ======================================================================
+   09 · Ranked Tool Cards
+   ====================================================================== */
+.c09 .picks { display: grid; grid-template-columns: repeat(3, 1fr); margin: 26px 0 36px; overflow: hidden; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+.c09 .picks a { display: block; padding: 14px 18px; border-right: 1px solid var(--line); text-decoration: none; }
+.c09 .picks a:last-child { border-right: 0; }
+.c09 .picks span { display: block; color: var(--muted); font: 600 11px/1.4 var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.c09 .picks b { display: block; margin-top: 4px; font-size: 16px; }
+.c09 .picks b::after { content: " ↓"; color: var(--accent); }
+.c09 .tool { position: relative; display: grid; grid-template-columns: auto 48px minmax(0, 1fr) auto; gap: 16px; align-items: center; margin-bottom: 14px; padding: 20px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+.c09 .tool.top { padding: 19px; border: 2px solid var(--accent); }
+.c09 .flag { position: absolute; top: -11px; left: 18px; padding: 5px 8px; color: #fff; background: var(--accent); border-radius: 3px; font: 600 10.5px/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.c09 .rk { width: 26px; color: var(--muted); font: 600 15px/1 var(--mono); }
+.c09 .tool h4 { margin: 0 0 3px; font-size: 18px; }
+.c09 .tool p { margin: 0 0 10px; color: var(--muted); font-size: 14.5px; }
+.c09 .tool .chips { margin: 0; }
+.c09 .act { display: grid; gap: 8px; justify-items: end; text-align: right; }
+.c09 .sc { color: var(--muted); font: 12px/1 var(--mono); }
+.c09 .sc b { color: var(--ink); font-size: 22px; font-weight: 600; }
+@container (max-width: 700px) {
+  .c09 .picks { grid-template-columns: minmax(0, 1fr); }
+  .c09 .picks a { border-right: 0; border-bottom: 1px solid var(--line); }
+  .c09 .picks a:last-child { border-bottom: 0; }
+  .c09 .tool { grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: start; padding-top: 24px; }
+  .c09 .tool.top { padding-top: 23px; }
+  .c09 .rk { position: absolute; top: 14px; right: 16px; width: auto; }
+  .c09 .act { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding-top: 14px; border-top: 1px solid var(--line); text-align: left; }
+  .c09 .act .sc { margin-right: auto; }
+}
+
+/* ======================================================================
+   10 · Tutorial Stepper
+   ====================================================================== */
+.c10 .brief { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) 150px; margin: 24px 0 36px; overflow: hidden; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+.c10 .brief > div { padding: 14px 18px; border-right: 1px solid var(--line); font-size: 15px; }
+.c10 .brief .lbl { margin-bottom: 6px !important; }
+.c10 .brief .thumb { padding: 0; border-right: 0; }
+.c10 .brief .thumb .img { height: 100%; min-height: 90px; aspect-ratio: auto; border: 0; border-radius: 0; }
+.c10 .lvl { display: inline-flex; gap: 3px; margin-left: 8px; vertical-align: middle; }
+.c10 .lvl i { width: 14px; height: 6px; background: var(--line-2); border-radius: 2px; }
+.c10 .lvl i.on { background: var(--accent); }
+.c10 .steps { position: relative; list-style: none; counter-reset: st; }
+.c10 .steps > li { position: relative; padding: 0 0 30px 56px; counter-increment: st; }
+.c10 .steps > li::before { content: counter(st); position: absolute; top: -2px; left: 0; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; color: var(--muted); background: var(--paper); border: 1.5px solid var(--line-2); border-radius: 50%; font: 600 14px/1 var(--mono); }
+.c10 .steps > li::after { content: ""; position: absolute; top: 34px; bottom: 0; left: 16px; width: 1.5px; background: var(--line-2); }
+.c10 .steps > li:last-child::after { display: none; }
+.c10 .steps > li.done::before { content: "✓"; color: #fff; background: var(--accent); border-color: var(--accent); }
+.c10 .steps > li.done::after { background: var(--accent); }
+.c10 .steps > li.cur::before { color: var(--accent-ink); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.c10 .steps h4 { margin: 3px 0 8px; font-size: 19px; }
+.c10 .steps h4 span { margin-left: 8px; color: var(--muted); font: 400 12px/1 var(--mono); }
+.c10 .steps .img { margin: 4px 0 0; }
+.c10 .check { display: flex; gap: 10px; margin-top: 14px; padding: 12px 14px; color: #0a3f29; background: var(--accent-soft); border: 1px solid #bfdccb; border-radius: 8px; font-size: 14px; }
+.c10 .check b { flex-shrink: 0; font: 600 11px/1.9 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.c10 .nextup { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+.c10 .nextup .lbl { margin-bottom: 4px !important; }
+.c10 .nextup b { font-size: 16px; }
+@container (max-width: 760px) {
+  .c10 .brief { grid-template-columns: 1fr 1fr; }
+  .c10 .brief > div { border-bottom: 1px solid var(--line); }
+  .c10 .brief > div:nth-child(3) { grid-column: span 2; border-bottom: 0; border-right: 0; }
+  .c10 .brief .thumb { display: none; }
+}
+
+/* ======================================================================
+   11 · Margin Notes
+   ====================================================================== */
+.c11 .head { max-width: 760px; margin-bottom: 32px; }
+.c11 .cred { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-block: 1px solid var(--line); font-size: 14px; line-height: 1.45; }
+.c11 .cred small { color: var(--muted); font-size: 13px; }
+.c11 .row { display: grid; grid-template-columns: minmax(0, 640px) minmax(0, 230px); gap: clamp(24px, 4cqi, 48px); align-items: start; }
+.c11 .sn { padding-top: 10px; color: var(--muted); border-top: 1px solid var(--line-2); font-size: 13px; line-height: 1.55; }
+.c11 .sn b { margin-right: 6px; color: var(--accent-ink); font: 600 12px/1 var(--mono); }
+.c11 sup { padding: 0 2px; color: var(--accent-ink); font: 600 11px/1 var(--mono); }
+.c11 figure { margin: 6px 0 24px; }
+.c11 figcaption { margin-top: 8px; color: var(--muted); font-size: 13.5px; }
+.c11 figcaption b { margin-right: 6px; color: var(--ink); font: 600 12px var(--mono); }
+.c11 .row .h2 { margin-top: .6em !important; }
+@container (max-width: 760px) {
+  .c11 .row { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .c11 .sn { margin: -4px 0 22px; padding: 10px 12px; background: var(--paper); border: 0; border-left: 2px solid var(--accent); }
+}
+
+/* ======================================================================
+   12 · Head-to-Head
+   ====================================================================== */
+.c12 .vs { display: grid; grid-template-columns: 1fr auto 1fr; margin: 26px 0 16px; }
+.c12 .side { display: grid; grid-template-columns: 44px 1fr auto; column-gap: 12px; align-items: center; padding: 16px 18px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+.c12 .side .logo { grid-row: span 2; }
+.c12 .side b { font-size: 16px; }
+.c12 .side .sc { grid-row: 1; grid-column: 3; font: 600 22px/1 var(--mono); }
+.c12 .side small { grid-column: 2 / -1; color: var(--muted); font-size: 13px; }
+.c12 .v { display: grid; place-items: center; width: 48px; color: var(--muted); font: 600 12px/1 var(--mono); text-transform: uppercase; }
+.c12 .short { margin: 0 0 28px; padding: 16px 20px; background: var(--paper); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; font-size: 15px; }
+.c12 .short p { margin: 0; }
+.c12 .tbl table { min-width: 0; }
+.c12 td.w { color: #0a3f29; background: var(--accent-soft); font-weight: 600; }
+.c12 td.w::after { content: "✓"; margin-left: 8px; color: var(--accent); }
+.c12 tfoot td { background: #fafaf7; border-top: 1px solid var(--line-2); border-bottom: 0; font-weight: 700; }
+@container (max-width: 640px) {
+  .c12 .vs { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .c12 .v { width: auto; height: 20px; }
+}
+
+/* ======================================================================
+   13 · Newsroom Brief
+   ====================================================================== */
+.c13 { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: clamp(28px, 5cqi, 56px); align-items: start; }
+.c13 article { max-width: 720px; }
+.c13 .live { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.c13 .live .kick::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; background: #d92d20; border-radius: 50%; vertical-align: 1px; }
+.c13 .live time { color: var(--muted); font: 12.5px/1.4 var(--mono); }
+.c13 .keys { margin: 22px 0 26px; padding: 18px 20px 12px; background: var(--paper); border: 1px solid var(--line); border-top: 3px solid var(--ink); border-radius: 0 0 8px 8px; }
+.c13 .keys ul { list-style: none; counter-reset: k; }
+.c13 .keys li { display: grid; grid-template-columns: 28px 1fr; gap: 6px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 15px; counter-increment: k; }
+.c13 .keys li:first-child { padding-top: 0; border-top: 0; }
+.c13 .keys li::before { content: counter(k, decimal-leading-zero); color: var(--accent-ink); font: 600 12px/1.9 var(--mono); }
+.c13 .impact { margin: 24px 0; padding: 16px 18px 4px; background: #fdf3e2; border: 1px solid #f0d9b0; border-radius: 8px; font-size: 15px; }
+.c13 .impact .lbl { color: #7a4508; }
+.c13 .feed { position: sticky; top: 16px; display: grid; gap: 20px; }
+.c13 .feed ol { list-style: none; }
+.c13 .feed li { padding: 11px 0; border-top: 1px solid var(--line); font-size: 14.5px; font-weight: 600; line-height: 1.4; }
+.c13 .feed time { display: block; margin-bottom: 2px; color: var(--muted); font: 500 11.5px/1.6 var(--mono); }
+.c13 .subx { margin: 0; }
+@container (max-width: 820px) {
+  .c13 { grid-template-columns: minmax(0, 1fr); }
+  .c13 .feed { position: static; }
+}
+
+/* ======================================================================
+   14 · Viewport Hero
+   ====================================================================== */
+.c14 .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(24px, 4cqi, 48px); align-items: center; padding-bottom: clamp(24px, 4cqi, 40px); }
+.c14 .vp { position: relative; overflow: hidden; background: #15191c; border: 1px solid var(--t-line); border-radius: 8px; }
+.c14 .vp-bar { display: flex; align-items: center; gap: 2px; height: 30px; padding: 0 6px; color: var(--t-mute); background: var(--t-bg); border-bottom: 1px solid var(--t-line); font: 11.5px/1 var(--mono); }
+.c14 .vp-bar span { padding: 6px 9px; border-radius: 4px; }
+.c14 .vp-bar .on { color: var(--t-ink); background: var(--t-hover); }
+.c14 .vp-bar .r { margin-left: auto; }
+.c14 .vp .img { border: 0; border-radius: 0; }
+.c14 .giz { position: absolute; top: 42px; right: 12px; width: 44px; height: 44px; }
+.c14 .stick { position: sticky; top: 0; z-index: 2; background: var(--bg); border-block: 1px solid var(--line); }
+.c14 .stick div { display: flex; align-items: center; gap: 4px; max-width: 1120px; height: 50px; margin: 0 auto; padding: 0 clamp(16px, 4cqi, 44px); overflow-x: auto; font-size: 14px; }
+.c14 .stick .lbl { margin: 0 8px 0 0 !important; white-space: nowrap; }
+.c14 .stick a { padding: 6px 10px; color: var(--muted); border-radius: 5px; text-decoration: none; white-space: nowrap; }
+.c14 .stick a.on { color: var(--ink); background: var(--paper); box-shadow: inset 0 0 0 1px var(--line-2); }
+.c14 .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+.c14 .ba figure { position: relative; margin: 0; }
+.c14 .ba figcaption { position: absolute; top: 10px; left: 10px; padding: 5px 8px; color: var(--t-ink); background: var(--t-bg); border-radius: 3px; font: 600 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+@container (max-width: 780px) {
+  .c14 .hero { grid-template-columns: minmax(0, 1fr); }
+  .c14 .vp { order: -1; }
+  .c14 .ba { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ======================================================================
+   15 · Dossier
+   ====================================================================== */
+.c15 .col { max-width: 760px; }
+.c15 .file { display: grid; grid-template-columns: repeat(2, 1fr); margin: 0 0 30px; border-top: 6px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.c15 .file div { display: grid; grid-template-columns: 110px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line-2); font-size: 13.5px; }
+.c15 .file div:nth-child(odd) { padding-right: 20px; }
+.c15 .file div:nth-child(even) { padding-left: 20px; border-left: 1px solid var(--line-2); }
+.c15 .file div:nth-last-child(-n+2) { border-bottom: 0; }
+.c15 .file dt { color: var(--muted); font: 600 11px/1.9 var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.c15 .file dd { margin: 0; font-weight: 500; }
+.c15 .status::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; background: #c27803; border-radius: 50%; vertical-align: 1px; }
+.c15 .ttl { max-width: 20ch; letter-spacing: -.03em !important; }
+.c15 .disc { margin: 0 0 26px !important; padding: 12px 14px; border: 1px solid var(--ink); font-size: 13.5px; line-height: 1.5; }
+.c15 .disc b { margin-right: 4px; font: 600 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+.c15 .ref { color: var(--accent-ink); font: 600 11px/1 var(--mono); vertical-align: super; }
+.c15 .src { margin-top: 34px; padding-top: 16px; border-top: 2px solid var(--ink); }
+.c15 .src ol { padding-left: 24px; color: var(--muted); font-size: 13.5px; }
+.c15 .src li { margin-bottom: 6px; padding-left: 4px; }
+.c15 .src li::marker { color: var(--ink); font: 600 12px var(--mono); }
+.c15 .authorbox { display: grid; grid-template-columns: 56px 1fr; gap: 14px; margin-top: 28px; padding: 18px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; }
+.c15 .authorbox .av { width: 56px; height: 56px; font-size: 16px; }
+.c15 .authorbox p { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
+.c15 .authorbox b { color: var(--ink); }
+.c15 .authorbox .links { margin: 0; font-size: 13px; font-weight: 600; color: var(--ink); }
+@container (max-width: 640px) {
+  .c15 .file { grid-template-columns: minmax(0, 1fr); }
+  .c15 .file div:nth-child(n) { padding-inline: 0; border-left: 0; border-bottom: 1px solid var(--line-2); }
+  .c15 .file div:last-child { border-bottom: 0; }
+}
+</style>
+</head>
+<body>
+
+<template id="nav">
+  <header class="tn">
+    <a class="tn-brand">gamedevaihub</a>
+    <ul class="tn-links">
+      <li><a class="on">AI Tools</a></li>
+      <li><a>Engines</a></li>
+      <li><a>Tutorials</a></li>
+      <li><a>Reviews</a></li>
+      <li><a>About</a></li>
+    </ul>
+    <button class="tn-search" type="button" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+    <button class="tn-menu" type="button">[ menu ]</button>
+    <i class="tn-prog" aria-hidden="true"></i>
+  </header>
+</template>
+
+<header class="gh">
+  <div class="wrap">
+    <p class="cmd">$ ls <b>~/gamedevaihub/layouts --single-post</b></p>
+    <h1>15 blog post layouts, one terminal navbar</h1>
+    <p class="lead">Every concept keeps the terminal navbar from <code>terminal.html</code> and redesigns the single post under it. Each one lists what it's best for, how it lifts engagement, and what it takes to build on GeneratePress. Resize the window: every mockup has a working mobile layout. Tool names, scores and people are placeholders.</p>
+    <ol class="idx">
+      <li><a href="#c01"><span>01</span>Commit Log Editorial</a></li>
+      <li><a href="#c02"><span>02</span>Docs Split</a></li>
+      <li><a href="#c03"><span>03</span>Verdict First</a></li>
+      <li><a href="#c04"><span>04</span>Test Bench</a></li>
+      <li><a href="#c05"><span>05</span>Magazine Feature</a></li>
+      <li><a href="#c06"><span>06</span>Terminal Continuum</a></li>
+      <li><a href="#c07"><span>07</span>Spec Sheet Rail</a></li>
+      <li><a href="#c08"><span>08</span>Numbered Ledger</a></li>
+      <li><a href="#c09"><span>09</span>Ranked Tool Cards</a></li>
+      <li><a href="#c10"><span>10</span>Tutorial Stepper</a></li>
+      <li><a href="#c11"><span>11</span>Margin Notes</a></li>
+      <li><a href="#c12"><span>12</span>Head-to-Head</a></li>
+      <li><a href="#c13"><span>13</span>Newsroom Brief</a></li>
+      <li><a href="#c14"><span>14</span>Viewport Hero</a></li>
+      <li><a href="#c15"><span>15</span>Dossier</a></li>
+    </ol>
+    <div class="rec">
+      <p class="k">Recommended</p>
+      <p>Don't pick just one. Make <b>01 Commit Log</b> the default for every post, then add one module per post type: <b>07 Spec Sheet</b> for reviews, <b>08 Numbered Ledger</b> for lists, <b>10 Stepper</b> for tutorials. WordPress already puts a <code>category-*</code> class on every post, so one style.css can change the layout by category without adding any plugins.</p>
+    </div>
+    <div class="legend"><span><span class="tag css">CSS only</span>style.css alone</span><span><span class="tag blk">CSS + block</span>a reusable block or block class</span><span><span class="tag el">GP Element</span>a GeneratePress Premium hook or element</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- 01 -->
+<section class="cx" id="c01">
+  <header class="cx-h">
+    <p class="cx-n">01</p>
+    <div><h2>Commit Log Editorial</h2><p>One focused reading column. The meta line reads like a git log entry (revision, author, date, the build you tested on) and the post ends with a public revision history. Developers trust anything that has a version number.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>The default for every post</dd></div>
+      <div><dt>Engagement</dt><dd>The TL;DR holds skimmers. The revision log gives readers a reason to come back.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>TL;DR and revision groups</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/tutorials/codewright-unity-review/</span></div>
+    <div data-nav></div>
+    <div class="pg c01"><div class="col">
+      <p class="crumb">~/tutorials/<b>unity</b></p>
+      <h3 class="ttl">What CodeWright Actually Changes for Solo Unity Devs</h3>
+      <p class="dek">Six weeks of daily use across two prototypes: where it saves real time, where it gets in the way, and which settings to turn off on day one.</p>
+      <div class="commit"><span class="hash">rev 3 · a3f9c1e</span><span><b>Alex Moreno</b> updated 12 Sep 2026</span><span>tested on Unity 6.2</span><span>9 min read</span></div>
+      <div class="tldr">
+        <p class="lbl">TL;DR</p>
+        <ul>
+          <li>Biggest win: boilerplate for editor tools and ScriptableObjects.</li>
+          <li>Weakest spot: anything touching physics timing or netcode.</li>
+          <li>Turn off auto-apply. Review every change as a diff.</li>
+        </ul>
+      </div>
+      <div class="img" data-l="featured image · 16:9"></div>
+      <p>I used CodeWright as my only coding assistant for six weeks while building two small prototypes: a roguelite deckbuilder and a physics puzzler. This is what held up after the novelty wore off.</p>
+      <h4 class="h2">Where it saves real time</h4>
+      <div class="sk"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="log">
+        <p class="lbl">Revision history</p>
+        <ol>
+          <li><time>12 Sep 2026</time><span>Retested on Unity 6.2 and updated the settings section.</span></li>
+          <li><time>30 Jun 2026</time><span>Added the netcode caveat after reader reports.</span></li>
+          <li><time>04 May 2026</time><span>First published.</span></li>
+        </ol>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="cx" id="c02">
+  <header class="cx-h">
+    <p class="cx-n">02</p>
+    <div><h2>Docs Split</h2><p>Borrowed from engine documentation: a sticky "On this page" rail, anchor-linked headings, a requirements bar, and code blocks with filename tabs. Your readers already spend their days in Unity and Godot docs, so this layout feels familiar to them.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Tutorials, setup guides, long how-tos</dd></div>
+      <div><dt>Engagement</dt><dd>The TOC lets readers jump ahead instead of bouncing. The helpful vote gives you feedback.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>any TOC block, sticky via CSS</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/tutorials/godot-local-llm-npc-dialogue/</span></div>
+    <div data-nav></div>
+    <div class="pg c02">
+      <aside class="toc">
+        <p class="lbl">On this page</p>
+        <ol>
+          <li><a>Overview</a></li>
+          <li><a>Requirements</a></li>
+          <li class="on"><a>Install the model</a></li>
+          <li class="sub"><a>Pick a model size</a></li>
+          <li class="sub"><a>Folder layout</a></li>
+          <li><a>Stream replies</a></li>
+          <li><a>Cache and latency</a></li>
+          <li><a>Troubleshooting</a></li>
+        </ol>
+        <div class="help">Was this page helpful?<div><button type="button">Yes</button><button type="button">No</button></div></div>
+      </aside>
+      <article>
+        <p class="crumb">~/tutorials/<b>godot</b></p>
+        <h3 class="ttl">Set Up Local LLM Dialogue for NPCs in Godot 4</h3>
+        <p class="dek">Run a small language model on the player's machine, stream replies into a dialogue box, and keep latency low enough to feel like conversation.</p>
+        <div class="req"><span class="lbl">Requires</span><span class="chip">Godot 4.4+</span><span class="chip">8 GB VRAM</span><span class="chip">~2 GB disk</span></div>
+        <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>Updated 20 Sep 2026</span><span>18 min read</span></div>
+        <h4 class="h2">Install the model<a>#</a></h4>
+        <p>Download a quantized model and place it in <code>res://models/</code>. Anything around 3–4B parameters runs comfortably on mid-range GPUs.</p>
+        <div class="code">
+          <div class="code-h"><span>npc_dialogue.gd</span><button type="button">Copy</button></div>
+<pre><span class="k">extends</span> Node
+
+<span class="k">@onready var</span> llm := $LocalLLM
+
+<span class="k">func</span> <span class="f">ask_npc</span>(prompt: String) -> String:
+	<span class="c"># Keep replies short so they fit a dialogue box</span>
+	<span class="k">var</span> reply := <span class="k">await</span> llm.<span class="f">generate</span>(prompt, {<span class="s">"max_tokens"</span>: 80})
+	<span class="k">return</span> reply.<span class="f">strip_edges</span>()</pre>
+        </div>
+        <div class="note"><b>Note</b><span>Ship the model as a separate download. Bundling it inflates your export and slows store review.</span></div>
+        <div class="sk"><i></i><i></i><i></i><i></i></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="cx" id="c03">
+  <header class="cx-h">
+    <p class="cx-n">03</p>
+    <div><h2>Verdict First</h2><p>Answer the reader's question before they scroll. The score, sub-scores, who it's for and the CTA sit in a terminal-black card next to the headline, which ties the card back to the navbar. Pros and cons follow right after.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Single-tool reviews</dd></div>
+      <div><dt>Engagement</dt><dd>The CTA is above the fold. The disclosure line and "how we review" link build trust.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>verdict card pattern</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/reviews/spritelab/</span></div>
+    <div data-nav></div>
+    <div class="pg c03">
+      <div class="hero">
+        <div>
+          <p class="kick">Review · 2D art tools</p>
+          <h3 class="ttl">SpriteLab Review: Consistent Game Art, With One Big Caveat</h3>
+          <p class="dek">It holds one art style across hundreds of sprites better than anything we've tested. Animation frames are another story.</p>
+          <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>Tested for 40 hours</span><span>Updated 18 Sep 2026</span></div>
+        </div>
+        <aside class="verdict">
+          <div class="score"><b>8.4</b><span>/10</span></div>
+          <span class="vl">Recommended</span>
+          <dl>
+            <div><dt>Style consistency</dt><dd>9.1</dd></div>
+            <div><dt>Output quality</dt><dd>8.6</dd></div>
+            <div><dt>Animation frames</dt><dd>6.2</dd></div>
+            <div><dt>Engine export</dt><dd>8.8</dd></div>
+            <div><dt>Pricing</dt><dd>8.0</dd></div>
+          </dl>
+          <p class="best"><b>Best for</b>Small 2D teams that need one art style across hundreds of assets.</p>
+          <a class="btn">Visit SpriteLab →</a>
+          <small>We may earn a commission if you subscribe. It never changes the score. How we review →</small>
+        </aside>
+      </div>
+      <div class="pc">
+        <div><p class="lbl">What we like</p><ul><li>Style lock holds across 300+ generations</li><li>Exports sprite sheets with correct padding</li><li>Team seats share one style library</li></ul></div>
+        <div class="con"><p class="lbl">What we don't</p><ul><li>Walk cycles drift between frames</li><li>No offline mode</li><li>Commercial license only on Pro</li></ul></div>
+      </div>
+      <div class="sk"><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="cx" id="c04">
+  <header class="cx-h">
+    <p class="cx-n">04</p>
+    <div><h2>Test Bench</h2><p>The post opens with methodology: sample size, hardware, reviewers, test period, and a link to the raw data. Results go in a ranked table with aligned numbers. Publishing your data is how you out-trust listicle farms.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Benchmarks and tested roundups</dd></div>
+      <div><dt>Engagement</dt><dd>These are the posts other sites cite. The CSV download earns backlinks.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>method pattern + core table</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/benchmarks/ai-texture-generators/</span></div>
+    <div data-nav></div>
+    <div class="pg c04"><div class="col">
+      <p class="kick">Benchmark</p>
+      <h3 class="ttl">We Ran 400 Prompts Through 5 Texture Generators</h3>
+      <p class="dek">Three technical artists scored every output blind for tiling, prompt accuracy and PBR map quality. Here's what won, plus the data so you can check our work.</p>
+      <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>Published 22 Sep 2026</span><span>12 min read</span></div>
+      <section class="method">
+        <p class="lbl">How we tested</p>
+        <dl class="specs">
+          <div><dt>Prompts</dt><dd>400</dd></div>
+          <div><dt>Tools tested</dt><dd>5</dd></div>
+          <div><dt>GPU</dt><dd>RTX 4070</dd></div>
+          <div><dt>Reviewers</dt><dd>3 blind</dd></div>
+          <div><dt>Test period</dt><dd>Aug 2026</dd></div>
+        </dl>
+        <p class="dl"><a>Download raw scores (CSV)</a> · <a>Full methodology</a></p>
+      </section>
+      <h4 class="h2">Results</h4>
+      <div class="tbl"><table>
+        <thead><tr><th>#</th><th>Tool</th><th class="n">Seamless</th><th class="n">Prompt match</th><th class="n">Avg. time</th><th class="n">Score</th></tr></thead>
+        <tbody>
+          <tr class="win"><td class="rk">1</td><td><b>Tessera</b><span class="wt">Winner</span></td><td class="n">96%</td><td class="n">8.9</td><td class="n">11 s</td><td class="n"><b>9.2</b></td></tr>
+          <tr><td class="rk">2</td><td>MatForge</td><td class="n">91%</td><td class="n">8.4</td><td class="n">7 s</td><td class="n">8.7</td></tr>
+          <tr><td class="rk">3</td><td>Grainworks</td><td class="n">88%</td><td class="n">8.1</td><td class="n">14 s</td><td class="n">8.1</td></tr>
+          <tr><td class="rk">4</td><td>Texly</td><td class="n">79%</td><td class="n">8.6</td><td class="n">9 s</td><td class="n">7.6</td></tr>
+          <tr><td class="rk">5</td><td>PBRgen</td><td class="n">72%</td><td class="n">7.2</td><td class="n">5 s</td><td class="n">6.8</td></tr>
+        </tbody>
+      </table></div>
+      <p class="cap">Scores are the mean of three blind reviewers on a 0–10 scale. The full rubric is in the methodology.</p>
+      <div class="sk"><i></i><i></i><i></i></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="cx" id="c05">
+  <header class="cx-h">
+    <p class="cx-n">05</p>
+    <div><h2>Magazine Feature</h2><p>A full-bleed hero image with the title card cut into it, then a drop cap, a large pull quote and paired figures. It's slower, prestige long-form that shows you do original reporting, not just aggregation.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Studio interviews, essays, case studies</dd></div>
+      <div><dt>Engagement</dt><dd>Longest time on page of the set. The pull quotes get screenshotted and shared.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag el">GP Element</span>featured image above the title</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/features/small-studios-ai-pipelines/</span></div>
+    <div data-nav></div>
+    <div class="c05">
+      <div class="img t3 hero-img" data-l="full-bleed featured image · 21:8"></div>
+      <div class="pg">
+        <div class="card">
+          <p class="kick">Feature · Studio stories</p>
+          <h3 class="ttl">The Small Studios Quietly Shipping Games With AI Pipelines</h3>
+          <p class="dek">We spent a month with four teams of fewer than ten people. None of them replaced their artists. All of them changed how a sprint works.</p>
+          <div class="by"><span class="av">AM</span><span>Words by <b>Alex Moreno</b></span><span>Photos by Sam Ito</span><span>14 min read</span></div>
+        </div>
+        <div class="body">
+          <p class="drop">At nine in the morning, the art channel at a six-person studio outside Lisbon is already busy. Nobody is drawing yet. They're reviewing forty overnight texture variations, which the lead artist sorts into keep, fix and bin.</p>
+          <blockquote class="pull">"We didn't replace a single artist. We gave three of them a week back every sprint."<cite>— Lead artist, 6-person studio</cite></blockquote>
+          <div class="pair">
+            <figure><div class="img" data-l="photo · 4:3"></div><figcaption>Overnight texture batches, sorted by hand each morning.</figcaption></figure>
+            <figure><div class="img t2" data-l="photo · 4:3"></div><figcaption>The studio's review board: keep, fix, bin.</figcaption></figure>
+          </div>
+          <div class="sk"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="cx" id="c06">
+  <header class="cx-h">
+    <p class="cx-n">06</p>
+    <div><h2>Terminal Continuum</h2><p>The navbar's black carries on into the post header: a <code>$ cat</code> breadcrumb and CLI-flag metadata, then a white sheet that overlaps the band. This is the strongest brand signature in the set: nobody will confuse your site with another one.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Code tutorials and flagship posts</dd></div>
+      <div><dt>Engagement</dt><dd>A reading-progress line in the nav, and a terminal-style newsletter prompt that fits the brand.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag el">GP Element</span>header hero; progress bar is pure CSS</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/tutorials/procedural-dungeon-ai/</span></div>
+    <div data-nav="prog"></div>
+    <div class="c06">
+      <div class="band"><div class="band-in">
+        <p class="cmdl">$ cat <b>tutorials/procedural-dungeon.md</b></p>
+        <h3 class="ttl">Build a Procedural Dungeon Generator With an AI Pair Programmer</h3>
+        <p class="dek">Go from an empty Unity project to rooms, corridors and spawn points in about 45 minutes, including the prompts that worked and the ones that didn't.</p>
+        <div class="flags"><span><i>--level=</i>intermediate</span><span><i>--time=</i>45m</span><span><i>--stack=</i>unity,c#</span><span><i>--repo=</i>github ↗</span></div>
+      </div></div>
+      <div class="pg"><div class="sheet">
+        <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>Updated 16 Sep 2026</span><span>Tested on Unity 6.2</span></div>
+        <div class="img t2" data-l="featured image · 16:9"></div>
+        <p>We'll use a grid-based approach: carve rooms at random, then connect them with a minimum spanning tree so every room is reachable without turning the map into a maze.</p>
+        <h4 class="h2">Carve the rooms</h4>
+        <div class="code">
+          <div class="code-h"><span>DungeonGenerator.cs</span><button type="button">Copy</button></div>
+<pre><span class="c">// Carve rooms first, then connect them</span>
+<span class="k">foreach</span> (<span class="k">var</span> room <span class="k">in</span> rooms)
+{
+    <span class="f">Carve</span>(grid, room.Bounds);
+}
+
+<span class="k">var</span> edges = <span class="f">MinimumSpanningTree</span>(rooms);
+<span class="k">foreach</span> (<span class="k">var</span> edge <span class="k">in</span> edges)
+    <span class="f">CarveCorridor</span>(grid, edge.From, edge.To);</pre>
+        </div>
+        <div class="sk"><i></i><i></i><i></i></div>
+        <form class="subx" onsubmit="return false">
+          <p class="cmdl">$ subscribe --weekly</p>
+          <p>One email every Friday: new tools we tested, what broke, what shipped. No hype.</p>
+          <div class="f"><input type="email" placeholder="you@studio.dev" aria-label="Email"><button type="submit">Enter ↵</button></div>
+        </form>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="cx" id="c07">
+  <header class="cx-h">
+    <p class="cx-n">07</p>
+    <div><h2>Spec Sheet Rail</h2><p>A sticky spec card holds the facts skimmers want (price, exports, engines, license, a last-verified date) while the review runs on the left. On mobile, the card moves directly under the headline.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Tool reviews with affiliate links</dd></div>
+      <div><dt>Engagement</dt><dd>The CTA stays in view for the whole read. The alternatives list keeps readers on the site.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>spec pattern, grid placement via CSS</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/reviews/forge3d/</span></div>
+    <div data-nav></div>
+    <div class="pg c07">
+      <div class="head">
+        <p class="crumb">~/reviews/<b>3d</b></p>
+        <h3 class="ttl">Forge3D Review: Is Text-to-3D Finally Game-Ready?</h3>
+        <p class="dek">Clean quad topology and sensible UVs for props. Characters still need a technical artist.</p>
+        <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>Updated 10 Sep 2026</span><span>11 min read</span></div>
+      </div>
+      <div class="body">
+        <div class="img" data-l="featured image · 16:9"></div>
+        <p>We generated 60 props and 12 characters, imported every mesh into Unity and Unreal, and timed how long each one took to become production-ready.</p>
+        <h4 class="h2">Topology and UVs</h4>
+        <div class="sk"><i></i><i></i><i></i><i></i><i></i></div>
+        <h4 class="h2">Pricing</h4>
+        <div class="sk"><i></i><i></i><i></i></div>
+      </div>
+      <aside class="rail">
+        <div class="spec">
+          <div class="spec-h"><span class="logo">F3</span><div><b>Forge3D</b><small>Text-to-3D · v5</small></div><span class="sc">7.9</span></div>
+          <dl>
+            <div><dt>Developer</dt><dd>Forge Labs</dd></div>
+            <div><dt>Pricing</dt><dd>From $16/mo</dd></div>
+            <div><dt>Free tier</dt><dd>20 credits/mo</dd></div>
+            <div><dt>Exports</dt><dd>FBX · GLB · OBJ · USDZ</dd></div>
+            <div><dt>Engines</dt><dd>Unity · Unreal · Godot</dd></div>
+            <div><dt>Commercial</dt><dd>Paid plans</dd></div>
+            <div><dt>Verified</dt><dd class="ok">10 Sep 2026</dd></div>
+          </dl>
+          <div class="acts"><a class="btn acc">Visit Forge3D</a><a class="btn alt">Compare alternatives</a></div>
+        </div>
+        <div class="alts">
+          <p class="lbl">Alternatives</p>
+          <div><b>Meshlet</b><span>8.2</span></div>
+          <div><b>Clayform</b><span>7.4</span></div>
+          <div><b>Polyform</b><span>7.1</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="cx" id="c08">
+  <header class="cx-h">
+    <p class="cx-n">08</p>
+    <div><h2>Numbered Ledger</h2><p>A Swiss-grid listicle: a two-column index at the top, then each entry gets a large mono number in its own gutter, a "Best for" line and tag chips. The numbers come from CSS counters, so you just write normal H2s.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>"X best tools" lists</dd></div>
+      <div><dt>Engagement</dt><dd>The index shows the whole list up front, so readers jump to what they need instead of leaving.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag css">CSS only</span>counters on H2</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/lists/ai-tools-for-indie-devs/</span></div>
+    <div data-nav></div>
+    <div class="pg c08">
+      <header class="top">
+        <p class="kick">List · Updated Sep 2026</p>
+        <h3 class="ttl">12 AI Tools Every Indie Game Dev Should Know</h3>
+        <p class="dek">One pick per job (code, art, audio, animation, testing), each chosen after using it on a shipped or near-shipped project.</p>
+        <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>Updated 19 Sep 2026</span><span>15 min read</span></div>
+      </header>
+      <nav class="index" aria-label="Index">
+        <p class="lbl">Index</p>
+        <ol>
+          <li><span>01</span><b>CodeWright</b><em>Coding</em></li>
+          <li><span>02</span><b>MotionKit</b><em>Animation</em></li>
+          <li><span>03</span><b>SpriteLab</b><em>2D art</em></li>
+          <li><span>04</span><b>Forge3D</b><em>3D</em></li>
+          <li><span>05</span><b>Tessera</b><em>Textures</em></li>
+          <li><span>06</span><b>Voxa</b><em>Voice</em></li>
+          <li><span>07</span><b>Loomr</b><em>Level design</em></li>
+          <li><span>08</span><b>Pathwise</b><em>NPC AI</em></li>
+          <li><span>09</span><b>Tunesmith</b><em>Music</em></li>
+          <li><span>10</span><b>Bugbot</b><em>QA</em></li>
+          <li><span>11</span><b>Glossa</b><em>Localization</em></li>
+          <li><span>12</span><b>Trailerly</b><em>Marketing</em></li>
+        </ol>
+      </nav>
+      <section class="item">
+        <div class="num">01</div>
+        <div>
+          <h4>CodeWright</h4>
+          <p class="bf"><b>Best for:</b> gameplay scripting in C# and GDScript</p>
+          <div class="chips"><span class="chip">Coding</span><span class="chip">Free tier</span><span class="chip">Unity · Godot</span></div>
+          <p>The only assistant we tested that reads your whole project before suggesting changes, so it stops inventing APIs you don't have.</p>
+          <div class="sk"><i></i><i></i><i></i></div>
+        </div>
+      </section>
+      <section class="item">
+        <div class="num">02</div>
+        <div>
+          <h4>MotionKit</h4>
+          <p class="bf"><b>Best for:</b> turning webcam footage into usable animation</p>
+          <div class="chips"><span class="chip">Animation</span><span class="chip">From $12/mo</span><span class="chip">Blender · Unity</span></div>
+          <div class="sk"><i></i><i></i><i></i></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="cx" id="c09">
+  <header class="cx-h">
+    <p class="cx-n">09</p>
+    <div><h2>Ranked Tool Cards</h2><p>A quick-picks strip, then ranked cards with a score, tags and two actions each. Built for commercial-intent searches, where the reader wants to choose a tool and click through.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Buyer's guides, "best X for Y"</dd></div>
+      <div><dt>Engagement</dt><dd>Highest click-through of the set: every card has a CTA and a link to the full review.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>tool card pattern</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/best/ai-3d-model-generators/</span></div>
+    <div data-nav></div>
+    <div class="pg c09"><div class="col">
+      <p class="kick">Buyer's guide · Tested</p>
+      <h3 class="ttl">The Best AI 3D Model Generators for Game Assets</h3>
+      <p class="dek">We generated 120 props, 30 characters and 20 environments in each tool, then imported every mesh into Unity and Unreal.</p>
+      <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>Updated 21 Sep 2026</span></div>
+      <div class="picks">
+        <a><span>Best overall</span><b>Forge3D</b></a>
+        <a><span>Best free tier</span><b>Meshlet</b></a>
+        <a><span>Best for stylized art</span><b>Clayform</b></a>
+      </div>
+      <article class="tool top">
+        <span class="flag">Editor's pick</span>
+        <span class="rk">#1</span><span class="logo">F3</span>
+        <div><h4>Forge3D</h4><p>Cleanest topology of the group. Props drop into Unity with no cleanup.</p><div class="chips"><span class="chip">Text-to-3D</span><span class="chip">FBX · GLB</span><span class="chip">From $16/mo</span></div></div>
+        <div class="act"><span class="sc"><b>9.1</b> /10</span><a class="btn acc">Visit site</a><a class="lnk">Read review →</a></div>
+      </article>
+      <article class="tool">
+        <span class="rk">#2</span><span class="logo b2">ML</span>
+        <div><h4>Meshlet</h4><p>Generous free tier and fast iteration. Meshes need decimation.</p><div class="chips"><span class="chip">Image-to-3D</span><span class="chip">Free tier</span><span class="chip">GLB · OBJ</span></div></div>
+        <div class="act"><span class="sc"><b>8.6</b> /10</span><a class="btn alt">Visit site</a><a class="lnk">Read review →</a></div>
+      </article>
+      <article class="tool">
+        <span class="rk">#3</span><span class="logo b3">CF</span>
+        <div><h4>Clayform</h4><p>The best choice for hand-painted, stylized looks.</p><div class="chips"><span class="chip">Stylized</span><span class="chip">FBX</span><span class="chip">From $9/mo</span></div></div>
+        <div class="act"><span class="sc"><b>8.2</b> /10</span><a class="btn alt">Visit site</a><a class="lnk">Read review →</a></div>
+      </article>
+    </div></div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="cx" id="c10">
+  <header class="cx-h">
+    <p class="cx-n">10</p>
+    <div><h2>Tutorial Stepper</h2><p>A project brief (time, level, tools, end result), then a connected timeline of steps with checkpoints, so readers can confirm they're on track before moving on. The steps are numbered automatically.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Step-by-step tutorials</dd></div>
+      <div><dt>Engagement</dt><dd>Checkpoints cut drop-off halfway through. The "next in series" link keeps the session going.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>list block with a "steps" class</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/tutorials/ai-motion-capture-blender/</span></div>
+    <div data-nav></div>
+    <div class="pg c10"><div class="col">
+      <p class="crumb">~/tutorials/<b>animation</b></p>
+      <h3 class="ttl">Rig and Animate a Character With AI Motion Capture in 30 Minutes</h3>
+      <p class="dek">Record yourself with a webcam, clean up the capture with MotionKit, and retarget it onto any humanoid rig in Blender.</p>
+      <div class="brief">
+        <div><p class="lbl">Time</p><b>30 min</b></div>
+        <div><p class="lbl">Level</p><b>Beginner</b><span class="lvl" aria-label="Level 1 of 3"><i class="on"></i><i></i><i></i></span></div>
+        <div><p class="lbl">You'll need</p>Blender 4.2 · MotionKit · a webcam</div>
+        <div class="thumb"><div class="img t2" data-l="result.gif"></div></div>
+      </div>
+      <ol class="steps">
+        <li class="done"><h4>Record a clip with your webcam<span>5 min</span></h4><p>Stand 2–3 m from the camera, with your full body in frame, and record a 10-second walk.</p></li>
+        <li class="cur"><h4>Clean up the capture in MotionKit<span>10 min</span></h4><p>Import the clip and apply the Foot Lock filter first. It removes most of the sliding.</p><div class="img" data-l="screenshot · cleanup panel"></div><div class="check"><b>Checkpoint</b><span>The preview skeleton follows your arms without jitter above the waist.</span></div></li>
+        <li><h4>Retarget onto your rig in Blender<span>10 min</span></h4><div class="sk"><i></i><i></i></div></li>
+        <li><h4>Export to your engine<span>5 min</span></h4><div class="sk"><i></i><i></i></div></li>
+      </ol>
+      <div class="nextup"><div><p class="lbl">Next in this series</p><b>Blend AI mocap with hand-keyed animation</b></div><a class="btn">Continue →</a></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="cx" id="c11">
+  <header class="cx-h">
+    <p class="cx-n">11</p>
+    <div><h2>Margin Notes</h2><p>Tufte-style sidenotes: definitions and citations sit in the margin next to the sentence they support, and figures are numbered. The byline credits a technical reviewer and shows the source count.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Explainers and technical deep dives</dd></div>
+      <div><dt>Engagement</dt><dd>Beginners get definitions without experts losing the thread. Strong E-E-A-T signals.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>group block with a "sidenote" class</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/explainers/diffusion-sprite-sheets/</span></div>
+    <div data-nav></div>
+    <div class="pg c11">
+      <header class="head">
+        <p class="kick">Explainer</p>
+        <h3 class="ttl">How Diffusion Models Generate Sprite Sheets, and Where They Break</h3>
+        <p class="dek">A plain-language walkthrough of the denoising process, with the specific failures that show up in pixel art and animation frames.</p>
+        <div class="cred"><span class="av">AM</span><div><b>Alex Moreno</b> · Technical artist, 9 years in mobile games<br><small>Technical review by Dr. Mei Okafor, ML engineer · 14 sources · Updated 02 Sep 2026</small></div></div>
+      </header>
+      <div class="row">
+        <p>A diffusion model starts from pure noise and removes a little of it at each step, guided by your prompt.<sup>1</sup> Nothing in that process knows what a frame is, which is why sprite sheets are harder than single images.</p>
+        <aside class="sn"><b>1</b>"Denoising" means predicting the noise in an image and subtracting it. A typical sampler runs 20–50 of these steps.</aside>
+      </div>
+      <div class="row">
+        <figure><div class="img t2" data-l="diagram · noise → sprite"></div><figcaption><b>Fig. 2</b>The same seed at steps 5, 15 and 30. The silhouette is fixed early; detail arrives last.<sup>2</sup></figcaption></figure>
+        <aside class="sn"><b>2</b>Ho, Jain &amp; Abbeel, "Denoising Diffusion Probabilistic Models," NeurIPS 2020.</aside>
+      </div>
+      <div class="row">
+        <div><h4 class="h2">Why frames drift<sup>3</sup></h4><div class="sk"><i></i><i></i><i></i><i></i></div></div>
+        <aside class="sn"><b>3</b>Frame drift: small changes in pose or proportions between frames that are invisible on their own but obvious in motion.</aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="cx" id="c12">
+  <header class="cx-h">
+    <p class="cx-n">12</p>
+    <div><h2>Head-to-Head</h2><p>The two contenders face off in the header, followed by a one-paragraph short answer, then a comparison matrix with the winner highlighted in each row. The reader gets the decision in ten seconds and the reasoning if they want it.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>"X vs Y" posts</dd></div>
+      <div><dt>Engagement</dt><dd>Matches "vs" search intent exactly. Both tools get a CTA.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>table with a "matrix" class</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/compare/codewright-vs-pairbot/</span></div>
+    <div data-nav></div>
+    <div class="pg c12"><div class="col">
+      <p class="kick">Comparison</p>
+      <h3 class="ttl">CodeWright vs. Pairbot for Unreal C++</h3>
+      <p class="dek">We used both for a month on the same Unreal 5 project. Here's which one to pick, depending on how your team works.</p>
+      <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>Updated 14 Sep 2026</span></div>
+      <div class="vs">
+        <div class="side"><span class="logo">CW</span><b>CodeWright</b><span class="sc">8.6</span><small>Best for large C++ codebases</small></div>
+        <span class="v">vs</span>
+        <div class="side"><span class="logo b2">PB</span><b>Pairbot</b><span class="sc">8.1</span><small>Best for Blueprint-heavy teams</small></div>
+      </div>
+      <div class="short"><p class="lbl">Short answer</p><p>Pick <b>CodeWright</b> if most of your game lives in C++ and you want whole-project context. Pick <b>Pairbot</b> if your designers work in Blueprints and you want help there too.</p></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Category</th><th>CodeWright</th><th>Pairbot</th></tr></thead>
+        <tbody>
+          <tr><td>Project context</td><td class="w">Whole repo</td><td>Open files</td></tr>
+          <tr><td>UE macro support</td><td class="w">Full</td><td>Partial</td></tr>
+          <tr><td>Blueprint help</td><td>—</td><td class="w">Yes</td></tr>
+          <tr><td>Offline mode</td><td class="w">Yes</td><td>No</td></tr>
+          <tr><td>Price per seat</td><td>$20/mo</td><td class="w">$12/mo</td></tr>
+        </tbody>
+        <tfoot><tr><td>Category wins</td><td>3</td><td>2</td></tr></tfoot>
+      </table></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="cx" id="c13">
+  <header class="cx-h">
+    <p class="cx-n">13</p>
+    <div><h2>Newsroom Brief</h2><p>A timestamp, numbered key points, a "what it means for indie devs" box, and a rail with the latest news and a terminal-style newsletter signup. It's fast to publish and fast to read.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>News and patch-note coverage</dd></div>
+      <div><dt>Engagement</dt><dd>The "Latest" rail drives more pages per session. The newsletter turns one-time visitors into subscribers.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>sidebar widgets + key-points group</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/news/forge3d-free-retopology/</span></div>
+    <div data-nav></div>
+    <div class="pg c13">
+      <article>
+        <div class="live"><span class="kick">News</span><time>Updated 25 Sep 2026 · 14:20 CET</time></div>
+        <h3 class="ttl">Forge3D Adds Auto-Retopology to Its Free Tier</h3>
+        <p class="dek">The feature used to be limited to Pro plans. Starting today, free accounts get 20 retopology runs a month.</p>
+        <div class="by"><span class="av">AM</span><span>By <b>Alex Moreno</b></span><span>3 min read</span></div>
+        <div class="keys">
+          <p class="lbl">Key points</p>
+          <ul>
+            <li>Auto-retopology is now on every plan, capped at 20 runs a month on Free.</li>
+            <li>Output targets quad meshes between 1k and 50k faces.</li>
+            <li>Pro pricing is unchanged.</li>
+          </ul>
+        </div>
+        <div class="impact"><p class="lbl">What it means for indie devs</p><p>If you've been cleaning up Forge3D meshes by hand in Blender, you can skip that step for most props. Characters still need manual edge loops around the joints.</p></div>
+        <div class="sk"><i></i><i></i><i></i></div>
+      </article>
+      <aside class="feed">
+        <div>
+          <p class="lbl">Latest</p>
+          <ol>
+            <li><time>13:05</time>SpriteLab adds shared team style libraries</li>
+            <li><time>11:40</time>Pathwise 2.0 brings navmesh-aware NPC dialogue</li>
+            <li><time>Yesterday</time>MotionKit halves webcam capture latency</li>
+            <li><time>Yesterday</time>Tessera opens its texture API to Unity users</li>
+          </ol>
+        </div>
+        <form class="subx" onsubmit="return false">
+          <p class="cmdl">$ subscribe --weekly</p>
+          <p>One email every Friday. Tools, tests, no hype.</p>
+          <div class="f"><input type="email" placeholder="you@studio.dev" aria-label="Email"><button type="submit">↵</button></div>
+        </form>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="cx" id="c14">
+  <header class="cx-h">
+    <p class="cx-n">14</p>
+    <div><h2>Viewport Hero</h2><p>The featured image sits inside an engine-viewport frame (Scene/Game tabs and an axis gizmo): game-dev flavor without gimmicks. A sticky section bar and a progress line in the nav keep long workflow posts easy to navigate, and before/after pairs show the results.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Workflow breakdowns, case studies</dd></div>
+      <div><dt>Engagement</dt><dd>The section bar makes a 4,000-word post feel short. Before/after pairs get shared.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag el">GP Element</span>hero; section bar is a sticky nav block</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/case-studies/ai-level-design-workflow/</span></div>
+    <div data-nav="prog"></div>
+    <div class="c14">
+      <div class="pg hero">
+        <div>
+          <p class="crumb">~/case-studies/<b>level-design</b></p>
+          <h3 class="ttl">Inside a Fully AI-Assisted Level Design Workflow</h3>
+          <p class="dek">How a two-person team blocked out, lit and dressed a 20-minute level in eight days, and the three places where AI slowed them down.</p>
+          <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>Updated 08 Sep 2026</span><span>16 min read</span></div>
+        </div>
+        <div class="vp">
+          <div class="vp-bar"><span class="on">Scene</span><span>Game</span><span class="r">Persp · 1920×1080</span></div>
+          <div class="img dk" data-l="featured image · in-engine capture"></div>
+          <svg class="giz" viewBox="0 0 44 44" aria-hidden="true"><line x1="22" y1="22" x2="38" y2="28" stroke="#e5484d" stroke-width="2"/><line x1="22" y1="22" x2="22" y2="5" stroke="#46a758" stroke-width="2"/><line x1="22" y1="22" x2="7" y2="30" stroke="#3e8ed0" stroke-width="2"/><circle cx="22" cy="22" r="2.5" fill="#dfe9e2"/></svg>
+        </div>
+      </div>
+      <nav class="stick" aria-label="Sections"><div><span class="lbl">Sections</span><a class="on">Blockout</a><a>Lighting</a><a>Set dressing</a><a>Playtesting</a><a>Results</a></div></nav>
+      <div class="pg"><div class="col">
+        <p>The team started with a paper sketch and a single prompt per zone. Within a day they had a greybox they could walk through, which is where the real design work began.</p>
+        <h4 class="h2">Blockout: from sketch to greybox in a day</h4>
+        <div class="ba">
+          <figure><div class="img" data-l="greybox"></div><figcaption>Before</figcaption></figure>
+          <figure><div class="img t2" data-l="final pass"></div><figcaption>After</figcaption></figure>
+        </div>
+        <div class="sk"><i></i><i></i><i></i><i></i></div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="cx" id="c15">
+  <header class="cx-h">
+    <p class="cx-n">15</p>
+    <div><h2>Dossier</h2><p>Nearly monochrome, with a record header (topic, status, last reviewed, reviewer), a plain disclaimer, bracketed citations and a numbered source list. This is the most authoritative voice in the set, for posts readers will act on.</p></div>
+    <dl class="cx-m">
+      <div><dt>Best for</dt><dd>Legal, licensing, policy, store rules</dd></div>
+      <div><dt>Engagement</dt><dd>Evergreen and link-worthy. "Last reviewed" gives readers a reason to come back.</dd></div>
+      <div><dt>Build</dt><dd><span class="tag blk">CSS + block</span>record header + sources groups</dd></div>
+    </dl>
+  </header>
+  <div class="frame">
+    <div class="chrome"><i></i><i></i><i></i><span>gamedevaihub.com/guides/selling-games-with-ai-assets/</span></div>
+    <div data-nav></div>
+    <div class="pg c15"><div class="col">
+      <dl class="file">
+        <div><dt>Topic</dt><dd>Licensing &amp; law</dd></div>
+        <div><dt>Status</dt><dd class="status">Evolving</dd></div>
+        <div><dt>Last reviewed</dt><dd>01 Sep 2026</dd></div>
+        <div><dt>Reviewed by</dt><dd>J. Park, IP attorney</dd></div>
+      </dl>
+      <h3 class="ttl">Can You Sell a Game Made With AI Assets? A Plain-English Guide</h3>
+      <p class="dek">What storefronts require you to disclose, what copyright covers, and the paperwork worth keeping from day one.</p>
+      <div class="by"><span class="av">AM</span><span><b>Alex Moreno</b></span><span>20 min read</span></div>
+      <p class="disc" style="margin-top:22px!important"><b>Not legal advice.</b>This guide explains how the rules generally work. For decisions about your game, talk to a lawyer in your jurisdiction.</p>
+      <p>Most storefronts now ask whether your game uses AI-generated content, and how.<span class="ref">[1]</span> In the U.S., purely AI-generated material generally isn't protected by copyright, while human selection, arrangement and modification can be.<span class="ref">[2]</span></p>
+      <h4 class="h2">What to disclose</h4>
+      <div class="sk"><i></i><i></i><i></i><i></i></div>
+      <section class="src">
+        <p class="lbl">Sources</p>
+        <ol>
+          <li>Storefront content and AI disclosure guidelines, retrieved 28 Aug 2026.</li>
+          <li>U.S. Copyright Office, <i>Copyright and Artificial Intelligence, Part 2: Copyrightability</i>, January 2025.</li>
+          <li>Regulation (EU) 2024/1689 (AI Act), Article 50: transparency obligations.</li>
+        </ol>
+      </section>
+      <div class="authorbox">
+        <span class="av">AM</span>
+        <div><p><b>Alex Moreno</b> covers AI tooling and licensing for game developers. This guide was reviewed by J. Park, an IP attorney.</p><p class="links">Corrections policy · How we research · Contact</p></div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  const nav = document.getElementById('nav');
+  document.querySelectorAll('[data-nav]').forEach(el => el.appendChild(nav.content.cloneNode(true)));
+</script>
+</body>
+</html>
