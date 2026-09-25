@@ -9,7 +9,7 @@ Version:      11.0.0
    CONTENTS
    01  Tokens
    02  Page
-   03  Terminal navbar
+   03  Navbar
    04  Shared UI: labels, chips, buttons, form fields
    05  Single post: layout
    06  Single post: header
@@ -53,15 +53,15 @@ Version:      11.0.0
   --gd-brand: #0f7a52;                   /* navbar */
   --gd-brand-deep: #0b6243;
 
-  --gd-term-bg: #0b0f13;
-  --gd-term-raised: #0f1519;
-  --gd-term-text: #d9e6dc;
-  --gd-term-ink: #c8f7a8;
-  --gd-term-muted: #7fa58a;
-  --gd-term-dim: #6f8a73;
-  --gd-term-line: #1d2a22;
-  --gd-term-edge: #2a3a30;
-  --gd-term-hover: #13201a;
+  --gd-dark-bg: #0b0f13;
+  --gd-dark-raised: #0f1519;
+  --gd-dark-text: #d9e6dc;
+  --gd-dark-ink: #c8f7a8;
+  --gd-dark-muted: #7fa58a;
+  --gd-dark-dim: #6f8a73;
+  --gd-dark-line: #1d2a22;
+  --gd-dark-edge: #2a3a30;
+  --gd-dark-hover: #13201a;
 
   --gd-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --gd-radius: 8px;
@@ -107,46 +107,48 @@ body,
   outline-offset: 2px;
 }
 ::selection {
-  color: var(--gd-term-bg);
-  background: var(--gd-term-ink);
+  color: var(--gd-dark-bg);
+  background: var(--gd-dark-ink);
 }
 
 
 /* 03  NAVBAR: BRAND COLOUR BAR
+   Selectors start with "body" so they win over navbar CSS left in the
+   Customizer's Additional CSS or a plugin.
    The whole bar in brand green with white links (concept 16). Covers the
    primary navigation, the separate site header (if enabled) and the GP
    Premium mobile header. !important only where GeneratePress's Customizer
    colors would otherwise win.
    ========================================================================== */
-:is(.site-header, .main-navigation, #mobile-header) {
+body :is(.site-header, .main-navigation, #mobile-header) {
   color: #fff;
   background: var(--gd-brand) !important;
   background-image: none !important;
   border-bottom: 0;
   box-shadow: 0 1px 0 rgb(0 0 0 / 8%);
 }
-.site-header :is(.main-title a, .site-description) {
+body .site-header :is(.main-title a, .site-description) {
   color: #fff !important;
 }
-:is(.main-navigation, #mobile-header) .inside-navigation {
+body :is(.main-navigation, #mobile-header) .inside-navigation {
   min-height: 72px;
   padding-inline: clamp(16px, 3vw, 32px);
   gap: 12px;
   align-items: center;
 }
-.main-navigation .navigation-branding {
+body .main-navigation .navigation-branding {
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
   margin: 0 auto 0 0;
 }
-.main-navigation .navigation-branding .site-logo {
+body .main-navigation .navigation-branding .site-logo {
   flex-shrink: 0;
   margin: 0;
 }
 /* GeneratePress pads the logo vertically; reset it so the logo keeps its height. */
-:is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
+body :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
   display: block;
   width: auto;
   height: 42px;
@@ -155,72 +157,81 @@ body,
   border-radius: 6px;
   object-fit: contain;
 }
-:is(.main-navigation, .site-header) .main-title {
+body :is(.main-navigation, .site-header) .main-title {
   margin: 0;
   font-size: clamp(17px, 1.4vw, 20px);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -.02em;
 }
-:is(.main-navigation, .site-header) .main-title a {
+body :is(.main-navigation, .site-header) .main-title a {
   color: #fff !important;
   text-decoration: none;
 }
 
 /* Brand from functions.php: "Hub" mark + "GameDev AI Hub" */
-.gd-brand a {
+body .gd-brand a {
   display: flex;
   align-items: center;
   gap: 10px;
   white-space: nowrap;
 }
-.gd-brand__mark {
+body .gd-brand__mark {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
   border-radius: 9px;
   box-shadow: 0 1px 2px rgb(0 0 0 / 18%);
 }
-.gd-brand__word {
+body .gd-brand__word {
   font-size: clamp(17px, 1.5vw, 21px);
   font-weight: 800;
   letter-spacing: -.03em;
 }
-.gd-brand__word b {
-  color: #bff3d8;
+body .gd-brand__word b {
+  color: inherit;
   font-weight: 800;
 }
 
+/* Switch off decorations left by older navbar CSS (">", "[ ]", "./", "_"). */
+body :is(.main-navigation, #mobile-header, .site-header) :is(.main-title a, .main-nav a, .mobile-menu)::before,
+body :is(.main-navigation, #mobile-header, .site-header) :is(.main-title a, .main-nav a, .mobile-menu)::after {
+  content: none !important;
+}
+
 /* Menu links */
-:is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
+body :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
   display: flex;
   align-items: center;
   min-height: 40px;
   padding: 0 13px;
   color: rgb(255 255 255 / 88%) !important;
   background: transparent !important;
+  border: 0;
   border-radius: 8px;
+  box-shadow: none;
   font-size: 15px;
   font-weight: 500;
   line-height: 40px;
   text-decoration: none;
   transition: color var(--gd-motion), background-color var(--gd-motion);
 }
-:is(.main-navigation, #mobile-header) .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a {
+body :is(.main-navigation, #mobile-header) .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a {
   color: #fff !important;
   background: rgb(255 255 255 / 12%) !important;
 }
-:is(.main-navigation, #mobile-header) .main-nav > ul > li:is([class*="current-menu-"], [class*="current_page_"]) > a {
+body :is(.main-navigation, #mobile-header) .main-nav > ul > li:is([class*="current-menu-"], [class*="current_page_"]) > a {
   color: #fff !important;
   background: rgb(255 255 255 / 18%) !important;
   font-weight: 600;
+  box-shadow: none;
 }
-:is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
+body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
   outline-color: #fff;
 }
 
 /* Dropdowns: a white card under the bar */
-:is(.main-navigation, #mobile-header) .main-nav ul ul {
+body :is(.main-navigation, #mobile-header) .main-nav ul ul {
   width: 240px;
   padding: 6px;
   background: var(--gd-panel);
@@ -228,7 +239,7 @@ body,
   border-radius: 10px;
   box-shadow: 0 18px 36px -12px rgb(0 0 0 / 28%);
 }
-:is(.main-navigation, #mobile-header) .main-nav ul ul li a {
+body :is(.main-navigation, #mobile-header) .main-nav ul ul li a {
   padding: 9px 12px;
   color: var(--gd-text) !important;
   background: transparent !important;
@@ -237,19 +248,19 @@ body,
   line-height: 1.4;
   white-space: normal;
 }
-:is(.main-navigation, #mobile-header) .main-nav ul ul li:is(:hover, .sfHover, :focus-within, .current-menu-item) > a {
+body :is(.main-navigation, #mobile-header) .main-nav ul ul li:is(:hover, .sfHover, :focus-within, .current-menu-item) > a {
   color: var(--gd-accent-ink) !important;
   background: var(--gd-accent-soft) !important;
 }
 
 /* Search button, navigation search field, mobile menu toggle */
-:is(.main-navigation, #mobile-header) .menu-bar-items {
+body :is(.main-navigation, #mobile-header) .menu-bar-items {
   gap: 8px;
   margin-left: 8px;
   color: #fff !important;
   background: transparent !important;
 }
-:is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle) {
+body :is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle) {
   min-height: 40px;
   color: #fff !important;
   background: transparent !important;
@@ -257,46 +268,47 @@ body,
   border-radius: 8px;
   transition: background-color var(--gd-motion), border-color var(--gd-motion);
 }
-:is(.main-navigation, #mobile-header) .menu-bar-item > a {
+body :is(.main-navigation, #mobile-header) .menu-bar-item > a {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
+  min-width: 0;
   height: 40px;
   padding: 0;
   line-height: 1;
 }
-:is(.main-navigation, #mobile-header) .menu-toggle {
+body :is(.main-navigation, #mobile-header) .menu-toggle {
   padding: 0 14px;
   font-size: 14px;
   font-weight: 600;
   line-height: 38px;
   white-space: nowrap;
 }
-:is(.main-navigation, #mobile-header) .menu-toggle .gp-icon {
+body :is(.main-navigation, #mobile-header) .menu-toggle .gp-icon {
   margin-right: 8px;
 }
-:is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu {
+body :is(.main-navigation, #mobile-header) .menu-toggle .mobile-menu {
   padding-left: 0;
 }
-:is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle):is(:hover, :focus-visible),
-:is(.main-navigation, #mobile-header).toggled .menu-toggle {
+body :is(.main-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle):is(:hover, :focus-visible),
+body :is(.main-navigation, #mobile-header).toggled .menu-toggle {
   background: rgb(255 255 255 / 14%) !important;
   border-color: rgb(255 255 255 / 45%);
 }
-:is(.main-navigation, #mobile-header) .navigation-search input[type="search"]:is(*, :focus) {
+body :is(.main-navigation, #mobile-header) .navigation-search input[type="search"]:is(*, :focus) {
   color: #fff;
   background: var(--gd-brand-deep);
   border: 0;
   outline: 0;
   box-shadow: inset 0 -2px 0 #fff;
 }
-:is(.main-navigation, #mobile-header) .navigation-search input::placeholder {
+body :is(.main-navigation, #mobile-header) .navigation-search input::placeholder {
   color: rgb(255 255 255 / 75%);
   opacity: 1;
 }
 @media (min-width: 769px) {
-  .main-navigation .main-nav > ul {
+  body .main-navigation .main-nav > ul {
     display: flex;
     align-items: center;
     gap: 2px;
@@ -869,9 +881,9 @@ body,
   max-width: 100%;
   padding: 16px 18px;
   overflow-x: auto;
-  color: var(--gd-term-text);
-  background: var(--gd-term-bg);
-  border: 1px solid var(--gd-term-line);
+  color: var(--gd-dark-text);
+  background: var(--gd-dark-bg);
+  border: 1px solid var(--gd-dark-line);
   border-radius: var(--gd-radius);
   font-family: var(--gd-mono);
   font-size: 13.5px;
@@ -897,9 +909,9 @@ body,
   max-width: none;
   min-height: 38px;
   padding: 0 8px 0 16px;
-  color: var(--gd-term-muted);
-  background: var(--gd-term-bg);
-  border: 1px solid var(--gd-term-line);
+  color: var(--gd-dark-muted);
+  background: var(--gd-dark-bg);
+  border: 1px solid var(--gd-dark-line);
   border-radius: var(--gd-radius) var(--gd-radius) 0 0;
   font-family: var(--gd-mono);
   font-size: 12.5px;
@@ -914,9 +926,9 @@ body,
   height: 24px;
   margin-left: auto;
   padding: 0 9px;
-  color: var(--gd-term-ink);
+  color: var(--gd-dark-ink);
   background: transparent;
-  border: 1px solid var(--gd-term-edge);
+  border: 1px solid var(--gd-dark-edge);
   border-radius: 4px;
   font-family: var(--gd-mono);
   font-size: 12px;
@@ -924,8 +936,8 @@ body,
   cursor: pointer;
 }
 .entry-content .gd-copy:hover {
-  color: var(--gd-term-ink);
-  background: var(--gd-term-hover);
+  color: var(--gd-dark-ink);
+  background: var(--gd-dark-hover);
 }
 .entry-content :not(pre) > code {
   padding: .15em .4em;
@@ -1306,9 +1318,9 @@ body,
   border-color: var(--gd-line-strong);
 }
 .nav-links .page-numbers.current {
-  color: var(--gd-term-ink);
-  background: var(--gd-term-bg);
-  border-color: var(--gd-term-bg);
+  color: var(--gd-dark-ink);
+  background: var(--gd-dark-bg);
+  border-color: var(--gd-dark-bg);
 }
 .nav-links .page-numbers.dots {
   background: transparent;
@@ -1317,10 +1329,10 @@ body,
 
 :is(.site-footer, .footer-widgets, .site-info) {
   color: #a9bdb0;
-  background: var(--gd-term-bg);
+  background: var(--gd-dark-bg);
 }
 :is(.footer-widgets, .site-info) {
-  border-top: 1px solid var(--gd-term-line);
+  border-top: 1px solid var(--gd-dark-line);
 }
 .footer-widgets :is(h2, h3, h4, .widget-title) {
   color: #fff;
@@ -1335,34 +1347,35 @@ body,
    768px matches GeneratePress's default mobile menu breakpoint.
    ========================================================================== */
 @media (max-width: 768px) {
-  :is(.main-navigation, #mobile-header) .inside-navigation {
+  body :is(.main-navigation, #mobile-header) .inside-navigation {
     min-height: 58px;
     padding-inline: 16px;
     gap: 8px;
   }
-  .main-navigation .navigation-branding {
+  body .main-navigation .navigation-branding {
     flex: 1 1 auto;
   }
-  :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
+  body :is(.main-navigation, #mobile-header, .site-header) :is(.navigation-branding, .site-logo, .mobile-header-logo, .sticky-navigation-logo) img {
     height: 36px;
     max-height: 36px;
   }
-  .gd-brand__mark {
+  body .gd-brand__mark {
     width: 32px;
     height: 32px;
   }
-  :is(.main-navigation, #mobile-header).toggled .main-nav > ul {
+  body :is(.main-navigation, #mobile-header).toggled .main-nav > ul {
     margin: 8px 0 12px;
     padding: 6px;
-    background: var(--gd-brand-deep);
+    background: var(--gd-brand-deep) !important;
+    border: 0;
     border-radius: 10px;
   }
-  :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
+  body :is(.main-navigation, #mobile-header) .main-nav > ul > li > a {
     min-height: 44px;
     padding: 0 12px;
     line-height: 44px;
   }
-  :is(.main-navigation, #mobile-header) .main-nav ul ul {
+  body :is(.main-navigation, #mobile-header) .main-nav ul ul {
     width: auto;
     margin: 2px 0 6px 12px;
     padding: 0;
@@ -1370,7 +1383,7 @@ body,
     border: 0;
     box-shadow: none;
   }
-  :is(.main-navigation, #mobile-header) .main-nav ul ul li a {
+  body :is(.main-navigation, #mobile-header) .main-nav ul ul li a {
     color: rgb(255 255 255 / 88%) !important;
   }
   .single-post .entry-header {

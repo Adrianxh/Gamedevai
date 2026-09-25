@@ -58,20 +58,31 @@ function gdaih_brand_markup( $tag = 'p' ) {
 }
 
 /**
- * Replace GeneratePress's logo and site title with the brand, once.
+ * Replace GeneratePress's logo with the brand. Runs for every header that
+ * prints a logo (desktop navigation, site header, GP Premium mobile header).
  */
-function gdaih_brand_output( $output = '' ) {
-	static $printed = false;
-	if ( $printed ) {
+function gdaih_brand_logo( $output = '' ) {
+	$GLOBALS['gdaih_brand_printed'] = true;
+	$GLOBALS['gdaih_logo_just_printed'] = true;
+	return gdaih_brand_markup();
+}
+add_filter( 'generate_logo_output', 'gdaih_brand_logo', 20 );
+add_filter( 'generate_navigation_logo_output', 'gdaih_brand_logo', 20 );
+add_filter( 'generate_mobile_header_logo_output', 'gdaih_brand_logo', 20 );
+
+/**
+ * Replace the site title with the brand, unless the brand was just printed
+ * as the logo in the same header (logo and title both switched on).
+ */
+function gdaih_brand_title( $output = '' ) {
+	if ( ! empty( $GLOBALS['gdaih_logo_just_printed'] ) ) {
+		$GLOBALS['gdaih_logo_just_printed'] = false;
 		return '';
 	}
-	$printed = true;
 	$GLOBALS['gdaih_brand_printed'] = true;
 	return gdaih_brand_markup();
 }
-add_filter( 'generate_logo_output', 'gdaih_brand_output', 20 );
-add_filter( 'generate_site_title_output', 'gdaih_brand_output', 20 );
-add_filter( 'generate_navigation_logo_output', 'gdaih_brand_output', 20 );
+add_filter( 'generate_site_title_output', 'gdaih_brand_title', 20 );
 
 /**
  * Fallback: if the logo and site title are both switched off in the
@@ -81,7 +92,8 @@ function gdaih_brand_fallback() {
 	if ( ! empty( $GLOBALS['gdaih_brand_printed'] ) ) {
 		return;
 	}
-	echo '<div class="navigation-branding">' . gdaih_brand_output() . '</div>'; // Escaped in gdaih_brand_markup().
+	$GLOBALS['gdaih_brand_printed'] = true;
+	echo '<div class="navigation-branding">' . gdaih_brand_markup() . '</div>'; // Escaped in gdaih_brand_markup().
 }
 add_action( 'generate_inside_navigation', 'gdaih_brand_fallback', 100 );
 
