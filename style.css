@@ -73,7 +73,7 @@ Version:      10.0.0
   --gd-toc: 248px;             /* table-of-contents column */
   --gd-toc-gap: clamp(56px, 6vw, 88px);
   --gd-content: 720px;         /* text column next to the table of contents */
-  --gd-article-wide: calc(var(--gd-toc) + var(--gd-toc-gap) + var(--gd-content) + 2 * var(--gd-pad-x));
+  --gd-rail-inset: clamp(24px, 7vw, 160px); /* space between the window edge and the rail */
   --gd-sticky-top: 24px;       /* functions.php updates this to clear a sticky navbar */
 }
 .admin-bar {
@@ -622,18 +622,29 @@ body:not(.wp-admin).one-container .container {
 }
 
 @media (min-width: 1024px) {
+  /* The article spans the full window width so the text column can sit in
+     the centre of the screen and the rail can sit near the left edge.
+     Columns: [rail + gap] [text, up to 720px] [matching space]. When the
+     window is too narrow for both sides, the right side gives way first. */
+  body.single-post {
+    overflow-x: clip;
+  }
   .single-post .gd-has-toc > .inside-article {
     display: grid;
-    grid-template-columns: var(--gd-toc) minmax(0, 1fr);
-    column-gap: var(--gd-toc-gap);
+    grid-template-columns: minmax(calc(var(--gd-toc) + var(--gd-toc-gap)), 1fr) minmax(0, var(--gd-content)) minmax(0, 1fr);
     align-items: start;
-    max-width: var(--gd-article-wide);
+    box-sizing: border-box;
+    width: var(--gd-vw, 100vw);
+    max-width: none;
+    margin-left: calc(50% - var(--gd-vw, 100vw) / 2);
+    padding-inline: var(--gd-rail-inset);
   }
   .single-post .gd-has-toc > .inside-article > * {
     grid-column: 2;
   }
   .single-post .gd-has-toc > .inside-article > .gd-toc {
     grid-column: 1;
+    width: var(--gd-toc);
     grid-row: 1 / span 20;
     position: sticky;
     top: var(--gd-sticky-top);
@@ -674,8 +685,7 @@ body:not(.wp-admin).one-container .container {
   /* Comments line up with the text column. */
   .single-post .site-main > .gd-has-toc ~ .comments-area {
     max-width: var(--gd-content);
-    margin-left: calc(max(0px, (100% - var(--gd-article-wide)) / 2) + var(--gd-pad-x) + var(--gd-toc) + var(--gd-toc-gap));
-    margin-right: auto;
+    margin-inline: auto;
   }
 }
 @media (prefers-reduced-motion: no-preference) {

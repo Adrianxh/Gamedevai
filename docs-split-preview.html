@@ -219,6 +219,7 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 	}
 
 	var lastOffset = null;
+	var lastWidth = null;
 	var ticking = false;
 	function update() {
 		ticking = false;
@@ -226,6 +227,12 @@ input[type="submit"] { color: #fff; background: #55555e; border: 0; padding: 10p
 		if (offset !== lastOffset) {
 			document.body.style.setProperty('--gd-sticky-top', offset + 'px');
 			lastOffset = offset;
+		}
+		// Window width without the scrollbar, for the full-width layout.
+		var width = document.documentElement.clientWidth;
+		if (width !== lastWidth) {
+			document.body.style.setProperty('--gd-vw', width + 'px');
+			lastWidth = width;
 		}
 		if (!items.length) return;
 

@@ -472,6 +472,7 @@ function gdaih_docs_script() {
 	}
 
 	var lastOffset = null;
+	var lastWidth = null;
 	var ticking = false;
 	function update() {
 		ticking = false;
@@ -479,6 +480,12 @@ function gdaih_docs_script() {
 		if (offset !== lastOffset) {
 			document.body.style.setProperty('--gd-sticky-top', offset + 'px');
 			lastOffset = offset;
+		}
+		// Window width without the scrollbar, for the full-width layout.
+		var width = document.documentElement.clientWidth;
+		if (width !== lastWidth) {
+			document.body.style.setProperty('--gd-vw', width + 'px');
+			lastWidth = width;
 		}
 		if (!items.length) return;
 
