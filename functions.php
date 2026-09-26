@@ -50,7 +50,7 @@ function gdaih_is_docs_post() {
  */
 function gdaih_brand_markup( $tag = 'p' ) {
 	return sprintf(
-		'<%1$s class="main-title gd-brand"><a href="%2$s" rel="home"><img class="gd-brand__mark" src="%3$s" width="44" height="44" alt="" decoding="async"><span class="gd-brand__word">GameDev AI Hub</span></a></%1$s>',
+		'<%1$s class="main-title gd-brand"><a href="%2$s" rel="home"><img class="gd-brand__mark" src="%3$s" height="44" alt="" decoding="async"><span class="gd-brand__word">GameDev AI Hub</span></a></%1$s>',
 		tag_escape( $tag ),
 		esc_url( home_url( '/' ) ),
 		esc_url( GDAIH_LOGO_URL )
@@ -115,53 +115,58 @@ function gdaih_critical_navbar_css() {
 	$css = <<<'CSS'
 :root{--gdn-ink:#0f2029;--gdn-link:#34444c;--gdn-muted:#7d8a90;--gdn-line:#e4e7e8;--gdn-field:#f7f8f8;--gdn-hover:#eef1f1;--gdn-logo:44px}
 html body .site-header{background:transparent!important;background-image:none!important;border:0;box-shadow:none}
-html body :is(#site-navigation,#mobile-header):not(.toggled){padding:16px clamp(12px,2.4vw,32px) 0!important;color:var(--gdn-ink);background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important}
-html body :is(#site-navigation,#mobile-header):not(.toggled)>.inside-navigation{box-sizing:border-box;display:flex;flex-wrap:nowrap;align-items:center;gap:12px;width:100%;max-width:1240px;min-height:76px;margin:0 auto;padding:12px clamp(16px,2vw,26px)!important;background:#fff!important;border:1px solid rgb(15 32 41/5%)!important;border-radius:18px!important;box-shadow:0 1px 2px rgb(15 32 41/4%),0 14px 38px -14px rgb(15 32 41/18%)!important}
+%nav%{padding:16px clamp(12px,2.4vw,32px) 0!important;color:var(--gdn-ink);background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important}
+%nav%>.inside-navigation{box-sizing:border-box;display:flex;flex-wrap:nowrap;align-items:center;gap:12px;width:100%;max-width:1240px;min-height:76px;margin:0 auto;padding:12px clamp(16px,2vw,26px)!important;background:#fff!important;border:1px solid rgb(15 32 41/5%)!important;border-radius:18px!important;box-shadow:0 1px 2px rgb(15 32 41/4%),0 14px 38px -14px rgb(15 32 41/18%)!important}
 
-html body :is(#site-navigation,#mobile-header):not(.toggled) .navigation-branding{display:flex;align-items:center;order:0;min-width:0;margin:0 clamp(12px,4vw,64px) 0 0}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .gd-brand{margin:0!important;padding:0;font-size:clamp(19px,1.75vw,23px)!important;font-weight:800!important;line-height:1.1!important;letter-spacing:-.035em}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .gd-brand a{display:flex;align-items:center;gap:14px;color:var(--gdn-ink)!important;text-decoration:none!important;white-space:nowrap}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .gd-brand__mark{flex-shrink:0;width:auto;height:var(--gdn-logo);border-radius:0}
-html body :is(#site-navigation,#mobile-header,.site-header) :is(.main-title a,.main-nav a,.mobile-menu)::before,
-html body :is(#site-navigation,#mobile-header,.site-header) :is(.main-title a,.main-nav>ul>li>a,.mobile-menu)::after{content:none!important}
+%nav% .navigation-branding{display:flex;align-items:center;order:0;min-width:0;margin:0 clamp(12px,4vw,64px) 0 0}
+%nav% .gd-brand{margin:0!important;padding:0;font-size:clamp(19px,1.75vw,23px)!important;font-weight:800!important;line-height:1.1!important;letter-spacing:-.035em}
+%nav% .gd-brand a{display:flex;align-items:center;gap:14px;color:var(--gdn-ink)!important;text-decoration:none!important;white-space:nowrap}
+html body .gd-brand__mark{flex-shrink:0;width:auto!important;height:var(--gdn-logo)!important;max-width:none;object-fit:contain;border-radius:0}
+html body :is(.main-navigation,#mobile-header,.site-header) :is(.main-title a,.main-nav a,.mobile-menu)::before,
+html body :is(.main-navigation,#mobile-header,.site-header) :is(.main-title a,.main-nav>ul>li>a,.mobile-menu)::after{content:none!important}
 
-html body :is(#site-navigation,#mobile-header):not(.toggled) .main-nav{display:none!important;order:1}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-items{display:flex;align-items:center;gap:8px;order:2;margin:0 0 0 auto}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-item>a{display:flex;align-items:center;justify-content:center;min-width:44px;height:44px;padding:0;color:var(--gdn-ink)!important;background:var(--gdn-field)!important;border:1px solid var(--gdn-line);border-radius:999px;line-height:1;transition:background-color .17s}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-item>a:hover{background:var(--gdn-hover)!important}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-item .gp-icon{display:flex;top:0;margin:0}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-item svg{width:20px;height:20px;top:0}
-html body :is(#site-navigation,#mobile-header):not(.toggled) :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"]){justify-content:flex-start;gap:12px;width:212px;padding:0 18px}
-html body :is(#site-navigation,#mobile-header):not(.toggled) :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"])::after{content:"Search docs\2026";overflow:hidden;color:var(--gdn-muted);font-size:15px;font-weight:400;white-space:nowrap}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-toggle{display:inline-flex!important;align-items:center;gap:8px;order:3;height:44px;margin:0;padding:0 16px;color:var(--gdn-ink)!important;background:var(--gdn-field)!important;border:1px solid var(--gdn-line)!important;border-radius:999px!important;font-size:15px;line-height:1}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-toggle:hover{background:var(--gdn-hover)!important}
+%nav% .main-nav{display:none!important;order:1}
+%nav% .menu-bar-items{display:flex;align-items:center;gap:8px;order:2;margin:0 0 0 auto}
+%nav% .menu-bar-item>a{display:flex;align-items:center;justify-content:center;min-width:44px;height:44px;padding:0;color:var(--gdn-ink)!important;background:var(--gdn-field)!important;border:1px solid var(--gdn-line);border-radius:999px;line-height:1;transition:background-color .17s}
+%nav% .menu-bar-item>a:hover{background:var(--gdn-hover)!important}
+%nav% .menu-bar-item .gp-icon{display:flex;top:0;margin:0}
+%nav% .menu-bar-item svg{width:20px;height:20px;top:0}
+%nav% :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"]){justify-content:flex-start;gap:12px;width:212px;padding:0 18px}
+%nav% :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"])::after{content:"Search docs\2026";overflow:hidden;color:var(--gdn-muted);font-size:15px;font-weight:400;white-space:nowrap}
+%nav% .menu-toggle{display:inline-flex!important;align-items:center;gap:8px;order:3;height:44px;margin:0;padding:0 16px;color:var(--gdn-ink)!important;background:var(--gdn-field)!important;border:1px solid var(--gdn-line)!important;border-radius:999px!important;font-size:15px;line-height:1}
+%nav% .menu-toggle:hover{background:var(--gdn-hover)!important}
 
 @media (min-width:1025px){
-html body #site-navigation:not(.toggled) .menu-toggle{display:none!important}
-html body #site-navigation:not(.toggled) .main-nav{display:block!important;position:static!important;inset:auto!important;width:auto!important;height:auto!important;margin:0 auto 0 0;padding:0!important;overflow:visible!important;background:transparent!important;transform:none!important;opacity:1!important;visibility:visible!important}
-html body #site-navigation:not(.toggled) .main-nav>ul{display:flex;align-items:center;gap:20px;margin:0;padding:0;list-style:none}
-html body #site-navigation:not(.toggled) .main-nav>ul>li>a{display:flex;align-items:center;min-height:52px;padding:0 8px!important;color:var(--gdn-link)!important;background:linear-gradient(var(--gdn-ink),var(--gdn-ink)) center bottom 4px/0 2px no-repeat!important;border:0!important;border-radius:0!important;box-shadow:none!important;font-size:16px;font-weight:400;line-height:1.2!important;text-decoration:none!important;transition:color .17s,background-size .17s}
-html body #site-navigation:not(.toggled) .main-nav>ul>li:is(:hover,:focus-within)>a{color:var(--gdn-ink)!important}
-html body #site-navigation:not(.toggled) .main-nav>ul>li:is(.current-menu-item,.current-menu-ancestor,.current_page_item,.current_page_ancestor)>a{color:var(--gdn-ink)!important;font-weight:500;background-size:100% 2px!important}
-html body #site-navigation:not(.toggled) .main-nav ul ul{padding:7px;background:#fff!important;border:1px solid var(--gdn-line);border-radius:12px;box-shadow:0 14px 38px -14px rgb(15 32 41/18%)}
-html body #site-navigation:not(.toggled) .main-nav ul ul a{padding:10px 13px;color:var(--gdn-link)!important;background:transparent!important;border-radius:8px;line-height:1.35}
-html body #site-navigation:not(.toggled) .main-nav ul ul li:hover>a{color:var(--gdn-ink)!important;background:var(--gdn-hover)!important}
+%nav% .menu-toggle{display:none!important}
+%nav% .main-nav{display:block!important;position:static!important;inset:auto!important;width:auto!important;height:auto!important;margin:0 auto 0 0;padding:0!important;overflow:visible!important;background:transparent!important;transform:none!important;opacity:1!important;visibility:visible!important}
+%nav% .main-nav>ul{display:flex;align-items:center;gap:20px;margin:0;padding:0;list-style:none}
+%nav% .main-nav>ul>li>a{display:flex;align-items:center;min-height:52px;padding:0 8px!important;color:var(--gdn-link)!important;background:linear-gradient(var(--gdn-ink),var(--gdn-ink)) center bottom 4px/0 2px no-repeat!important;border:0!important;border-radius:0!important;box-shadow:none!important;font-size:16px;font-weight:400;line-height:1.2!important;text-decoration:none!important;transition:color .17s,background-size .17s}
+%nav% .main-nav>ul>li:is(:hover,:focus-within)>a{color:var(--gdn-ink)!important}
+%nav% .main-nav>ul>li:is(.current-menu-item,.current-menu-ancestor,.current_page_item,.current_page_ancestor)>a{color:var(--gdn-ink)!important;font-weight:500;background-size:100% 2px!important}
+%nav% .main-nav ul ul{padding:7px;background:#fff!important;border:1px solid var(--gdn-line);border-radius:12px;box-shadow:0 14px 38px -14px rgb(15 32 41/18%)}
+%nav% .main-nav ul ul a{padding:10px 13px;color:var(--gdn-link)!important;background:transparent!important;border-radius:8px;line-height:1.35}
+%nav% .main-nav ul ul li:hover>a{color:var(--gdn-ink)!important;background:var(--gdn-hover)!important}
 }
 @media (max-width:1100px){
-html body :is(#site-navigation,#mobile-header):not(.toggled) :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"]){justify-content:center;width:44px;padding:0}
-html body :is(#site-navigation,#mobile-header):not(.toggled) :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"])::after{content:none}
+%nav% :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"]){justify-content:center;width:44px;padding:0}
+%nav% :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"])::after{content:none}
 }
 @media (max-width:600px){
 :root{--gdn-logo:34px}
-html body :is(#site-navigation,#mobile-header):not(.toggled){padding:10px 10px 0!important}
-html body :is(#site-navigation,#mobile-header):not(.toggled)>.inside-navigation{gap:8px;min-height:62px;padding:9px 10px 9px 14px!important;border-radius:14px!important}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .navigation-branding{margin-right:0}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .gd-brand{font-size:18px!important}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .gd-brand a{gap:10px}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-toggle{justify-content:center;width:44px;padding:0}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-toggle .mobile-menu{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+%nav%{padding:10px 10px 0!important}
+%nav%>.inside-navigation{gap:8px;min-height:62px;padding:9px 10px 9px 14px!important;border-radius:14px!important}
+%nav% .navigation-branding{margin-right:0}
+%nav% .gd-brand{font-size:18px!important}
+%nav% .gd-brand a{gap:10px}
+%nav% .menu-toggle{justify-content:center;width:44px;padding:0}
+%nav% .menu-toggle .mobile-menu{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 }
 CSS;
+
+	// %nav% = every closed header navbar: the primary navigation, the copy
+	// GP Premium shows while the navbar is sticky, and the mobile header.
+	// Matched by class, not id, because those copies carry other ids.
+	$css = str_replace( '%nav%', 'html body :is(.main-navigation,#mobile-header):not(.toggled):not(.slideout-navigation):not(.mobile-menu-control-wrapper)', $css );
 
 	echo '<style id="gdaih-critical-navbar">' . $css . '</style>' . "\n"; // Static CSS, no user input.
 }
