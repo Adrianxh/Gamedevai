@@ -129,7 +129,8 @@ html body :is(#site-navigation,#mobile-header):not(.toggled) .main-nav{display:n
 html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-items{display:flex;align-items:center;gap:8px;order:2;margin:0 0 0 auto}
 html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-item>a{display:flex;align-items:center;justify-content:center;min-width:44px;height:44px;padding:0;color:var(--gdn-ink)!important;background:var(--gdn-field)!important;border:1px solid var(--gdn-line);border-radius:999px;line-height:1;transition:background-color .17s}
 html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-item>a:hover{background:var(--gdn-hover)!important}
-html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-item svg{width:20px;height:20px}
+html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-item .gp-icon{display:flex;top:0;margin:0}
+html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-bar-item svg{width:20px;height:20px;top:0}
 html body :is(#site-navigation,#mobile-header):not(.toggled) :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"]){justify-content:flex-start;gap:12px;width:212px;padding:0 18px}
 html body :is(#site-navigation,#mobile-header):not(.toggled) :is(.search-item>a:not(.close-search),[data-gpmodal-trigger="gp-search"])::after{content:"Search docs\2026";overflow:hidden;color:var(--gdn-muted);font-size:15px;font-weight:400;white-space:nowrap}
 html body :is(#site-navigation,#mobile-header):not(.toggled) .menu-toggle{display:inline-flex!important;align-items:center;gap:8px;order:3;height:44px;margin:0;padding:0 16px;color:var(--gdn-ink)!important;background:var(--gdn-field)!important;border:1px solid var(--gdn-line)!important;border-radius:999px!important;font-size:15px;line-height:1}
