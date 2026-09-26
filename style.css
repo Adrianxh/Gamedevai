@@ -185,13 +185,34 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   box-shadow: var(--nav-shadow);
 }
 
-/* Branding: the logo is drawn in front of the site title link. */
+/* Branding: logo + site title. */
 .main-navigation .navigation-branding {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   min-width: 0;
   margin: 0 clamp(12px, 5vw, 72px) 0 0;
 }
-.main-navigation .main-title {
+.main-navigation .navigation-branding .site-logo {
+  flex-shrink: 0;
   margin: 0;
+}
+.main-navigation .navigation-branding .site-logo a {
+  display: block;
+}
+/* Whatever logo image GeneratePress outputs is shown as the hosted logo. */
+:is(.main-navigation, .site-header) :is(.site-logo, .mobile-header-logo) img {
+  content: url("https://gamedevaihub.com/wp-content/uploads/2026/09/gamedevailogo.png");
+  width: auto;
+  height: var(--nav-logo);
+  max-height: none;
+  padding: 0;
+  border-radius: 0;
+  object-fit: contain;
+}
+.main-navigation .navigation-branding .main-title {
+  margin: 0;
+  padding: 0;
   font-size: clamp(19px, 1.75vw, 23px);
   font-weight: 800;
   line-height: 1.1;
@@ -205,7 +226,8 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   color: var(--nav-ink) !important;
   text-decoration: none;
 }
-.main-navigation .main-title a::before {
+/* No logo image set in the Customizer: draw the logo before the title. */
+.main-navigation .navigation-branding:not(:has(.site-logo)) .main-title a::before {
   content: "";
   flex-shrink: 0;
   width: var(--nav-logo);
@@ -278,41 +300,46 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   gap: 8px;
   margin-inline-start: auto;
 }
+/* Shared look only — GeneratePress keeps control of when each one shows. */
 .main-navigation :is(.menu-bar-item > a, .menu-toggle) {
+  color: var(--nav-ink) !important;
+  background: var(--nav-field) !important;
+  border: 1px solid var(--nav-line);
+  border-radius: 999px;
+  transition: background-color var(--lc-motion), border-color var(--lc-motion);
+}
+.main-navigation .menu-bar-item > a {
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 44px;
   min-height: 44px;
   padding: 0;
-  color: var(--nav-ink) !important;
-  background: var(--nav-field) !important;
-  border: 1px solid var(--nav-line);
-  border-radius: 999px;
   line-height: 1;
-  transition: background-color var(--lc-motion), border-color var(--lc-motion);
 }
 .main-navigation .menu-toggle {
+  min-height: 44px;
   padding: 0 16px;
+  line-height: 42px;
 }
-.main-navigation :is(.menu-bar-item > a:hover, .menu-toggle:is(:hover, :focus-visible)),
+.main-navigation :is(.menu-bar-item > a:hover, .menu-toggle:hover, .menu-toggle:focus-visible),
 .main-navigation.toggled .menu-toggle {
   background: var(--nav-hover) !important;
   border-color: #d3d8da;
 }
 
 /* Search trigger renders as the "Search docs…" pill field. */
-.main-navigation .search-item svg {
+.main-navigation .menu-bar-item svg {
   width: 20px;
   height: 20px;
 }
-.main-navigation .search-item > a:not(.close-search) {
+.main-navigation :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"]) {
   justify-content: flex-start;
   gap: 12px;
   width: clamp(180px, 17vw, 212px);
   padding: 0 18px;
 }
-.main-navigation .search-item > a:not(.close-search)::after {
+.main-navigation :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"])::after {
   content: "Search docs\2026";
   overflow: hidden;
   color: var(--nav-muted);
@@ -938,12 +965,12 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
     margin-right: 12px;
   }
   /* Search pill collapses to its round icon button. */
-  .main-navigation .search-item > a:not(.close-search) {
+  .main-navigation :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"]) {
     justify-content: center;
     width: 44px;
     padding: 0;
   }
-  .main-navigation .search-item > a:not(.close-search)::after {
+  .main-navigation :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"])::after {
     content: none;
   }
 }
@@ -966,7 +993,7 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
     flex: 1 1 auto;
     margin-right: auto;
   }
-  .main-navigation .main-title {
+  .main-navigation .navigation-branding .main-title {
     font-size: 19px;
   }
   .main-navigation.toggled .main-nav > ul {
@@ -1022,16 +1049,32 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
     margin-bottom: 17px;
   }
 }
-@media (max-width: 360px) {
+@media (max-width: 480px) {
   :root {
     --nav-logo: 32px;
   }
   .main-navigation .inside-navigation {
-    padding-inline: 10px;
+    padding-inline: 12px 10px;
     gap: 6px;
   }
+  .main-navigation .navigation-branding {
+    gap: 10px;
+  }
+  .main-navigation .navigation-branding .main-title {
+    font-size: 17px;
+  }
+  /* Menu toggle becomes a round icon button; label stays for screen readers. */
   .main-navigation .menu-toggle {
-    padding-inline: 10px;
+    min-width: 44px;
+    padding: 0;
+  }
+  .main-navigation .menu-toggle .mobile-menu {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 @media (prefers-reduced-motion: reduce) {
