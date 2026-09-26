@@ -137,7 +137,7 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
    03. FLOATING DOCS NAV — WHITE CARD HEADER
    Logo + bold wordmark, quiet links with an underlined active item and a
    "Search docs…" pill. Uses the existing GeneratePress navigation markup;
-   the GP mobile header also carries .main-navigation, so it is covered too.
+   the GP mobile header also carries :is(#site-navigation, #mobile-header), so it is covered too.
    ====================================================================== */
 :root {
   --nav-card: #ffffff;
@@ -162,14 +162,14 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
 }
 
 /* Transparent outer band so the white card floats on the canvas. */
-.main-navigation {
+:is(#site-navigation, #mobile-header) {
   padding: clamp(10px, 1.6vw, 20px) clamp(12px, 2.4vw, 32px) 0;
   color: var(--nav-ink);
   background: transparent !important;
   border: 0;
   box-shadow: none;
 }
-.main-navigation .inside-navigation {
+:is(#site-navigation, #mobile-header) .inside-navigation {
   position: relative;
   box-sizing: border-box;
   width: 100%;
@@ -186,31 +186,29 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
 }
 
 /* Branding: logo + site title. */
-.main-navigation .navigation-branding {
+:is(#site-navigation, #mobile-header) .navigation-branding {
   display: flex;
   align-items: center;
   gap: 14px;
   min-width: 0;
   margin: 0 clamp(12px, 5vw, 72px) 0 0;
 }
-.main-navigation .navigation-branding .site-logo {
+:is(#site-navigation, #mobile-header) .navigation-branding .site-logo {
   flex-shrink: 0;
   margin: 0;
 }
-.main-navigation .navigation-branding .site-logo a {
+:is(#site-navigation, #mobile-header) .navigation-branding .site-logo a {
   display: block;
 }
-/* Whatever logo image GeneratePress outputs is shown as the hosted logo. */
-:is(.main-navigation, .site-header) :is(.site-logo, .mobile-header-logo) img {
-  content: url("https://gamedevaihub.com/wp-content/uploads/2026/09/gamedevailogo.png");
+/* Logo image set in Customizer → Site Identity → Logo. */
+:is(#site-navigation, #mobile-header) :is(.site-logo, .mobile-header-logo) img {
   width: auto;
   height: var(--nav-logo);
   max-height: none;
   padding: 0;
-  border-radius: 0;
   object-fit: contain;
 }
-.main-navigation .navigation-branding .main-title {
+:is(#site-navigation, #mobile-header) .navigation-branding .main-title {
   margin: 0;
   padding: 0;
   font-size: clamp(19px, 1.75vw, 23px);
@@ -219,24 +217,16 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   letter-spacing: -.035em;
   white-space: nowrap;
 }
-.main-navigation .main-title a {
+:is(#site-navigation, #mobile-header) .main-title a {
   display: flex;
   align-items: center;
   gap: 14px;
   color: var(--nav-ink) !important;
   text-decoration: none;
 }
-/* No logo image set in the Customizer: draw the logo before the title. */
-.main-navigation .navigation-branding:not(:has(.site-logo)) .main-title a::before {
-  content: "";
-  flex-shrink: 0;
-  width: var(--nav-logo);
-  height: var(--nav-logo);
-  background: url("https://gamedevaihub.com/wp-content/uploads/2026/09/gamedevailogo.png") center / contain no-repeat;
-}
 
 /* Top-level links: plain text, underline marks the current page. */
-.main-navigation .main-nav > ul > li > a {
+:is(#site-navigation, #mobile-header) .main-nav > ul > li > a {
   position: relative;
   display: flex;
   align-items: center;
@@ -247,7 +237,7 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   line-height: 1.2;
   transition: color var(--lc-motion);
 }
-.main-navigation .main-nav > ul > li > a::after {
+:is(#site-navigation, #mobile-header) .main-nav > ul > li > a::after {
   content: "";
   position: absolute;
   inset: auto 0 4px;
@@ -258,20 +248,20 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   transform: scaleX(.4);
   transition: opacity var(--lc-motion), transform var(--lc-motion);
 }
-.main-navigation .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a {
+:is(#site-navigation, #mobile-header) .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a {
   color: var(--nav-ink) !important;
 }
-.main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a {
+:is(#site-navigation, #mobile-header) .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a {
   color: var(--nav-ink) !important;
   font-weight: 500;
 }
-.main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::after {
+:is(#site-navigation, #mobile-header) .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::after {
   opacity: 1;
   transform: none;
 }
 
 /* Dropdowns */
-.main-navigation .main-nav ul ul {
+:is(#site-navigation, #mobile-header) .main-nav ul ul {
   width: 260px;
   padding: 7px;
   background: var(--nav-card) !important;
@@ -279,7 +269,7 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   border-radius: 12px;
   box-shadow: var(--nav-shadow);
 }
-.main-navigation .main-nav ul ul li a {
+:is(#site-navigation, #mobile-header) .main-nav ul ul li a {
   padding: 10px 13px;
   color: var(--nav-link) !important;
   background: transparent !important;
@@ -287,13 +277,13 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   line-height: 1.35;
   white-space: normal;
 }
-.main-navigation .main-nav ul ul li:is(:hover, :focus-within, .current-menu-item) > a {
+:is(#site-navigation, #mobile-header) .main-nav ul ul li:is(:hover, :focus-within, .current-menu-item) > a {
   color: var(--nav-ink) !important;
   background: var(--nav-hover) !important;
 }
 
 /* Round utility buttons: search, menu toggle, other menu-bar items. */
-.main-navigation .menu-bar-items {
+:is(#site-navigation, #mobile-header) .menu-bar-items {
   position: relative;
   z-index: 11;
   align-items: center;
@@ -301,14 +291,14 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   margin-inline-start: auto;
 }
 /* Shared look only — GeneratePress keeps control of when each one shows. */
-.main-navigation :is(.menu-bar-item > a, .menu-toggle) {
+:is(#site-navigation, #mobile-header) :is(.menu-bar-item > a, .menu-toggle) {
   color: var(--nav-ink) !important;
   background: var(--nav-field) !important;
   border: 1px solid var(--nav-line);
   border-radius: 999px;
   transition: background-color var(--lc-motion), border-color var(--lc-motion);
 }
-.main-navigation .menu-bar-item > a {
+:is(#site-navigation, #mobile-header) .menu-bar-item > a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -317,29 +307,36 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   padding: 0;
   line-height: 1;
 }
-.main-navigation .menu-toggle {
+:is(#site-navigation, #mobile-header) .menu-toggle {
+  order: 10;
   min-height: 44px;
-  padding: 0 16px;
+  margin-inline-start: 8px;
+  padding: 0 18px;
+  font-size: 15px;
   line-height: 42px;
 }
-.main-navigation :is(.menu-bar-item > a:hover, .menu-toggle:hover, .menu-toggle:focus-visible),
-.main-navigation.toggled .menu-toggle {
+:is(#site-navigation, #mobile-header) .menu-toggle .gp-icon {
+  margin-inline-end: 8px;
+  vertical-align: -2px;
+}
+:is(#site-navigation, #mobile-header) :is(.menu-bar-item > a:hover, .menu-toggle:hover, .menu-toggle:focus-visible),
+:is(#site-navigation, #mobile-header).toggled .menu-toggle {
   background: var(--nav-hover) !important;
   border-color: #d3d8da;
 }
 
 /* Search trigger renders as the "Search docs…" pill field. */
-.main-navigation .menu-bar-item svg {
+:is(#site-navigation, #mobile-header) .menu-bar-item svg {
   width: 20px;
   height: 20px;
 }
-.main-navigation :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"]) {
+:is(#site-navigation, #mobile-header) :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"]) {
   justify-content: flex-start;
   gap: 12px;
   width: clamp(180px, 17vw, 212px);
   padding: 0 18px;
 }
-.main-navigation :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"])::after {
+:is(#site-navigation, #mobile-header) :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"])::after {
   content: "Search docs\2026";
   overflow: hidden;
   color: var(--nav-muted);
@@ -348,7 +345,7 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   text-overflow: ellipsis;
 }
 /* Expanded GeneratePress search form fills the white card. */
-.main-navigation .navigation-search input[type="search"] {
+:is(#site-navigation, #mobile-header) .navigation-search input[type="search"] {
   height: 100%;
   padding-inline: clamp(18px, 2.2vw, 28px) 76px;
   color: var(--nav-ink) !important;
@@ -356,7 +353,7 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   border-radius: var(--nav-radius);
   opacity: 1;
 }
-.main-navigation .navigation-search input[type="search"]::placeholder {
+:is(#site-navigation, #mobile-header) .navigation-search input[type="search"]::placeholder {
   color: var(--nav-muted);
 }
 
@@ -951,7 +948,7 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
    14. RESPONSIVE — PRESERVE THE NATIVE GENERATEPRESS MENU BEHAVIOR
    ====================================================================== */
 @media (min-width: 769px) {
-  .main-navigation .main-nav > ul {
+  :is(#site-navigation, #mobile-header) .main-nav > ul {
     display: flex;
     align-items: center;
     gap: clamp(4px, 1.6vw, 20px);
@@ -961,21 +958,21 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   :root {
     --nav-logo: 36px;
   }
-  .main-navigation .navigation-branding {
+  :is(#site-navigation, #mobile-header) .navigation-branding {
     margin-right: 12px;
   }
   /* Search pill collapses to its round icon button. */
-  .main-navigation :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"]) {
+  :is(#site-navigation, #mobile-header) :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"]) {
     justify-content: center;
     width: 44px;
     padding: 0;
   }
-  .main-navigation :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"])::after {
+  :is(#site-navigation, #mobile-header) :is(.search-item > a:not(.close-search), [data-gpmodal-trigger="gp-search"])::after {
     content: none;
   }
 }
 @media (min-width: 769px) and (max-width: 1100px) {
-  .main-navigation .main-nav > ul {
+  :is(#site-navigation, #mobile-header) .main-nav > ul {
     gap: 0;
   }
 }
@@ -983,38 +980,38 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   .site-content {
     padding-block: 18px;
   }
-  .main-navigation .inside-navigation {
+  :is(#site-navigation, #mobile-header) .inside-navigation {
     min-height: 64px;
     padding: 9px 12px 9px 15px;
     gap: 8px;
     border-radius: 14px;
   }
-  .main-navigation .navigation-branding {
+  :is(#site-navigation, #mobile-header) .navigation-branding {
     flex: 1 1 auto;
     margin-right: auto;
   }
-  .main-navigation .navigation-branding .main-title {
+  :is(#site-navigation, #mobile-header) .navigation-branding .main-title {
     font-size: 19px;
   }
-  .main-navigation.toggled .main-nav > ul {
+  :is(#site-navigation, #mobile-header).toggled .main-nav > ul {
     margin: 10px 0 3px;
     padding: 7px;
     border-top: 1px solid var(--nav-line);
   }
-  .main-navigation .main-nav > ul > li > a {
+  :is(#site-navigation, #mobile-header) .main-nav > ul > li > a {
     min-height: 46px;
     padding: 11px 14px;
     border-radius: 10px;
   }
   /* Stacked menu: short underline under the active label. */
-  .main-navigation .main-nav > ul > li > a::after {
+  :is(#site-navigation, #mobile-header) .main-nav > ul > li > a::after {
     inset: auto auto 6px 14px;
     width: 28px;
   }
-  .main-navigation .main-nav > ul > li:is(:hover, :focus-within) > a {
+  :is(#site-navigation, #mobile-header) .main-nav > ul > li:is(:hover, :focus-within) > a {
     background: var(--nav-hover) !important;
   }
-  .main-navigation .main-nav ul ul {
+  :is(#site-navigation, #mobile-header) .main-nav ul ul {
     width: auto;
     margin: 4px 7px 9px;
     box-shadow: none;
@@ -1053,22 +1050,22 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   :root {
     --nav-logo: 32px;
   }
-  .main-navigation .inside-navigation {
+  :is(#site-navigation, #mobile-header) .inside-navigation {
     padding-inline: 12px 10px;
     gap: 6px;
   }
-  .main-navigation .navigation-branding {
+  :is(#site-navigation, #mobile-header) .navigation-branding {
     gap: 10px;
   }
-  .main-navigation .navigation-branding .main-title {
+  :is(#site-navigation, #mobile-header) .navigation-branding .main-title {
     font-size: 17px;
   }
   /* Menu toggle becomes a round icon button; label stays for screen readers. */
-  .main-navigation .menu-toggle {
+  :is(#site-navigation, #mobile-header) .menu-toggle {
     min-width: 44px;
     padding: 0;
   }
-  .main-navigation .menu-toggle .mobile-menu {
+  :is(#site-navigation, #mobile-header) .menu-toggle .mobile-menu {
     position: absolute;
     width: 1px;
     height: 1px;
