@@ -11,7 +11,7 @@
 /*
 Theme Name: GameDev AI Hub Child
 Template: generatepress
-Description: Light Creative editorial theme with Dark Terminal navigation. Typography is managed in the GeneratePress Customizer.
+Description: Light Creative editorial theme with a floating white docs navigation. Typography is managed in the GeneratePress Customizer.
 Version: 9.1.2
 */
 
@@ -135,47 +135,50 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
 }
 
 /* ======================================================================
-   03. DARK TERMINAL NAV — HEADER ONLY / CONCEPT #5
-   Light Creative article content and every other component remain unchanged.
-   WordPress / GeneratePress controls all typography. No new menus or CTAs.
+   03. FLOATING DOCS NAV — WHITE CARD HEADER
+   A light, floating navigation card: logo + bold wordmark, quiet links with
+   an underlined active item, and a pill-shaped "Search docs…" field.
+   Uses the existing GeneratePress navigation markup. No new menus or CTAs.
    ====================================================================== */
 :root {
-  --terminal-bg: #000000;
-  --terminal-deep: #000000;
-  --terminal-surface: #20282a;
-  --terminal-line: #3b4b4c;
-  --terminal-ink: #f3f5ef;
-  --terminal-muted: #bdcac5;
-  --terminal-accent: #74efb5;
-  --terminal-accent-soft: #b0f7d4;
+  --nav-card: #ffffff;
+  --nav-ink: #0f2029;
+  --nav-link: #34444c;
+  --nav-muted: #7d8a90;
+  --nav-line: #e4e7e8;
+  --nav-field: #f7f8f8;
+  --nav-hover: #f3f5f5;
+  --nav-radius: 18px;
+  --nav-shadow: 0 1px 2px rgb(15 32 41 / 4%), 0 14px 38px -14px rgb(15 32 41 / 18%);
 }
 
 /* The separate GeneratePress site header may be enabled or disabled.
    Its styling is scoped so the light article/body canvas never changes. */
 .site-header {
-  color: var(--terminal-ink);
-  background: var(--terminal-bg);
-  border-bottom: 1px solid var(--terminal-line);
+  color: var(--nav-ink);
+  background: transparent;
+  border-bottom: 0;
 }
 .site-header :is(.site-title, .site-title a) {
-  color: var(--terminal-ink);
+  color: var(--nav-ink);
 }
 .site-header .site-description {
-  color: var(--terminal-muted);
+  color: var(--nav-muted);
 }
 .site-header .site-title a:hover {
-  color: var(--terminal-accent-soft);
+  color: var(--lc-green);
 }
 
+/* Outer band stays transparent so the white card floats on the canvas. */
 .main-navigation,
 .main-navigation.navigation-stick,
 #mobile-header {
-  color: var(--terminal-ink);
-  background: var(--terminal-bg) !important;
+  color: var(--nav-ink);
+  padding: clamp(10px, 1.6vw, 20px) clamp(12px, 2.4vw, 32px) 0;
+  background: transparent !important;
   background-image: none !important;
-  border-top: 0;
-  border-bottom: 1px solid #374345;
-  box-shadow: 0 8px 22px rgb(11 23 25 / 13%);
+  border: 0;
+  box-shadow: none;
 }
 
 .main-navigation .inside-navigation,
@@ -183,23 +186,25 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   position: relative;
   box-sizing: border-box;
   width: 100%;
-  max-width: 1360px;
-  min-height: 74px;
+  max-width: 1240px;
+  min-height: 76px;
   margin-inline: auto;
-  padding: 12px clamp(15px, 3vw, 38px);
-  gap: clamp(8px, 1.2vw, 19px);
+  padding: 12px clamp(16px, 2vw, 26px);
+  gap: clamp(8px, 1.4vw, 20px);
   align-items: center;
-  background: transparent;
+  background: var(--nav-card);
+  border: 1px solid rgb(15 32 41 / 5%);
+  border-radius: var(--nav-radius);
+  box-shadow: var(--nav-shadow);
 }
-
 
 .main-navigation .navigation-branding {
   display: flex;
   align-items: center;
   flex: 0 1 auto;
-  gap: 11px;
+  gap: 14px;
   min-width: 0;
-  margin: 0 auto 0 0;
+  margin: 0 clamp(12px, 5vw, 72px) 0 0;
 }
 .main-navigation .navigation-branding .site-logo {
   flex-shrink: 0;
@@ -212,108 +217,115 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
 .main-navigation .sticky-navigation-logo img,
 #mobile-header .mobile-header-logo img {
   width: auto;
-  height: 42px;
-  max-height: 42px;
+  height: 46px;
+  max-height: 46px;
   padding: 0;
-  border-radius: 6px;
+  border-radius: 0;
   object-fit: contain;
 }
 .main-navigation .main-title {
   margin: 0;
   padding: 0;
-  color: var(--terminal-ink);
-  text-wrap: balance;
+  color: var(--nav-ink);
+  font-size: clamp(19px, 1.75vw, 23px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.035em;
+  white-space: nowrap;
 }
 .main-navigation .main-title a,
 .main-navigation .main-title a:is(:hover, :focus-visible) {
-  color: var(--terminal-ink) !important;
+  color: var(--nav-ink) !important;
   text-decoration: none;
 }
-/* Prompt glyph and cursor belong only to the existing branding link. */
-.main-navigation .main-title a::before {
-  content: ">";
-  display: inline-block;
-  margin-inline-end: .42em;
-  color: var(--terminal-accent);
-}
-.main-navigation .main-title a::after {
-  content: "_";
-  color: var(--terminal-accent);
-}
 
+/* Top-level links: plain text, underline marks the current page. */
 .main-navigation .main-nav > ul > li > a,
 #mobile-header .main-nav > ul > li > a {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  padding: 0 clamp(9px, .95vw, 15px);
-  color: var(--terminal-muted) !important;
+  min-height: 52px;
+  padding: 0 8px;
+  color: var(--nav-link) !important;
   background: transparent !important;
-  border: 1px solid transparent;
-  border-radius: 5px;
+  border: 0;
+  border-radius: 0;
+  line-height: 1.2;
   text-decoration: none;
-  transition: color var(--lc-motion), background-color var(--lc-motion), border-color var(--lc-motion);
+  transition: color var(--lc-motion);
+}
+.main-navigation .main-nav > ul > li > a::after,
+#mobile-header .main-nav > ul > li > a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  left: 0;
+  height: 2px;
+  background: var(--nav-ink);
+  border-radius: 2px;
+  opacity: 0;
+  transform: scaleX(.4);
+  transition: opacity var(--lc-motion), transform var(--lc-motion);
 }
 .main-navigation .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a,
 #mobile-header .main-nav > ul > li:is(:hover, .sfHover, :focus-within) > a {
-  color: var(--terminal-ink) !important;
-  background: #293633 !important;
-  border-color: #456259;
+  color: var(--nav-ink) !important;
 }
 .main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a,
 #mobile-header .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a {
-  color: var(--terminal-accent-soft) !important;
-  background: #132a25 !important;
-  border-color: #3e9e7c;
-  box-shadow: inset 0 -2px 0 var(--terminal-accent);
-}
-/* Brackets recreate the active [ Home ] treatment without changing labels. */
-.main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::before,
-#mobile-header .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::before {
-  content: "[";
-  margin-inline-end: 5px;
-  color: var(--terminal-accent);
+  color: var(--nav-ink) !important;
+  font-weight: 500;
 }
 .main-navigation .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::after,
 #mobile-header .main-nav > ul > li:is(.current-menu-item, .current-menu-ancestor, .current_page_item, .current_page_ancestor) > a::after {
-  content: "]";
-  margin-inline-start: 5px;
-  color: var(--terminal-accent);
+  opacity: 1;
+  transform: none;
 }
 
 .main-navigation .main-nav ul ul,
 #mobile-header .main-nav ul ul {
   width: 260px;
   padding: 7px;
-  color: var(--terminal-ink);
-  background: #202729 !important;
-  border: 1px solid var(--terminal-line);
-  border-radius: 7px;
-  box-shadow: 0 16px 38px rgb(3 9 10 / 30%);
+  color: var(--nav-ink);
+  background: var(--nav-card) !important;
+  border: 1px solid var(--nav-line);
+  border-radius: 12px;
+  box-shadow: var(--nav-shadow);
 }
 .main-navigation .main-nav ul ul li a,
 #mobile-header .main-nav ul ul li a {
-  padding: 11px 13px;
-  color: var(--terminal-ink) !important;
+  padding: 10px 13px;
+  color: var(--nav-link) !important;
   background: transparent !important;
-  border: 1px solid transparent;
-  border-radius: 4px;
+  border: 0;
+  border-radius: 8px;
+  line-height: 1.35;
   white-space: normal;
 }
 .main-navigation .main-nav ul ul li:is(:hover, :focus-within, .current-menu-item) > a,
 #mobile-header .main-nav ul ul li:is(:hover, :focus-within, .current-menu-item) > a {
-  color: var(--terminal-accent-soft) !important;
-  background: #2b3d37 !important;
-  border-color: #527365;
+  color: var(--nav-ink) !important;
+  background: var(--nav-hover) !important;
 }
+
+/* Utility buttons (search, slideout, etc.). */
 .main-navigation .menu-bar-items,
 .main-navigation .menu-toggle,
 #mobile-header .menu-bar-items,
 #mobile-header .menu-toggle {
-  color: var(--terminal-ink) !important;
+  color: var(--nav-ink) !important;
   background: transparent !important;
+}
+.main-navigation .menu-bar-items,
+#mobile-header .menu-bar-items {
+  position: relative;
+  z-index: 11;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
 }
 .main-navigation .menu-bar-item > a,
 #mobile-header .menu-bar-item > a {
@@ -323,32 +335,86 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   min-width: 44px;
   min-height: 44px;
   padding: 0;
-  color: var(--terminal-accent-soft) !important;
-  background: #202b2a !important;
-  border: 1px solid var(--terminal-line);
-  border-radius: 6px;
+  color: var(--nav-ink) !important;
+  background: var(--nav-field) !important;
+  border: 1px solid var(--nav-line);
+  border-radius: 999px;
+  line-height: 1;
+  transition: background-color var(--lc-motion), border-color var(--lc-motion);
 }
 .main-navigation .menu-bar-item > a:hover,
 #mobile-header .menu-bar-item > a:hover {
-  color: #fff !important;
-  background: #2f433c !important;
+  background: var(--nav-hover) !important;
+  border-color: #d3d8da;
 }
+/* Search trigger renders as the "Search docs…" pill field. */
+.main-navigation .menu-bar-item.search-item > a:not(.close-search) {
+  justify-content: flex-start;
+  gap: 12px;
+  width: clamp(180px, 17vw, 212px);
+  height: 44px;
+  padding: 0 18px;
+}
+.main-navigation .menu-bar-item.search-item > a:not(.close-search)::after {
+  content: "Search docs\2026";
+  overflow: hidden;
+  color: var(--nav-muted);
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.main-navigation .menu-bar-item.search-item .gp-icon,
+#mobile-header .menu-bar-item.search-item .gp-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.main-navigation .menu-bar-item.search-item svg,
+#mobile-header .menu-bar-item.search-item svg {
+  width: 20px;
+  height: 20px;
+}
+/* Expanded GeneratePress search form, drawn inside the white card. */
+.main-navigation .navigation-search,
+#mobile-header .navigation-search {
+  border-radius: var(--nav-radius);
+}
+.main-navigation .navigation-search.nav-search-active,
+#mobile-header .navigation-search.nav-search-active {
+  background: var(--nav-card);
+}
+.main-navigation .navigation-search input[type="search"],
+#mobile-header .navigation-search input[type="search"] {
+  height: 100%;
+  padding-inline: clamp(18px, 2.2vw, 28px) 76px;
+  color: var(--nav-ink) !important;
+  background: var(--nav-card) !important;
+  border: 0;
+  border-radius: var(--nav-radius);
+  box-shadow: none;
+  outline: 0;
+}
+.main-navigation .navigation-search input[type="search"]::placeholder,
+#mobile-header .navigation-search input[type="search"]::placeholder {
+  color: var(--nav-muted);
+}
+
 .main-navigation .menu-toggle,
 #mobile-header .menu-toggle {
   min-height: 44px;
-  padding: 0 14px;
-  color: var(--terminal-ink) !important;
-  background: #202b2a !important;
-  border: 1px solid var(--terminal-line);
-  border-radius: 6px;
+  padding: 0 16px;
+  color: var(--nav-ink) !important;
+  background: var(--nav-field) !important;
+  border: 1px solid var(--nav-line);
+  border-radius: 999px;
 }
 .main-navigation .menu-toggle:is(:hover, :focus-visible),
 #mobile-header .menu-toggle:is(:hover, :focus-visible),
 .main-navigation.toggled .menu-toggle,
 #mobile-header.toggled .menu-toggle {
-  color: var(--terminal-accent-soft) !important;
-  background: #294239 !important;
-  border-color: #599d7f;
+  color: var(--nav-ink) !important;
+  background: var(--nav-hover) !important;
+  border-color: #d3d8da;
 }
 
 /* ======================================================================
@@ -957,7 +1023,7 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   .main-navigation .main-nav > ul {
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: clamp(4px, 1.6vw, 20px);
   }
 }
 @media (min-width: 769px) and (max-width: 1100px) {
@@ -966,7 +1032,7 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
     gap: 8px;
   }
   .main-navigation .navigation-branding {
-    margin-right: auto;
+    margin-right: 12px;
   }
   .main-navigation .navigation-branding img {
     height: 36px;
@@ -978,6 +1044,15 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   .main-navigation .main-nav > ul > li > a {
     padding-inline: 8px;
   }
+  /* Search pill collapses to its round icon button on narrower screens. */
+  .main-navigation .menu-bar-item.search-item > a:not(.close-search) {
+    width: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+  .main-navigation .menu-bar-item.search-item > a:not(.close-search)::after {
+    content: none;
+  }
 }
 @media (max-width: 768px) {
   .site-content {
@@ -986,8 +1061,20 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   .main-navigation .inside-navigation,
   #mobile-header .inside-navigation {
     min-height: 64px;
-    padding: 9px 15px;
+    padding: 9px 12px 9px 15px;
     gap: 8px;
+    border-radius: 14px;
+  }
+  .main-navigation .main-title {
+    font-size: 19px;
+  }
+  .main-navigation .menu-bar-item.search-item > a:not(.close-search) {
+    width: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+  .main-navigation .menu-bar-item.search-item > a:not(.close-search)::after {
+    content: none;
   }
   .main-navigation .navigation-branding {
     flex: 1 1 auto;
@@ -1004,15 +1091,28 @@ body:not(.wp-admin):not(.block-editor-page) .site-main {
   #mobile-header.toggled .main-nav > ul {
     margin: 10px 0 3px;
     padding: 7px;
-    background: var(--terminal-deep) !important;
-    border: 1px solid var(--terminal-line);
-    border-radius: 7px;
+    background: var(--nav-card) !important;
+    border-top: 1px solid var(--nav-line);
+    border-radius: 0;
   }
   .main-navigation .main-nav > ul > li > a,
   #mobile-header .main-nav > ul > li > a {
     justify-content: flex-start;
     min-height: 46px;
     padding: 11px 14px;
+    border-radius: 10px;
+  }
+  /* Stacked menu: active item gets a short underline under its label. */
+  .main-navigation .main-nav > ul > li > a::after,
+  #mobile-header .main-nav > ul > li > a::after {
+    right: auto;
+    bottom: 6px;
+    left: 14px;
+    width: 28px;
+  }
+  .main-navigation .main-nav > ul > li:is(:hover, :focus-within) > a,
+  #mobile-header .main-nav > ul > li:is(:hover, :focus-within) > a {
+    background: var(--nav-hover) !important;
   }
   .main-navigation .main-nav ul ul,
   #mobile-header .main-nav ul ul {
