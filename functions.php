@@ -31,6 +31,14 @@ const GDAIH_TOC_MIN_HEADINGS = 2;
 /**
  * Navbar logo image.
  */
+/**
+ * Printed on the navbar <style> tag. View the page source and search for
+ * "gdaih-critical-navbar" to see which version the live page is using;
+ * an older number means a cache is serving an old copy of the page.
+ * Raise it whenever the navbar CSS changes.
+ */
+const GDAIH_NAVBAR_VERSION = '3';
+
 const GDAIH_LOGO_URL = 'https://gamedevaihub.com/wp-content/uploads/2026/09/gamedevailogo.png';
 
 /**
@@ -168,7 +176,7 @@ CSS;
 	// Matched by class, not id, because those copies carry other ids.
 	$css = str_replace( '%nav%', 'html body :is(.main-navigation,#mobile-header):not(.toggled):not(.slideout-navigation):not(.mobile-menu-control-wrapper)', $css );
 
-	echo '<style id="gdaih-critical-navbar">' . $css . '</style>' . "\n"; // Static CSS, no user input.
+	echo '<style id="gdaih-critical-navbar" data-version="' . esc_attr( GDAIH_NAVBAR_VERSION ) . '">' . $css . '</style>' . "\n"; // Static CSS, no user input.
 }
 add_action( 'wp_head', 'gdaih_critical_navbar_css', 999 );
 

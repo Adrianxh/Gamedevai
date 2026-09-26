@@ -165,8 +165,9 @@ html body .gd-brand a {
 }
 html body .gd-brand__mark {
   flex-shrink: 0;
-  width: 38px;
+  width: auto;
   height: 38px;
+  object-fit: contain;
 }
 html body .gd-brand__word {
   font-size: clamp(18px, 1.7vw, 23px);
@@ -1405,7 +1406,7 @@ html body :is(.main-navigation, #mobile-header) :is(a, button):focus-visible {
     gap: 4px;
   }
   html body .gd-brand__mark {
-    width: 32px;
+    width: auto;
     height: 32px;
   }
   html body .gd-brand a {
